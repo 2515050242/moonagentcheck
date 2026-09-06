@@ -8,6 +8,16 @@ pub struct Event {
   ok : Bool?
 } derive(Debug, Eq)
 
+pub fn Event::new(
+  kind : String,
+  tool : String,
+  call_id : String,
+  operation_id : String?,
+  ok : Bool?,
+) -> Event {
+  { kind, tool, call_id, operation_id, ok }
+}
+
 ///|
 /// A single contract failure. The first event that violates a rule is reported.
 pub struct Violation {

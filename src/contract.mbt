@@ -3,14 +3,14 @@
 pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
   let violations : Array[Violation] = []
   let pending : Array[String] = []
-  let attempts : Map[String, Int] = {}
-  let completed : Map[String, Bool] = {}
+  let attempts : Map[String, Int] = Map([])
+  let completed : Map[String, Bool] = Map([])
   for index, event in events {
     if event.kind == "call" {
       pending.push(event.call_id)
       match event.operation_id {
         Some(operation) => {
-          let count = match attempts[operation] { Some(value) => value + 1; None => 1 }
+          let count = match attempts.get(operation) { Some(value) => value + 1; None => 1 }
           attempts[operation] = count
           if count > max_retries {
             violations.push({ rule: "retry-limit", event_index: index, message: operation })
@@ -25,7 +25,7 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
     } else if event.kind == "write-complete" {
       match event.operation_id {
         Some(operation) => {
-          if completed[operation] is Some(true) {
+          if completed.get(operation) is Some(true) {
             violations.push({ rule: "duplicate-side-effect", event_index: index, message: operation })
           }
           completed[operation] = true
@@ -36,4 +36,3 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
   }
   violations
 }
-
