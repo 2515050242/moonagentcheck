@@ -60,7 +60,9 @@ Agent / LLM / MCP / Workflow
 - 检查重复完成同一逻辑写操作的 `duplicate-side-effect`；
 - 检查没有对应调用就产生写入完成事件的 `write-without-call`；
 - 检查同一事件流复用调用 ID 的 `duplicate-call-id`；
-- 提供五个 MoonBit 可执行测试；
+- 检查同一个调用收到多次结果的 `duplicate-result`；
+- 检查写入完成事件缺少逻辑操作 ID 的 `missing-operation-id`；
+- 提供八个 MoonBit 可执行测试；
 - 提供不访问模型、网络和真实文件系统的 Python 对照 fixture；
 - 提供 GitHub Actions，自动执行 `moon check` 和 `moon test`；
 - 提供中文 SVG 架构图、事件流程图和仓库结构图，降低项目审核成本。

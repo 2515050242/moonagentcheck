@@ -11,6 +11,8 @@
 | 副作用防重复 | `completed` 状态表 | `detects duplicate side effect` | 增加不同 operation_id 对照 |
 | 写入前置调用 | `write-without-call` 规则 | `requires a call before a write` | 增加授权字段 adapter |
 | 事件结束时完整性 | `missing-result` 规则 | `detects orphan and missing results` | 增加空事件流和多调用场景 |
+| 结果唯一性 | `duplicate-result` 规则 | `detects duplicate results` | 增加乱序结果和失败结果场景 |
+| 写入关联完整性 | `missing-operation-id` 规则 | `requires an operation id for a write` | 接入 adapter 时保留业务操作 ID |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
 | Python 接入参考 | `examples/python_data_agent.py` | 本地 Python 运行 | 增加通用 adapter 和 JSON 输出 |
 | CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |

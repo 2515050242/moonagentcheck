@@ -18,6 +18,7 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
     violations: list[str] = []
     pending: set[str] = set()
     calls: set[str] = set()
+    resolved: set[str] = set()
     attempts: dict[str, int] = {}
     completed: set[str] = set()
 
@@ -34,15 +35,20 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
         elif event.kind == "result":
             if event.call_id not in pending:
                 violations.append(f"orphan-result:{event.call_id}")
-            pending.discard(event.call_id)
+            elif event.call_id in resolved:
+                violations.append(f"duplicate-result:{event.call_id}")
+            else:
+                resolved.add(event.call_id)
         elif event.kind == "write-complete":
             if event.call_id not in calls:
                 violations.append(f"write-without-call:{event.call_id}")
+            if not event.operation_id:
+                violations.append(f"missing-operation-id:{event.call_id}")
             if event.operation_id in completed:
                 violations.append(f"duplicate-side-effect:{event.operation_id}")
             completed.add(event.operation_id or event.call_id)
 
-    violations.extend(f"missing-result:{call_id}" for call_id in sorted(pending))
+    violations.extend(f"missing-result:{call_id}" for call_id in sorted(pending - resolved))
     return violations
 
 

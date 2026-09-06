@@ -16,3 +16,14 @@ jobs:
       - name: Test
         run: moon test
 
+  python-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run deterministic Python fixture
+        run: python examples/python_data_agent.py
+

@@ -26,6 +26,8 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
     } else if event.kind == "result" {
       if !pending.contains(event.call_id) {
         violations.push({ rule: "orphan-result", event_index: index, message: event.call_id })
+      } else if resolved.get(event.call_id) is Some(true) {
+        violations.push({ rule: "duplicate-result", event_index: index, message: event.call_id })
       } else {
         resolved[event.call_id] = true
       }
@@ -40,7 +42,9 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
           }
           completed[operation] = true
         }
-        None => ()
+        None => {
+          violations.push({ rule: "missing-operation-id", event_index: index, message: event.call_id })
+        }
       }
     }
   }

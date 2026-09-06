@@ -2,7 +2,7 @@
 
 给 agent 的工具行为写可重复测试。
 
-moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；结果可输出为人类可读文本或 JSON，便于放进 CI。
+moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；当前 API 返回结构化 `Violation` 数组，JSON 报告仍在计划中。
 
 ## 项目结构图
 
@@ -20,6 +20,8 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 - [验收矩阵](docs/acceptance-matrix.md)
 - [推进路线](docs/roadmap.md)
 - [行为契约](docs/behavior-contract.md)
+- [来源、许可证与适配说明](docs/provenance.md)
+- [工程风险审计记录](docs/audit.md)
 
 ## 当前状态
 
@@ -35,6 +37,8 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 - `duplicate-side-effect`：同一逻辑写操作完成两次。
 - `write-without-call`：写入完成事件没有对应调用。
 - `duplicate-call-id`：事件流复用了调用 ID。
+- `duplicate-result`：同一个调用收到了多次结果。
+- `missing-operation-id`：写入完成事件没有逻辑操作 ID。
 
 所有检查都是确定性的，不会访问模型、网络或真实文件系统，适合放进 agent 的离线回归测试。
 

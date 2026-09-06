@@ -67,7 +67,7 @@
   <text x="65" y="461" class="panel-title">(d) 测试证据</text>
   <rect x="80" y="500" width="130" height="70" fill="#f7fff3" class="node"/>
   <text x="145" y="528" text-anchor="middle" class="box-title">离线 fixture</text>
-  <text x="145" y="551" text-anchor="middle" class="small">五个 MoonBit 测试</text>
+  <text x="145" y="551" text-anchor="middle" class="small">八个 MoonBit 测试</text>
   <rect x="270" y="500" width="130" height="70" fill="#f7fff3" class="node"/>
   <text x="335" y="528" text-anchor="middle" class="box-title">CI</text>
   <text x="335" y="551" text-anchor="middle" class="small">moon check + test</text>
