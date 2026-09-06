@@ -1,5 +1,5 @@
 name = "2515050242/moonagentcheck"
-version = "0.1.4"
+version = "0.1.5"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/2515050242/moonagentcheck"

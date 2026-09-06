@@ -27,6 +27,8 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 
 这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前版本已交付可发布的 MoonBit 核心库、Python 对照实现、离线 fixture 和 CI 检查。
 
+当前已发布版本为 `0.1.4`；master 上的审计修复记录在 `0.1.5` 开发版本中，发布前会继续经过 CI 和 Mooncakes 预检。
+
 ## 核心 API
 
 `Event::new(kind, tool, call_id, operation_id, ok)` 创建一条适配器事件；`evaluate(events, max_retries)` 返回按事件顺序排列的 `Violation`。当前检查规则包括：
