@@ -1,8 +1,8 @@
-# AgentCheck
+# moonagentcheck
 
 给 agent 的工具行为写可重复测试。
 
-AgentCheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；结果可输出为人类可读文本或 JSON，便于放进 CI。
+moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；结果可输出为人类可读文本或 JSON，便于放进 CI。
 
 ## 当前状态
 
@@ -33,4 +33,3 @@ python examples/python_data_agent.py
 ## 许可证
 
 Apache-2.0，见 [LICENSE](LICENSE)。
-

@@ -1,4 +1,4 @@
-"""Small deterministic fixture used to validate the AgentCheck event model."""
+"""Small deterministic fixture used to validate the moonagentcheck event model."""
 
 from dataclasses import dataclass
 import json
@@ -53,4 +53,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

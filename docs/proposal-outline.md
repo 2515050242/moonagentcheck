@@ -1,10 +1,10 @@
-# AgentCheck 申报书素材草案
+# moonagentcheck 申报书素材草案
 
 > 这不是最终申报书。九月章程要求参赛者人工撰写一页 Markdown；提交前应由本人根据已完成实验和真实证据重写。
 
 ## 项目名称
 
-AgentCheck：面向 AI Agent 的行为契约与可重复测试工具
+moonagentcheck：面向 AI Agent 的行为契约与可重复测试工具
 
 ## 项目简介
 
@@ -31,4 +31,3 @@ LLM 推理、操作系统沙箱、完整 MCP 传输、云端多租户工作台�
 ## 来源与差异化说明
 
 必须列出查到的 `moonbitlang/workflow`、MoonReplayKit、agent-telemetry、MCP Inspector、OpenSeek test harness 等相关项目，并用本人实际实验解释本项目新增的行为语义和接入方式。不要声称生态空白或全球首创。
-
