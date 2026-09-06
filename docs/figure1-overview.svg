@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Figure 1. moonagentcheck project structure</title>
+  <desc id="desc">A pastel multi-panel technical figure showing event preprocessing, contract evaluation, deterministic state, reports and integrations.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#4d5d73"/>
+    </marker>
+    <style>
+      .caption { font: 700 22px Georgia, serif; fill: #243b53; }
+      .panel-title { font: 700 19px Georgia, serif; fill: #243b53; }
+      .box-title { font: 700 16px Georgia, serif; fill: #243b53; }
+      .body { font: 400 14px Georgia, serif; fill: #334e68; }
+      .small { font: 400 12px Georgia, serif; fill: #52606d; }
+      .panel { stroke: #59636e; stroke-width: 2; stroke-dasharray: 10 7; }
+      .node { stroke: #657786; stroke-width: 1.8; rx: 6; }
+      .arrow { stroke: #4d5d73; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dashed-arrow { stroke: #788899; stroke-width: 2; stroke-dasharray: 7 6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="820" fill="#fffdf9"/>
+  <text x="700" y="48" text-anchor="middle" class="caption">Figure 1. moonagentcheck：Agent 行为契约与可重复测试结构</text>
+  <text x="700" y="76" text-anchor="middle" class="small">adapter-neutral event model · deterministic evaluation · reviewable evidence</text>
+
+  <!-- panel a -->
+  <rect x="45" y="115" width="390" height="270" fill="#fff7cf" class="panel"/>
+  <text x="65" y="146" class="panel-title">(a) Event preprocessing</text>
+  <rect x="75" y="180" width="125" height="72" fill="#fffdf0" class="node"/>
+  <text x="137" y="208" text-anchor="middle" class="box-title">Agent records</text>
+  <text x="137" y="232" text-anchor="middle" class="small">SDK / Python / MCP</text>
+  <rect x="270" y="180" width="125" height="72" fill="#fffdf0" class="node"/>
+  <text x="332" y="208" text-anchor="middle" class="box-title">Event</text>
+  <text x="332" y="232" text-anchor="middle" class="small">call_id · operation_id</text>
+  <path d="M200 216 H263" class="arrow"/>
+  <rect x="90" y="290" width="300" height="54" fill="#f6e8a8" class="node"/>
+  <text x="240" y="313" text-anchor="middle" class="body">Normalize without contacting</text>
+  <text x="240" y="333" text-anchor="middle" class="body">model, network or real tools</text>
+
+  <!-- panel b -->
+  <rect x="475" y="115" width="440" height="270" fill="#ffe5e8" class="panel"/>
+  <text x="495" y="146" class="panel-title">(b) Contract evaluation</text>
+  <rect x="505" y="180" width="175" height="55" fill="#fff4f4" class="node"/>
+  <text x="592" y="213" text-anchor="middle" class="box-title">orphan / missing result</text>
+  <rect x="710" y="180" width="175" height="55" fill="#fff4f4" class="node"/>
+  <text x="797" y="213" text-anchor="middle" class="box-title">retry-limit</text>
+  <rect x="505" y="270" width="175" height="55" fill="#fff4f4" class="node"/>
+  <text x="592" y="303" text-anchor="middle" class="box-title">write-without-call</text>
+  <rect x="710" y="270" width="175" height="55" fill="#fff4f4" class="node"/>
+  <text x="797" y="303" text-anchor="middle" class="box-title">duplicate side effect</text>
+  <path d="M695 208 H700" class="dashed-arrow"/>
+  <text x="695" y="252" text-anchor="middle" class="small">same event stream</text>
+
+  <!-- panel c -->
+  <rect x="955" y="115" width="400" height="270" fill="#dff1fb" class="panel"/>
+  <text x="975" y="146" class="panel-title">(c) Deterministic state</text>
+  <rect x="990" y="180" width="145" height="60" fill="#edf9ff" class="node"/>
+  <text x="1062" y="205" text-anchor="middle" class="box-title">attempts</text>
+  <text x="1062" y="226" text-anchor="middle" class="small">operation_id → count</text>
+  <rect x="1170" y="180" width="145" height="60" fill="#edf9ff" class="node"/>
+  <text x="1242" y="205" text-anchor="middle" class="box-title">resolved</text>
+  <text x="1242" y="226" text-anchor="middle" class="small">call_id → result</text>
+  <rect x="990" y="275" width="325" height="60" fill="#c8e7f5" class="node"/>
+  <text x="1152" y="300" text-anchor="middle" class="box-title">single pass over events</text>
+  <text x="1152" y="321" text-anchor="middle" class="small">O(n) time · bounded explicit state</text>
+
+  <!-- panel d -->
+  <rect x="45" y="430" width="390" height="270" fill="#e4f3df" class="panel"/>
+  <text x="65" y="461" class="panel-title">(d) Test evidence</text>
+  <rect x="80" y="500" width="130" height="70" fill="#f7fff3" class="node"/>
+  <text x="145" y="528" text-anchor="middle" class="box-title">offline fixture</text>
+  <text x="145" y="551" text-anchor="middle" class="small">five MoonBit tests</text>
+  <rect x="270" y="500" width="130" height="70" fill="#f7fff3" class="node"/>
+  <text x="335" y="528" text-anchor="middle" class="box-title">CI</text>
+  <text x="335" y="551" text-anchor="middle" class="small">moon check + test</text>
+  <path d="M210 535 H263" class="arrow"/>
+  <rect x="80" y="610" width="320" height="52" fill="#cde8c6" class="node"/>
+  <text x="240" y="632" text-anchor="middle" class="body">same input → same report</text>
+  <text x="240" y="650" text-anchor="middle" class="body">reproducible regression evidence</text>
+
+  <!-- panel e -->
+  <rect x="475" y="430" width="440" height="270" fill="#e8e1f8" class="panel"/>
+  <text x="495" y="461" class="panel-title">(e) Report and integration</text>
+  <rect x="510" y="500" width="170" height="70" fill="#f9f7ff" class="node"/>
+  <text x="595" y="528" text-anchor="middle" class="box-title">Violation</text>
+  <text x="595" y="551" text-anchor="middle" class="small">rule · index · message</text>
+  <rect x="710" y="500" width="170" height="70" fill="#f9f7ff" class="node"/>
+  <text x="795" y="528" text-anchor="middle" class="box-title">consumer</text>
+  <text x="795" y="551" text-anchor="middle" class="small">CI / adapter / developer</text>
+  <path d="M680 535 H703" class="arrow"/>
+  <rect x="510" y="610" width="370" height="52" fill="#d6cbea" class="node"/>
+  <text x="695" y="632" text-anchor="middle" class="body">core library first; adapters evolve separately</text>
+  <text x="695" y="650" text-anchor="middle" class="body">no runtime or cloud service lock-in</text>
+
+  <!-- panel f -->
+  <rect x="955" y="430" width="400" height="270" fill="#f8ead2" class="panel"/>
+  <text x="975" y="461" class="panel-title">(f) Engineering boundary</text>
+  <rect x="990" y="500" width="325" height="70" fill="#fff9ed" class="node"/>
+  <text x="1152" y="528" text-anchor="middle" class="box-title">included</text>
+  <text x="1152" y="551" text-anchor="middle" class="small">event contracts · tests · reports</text>
+  <rect x="990" y="610" width="325" height="52" fill="#f3d9aa" class="node"/>
+  <text x="1152" y="632" text-anchor="middle" class="body">excluded: LLM runtime, sandbox, cloud UI</text>
+  <text x="1152" y="650" text-anchor="middle" class="body">and full MCP transport</text>
+
+  <path d="M435 250 H468" class="arrow"/>
+  <path d="M915 250 H948" class="arrow"/>
+  <path d="M1155 385 V422" class="arrow"/>
+  <text x="450" y="238" class="small">events</text>
+  <text x="930" y="238" class="small">state</text>
+  <text x="1165" y="410" class="small">report</text>
+  <text x="700" y="772" text-anchor="middle" class="caption">moonagentcheck turns Agent execution traces into reviewable, deterministic engineering evidence.</text>
+</svg>

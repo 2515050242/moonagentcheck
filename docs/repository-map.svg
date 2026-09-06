@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">moonagentcheck repository map</title>
+  <desc id="desc">A map of source, tests, examples, documentation and continuous integration files.</desc>
+  <defs>
+    <style>
+      .title { font: 700 30px system-ui, sans-serif; fill: #172b4d; }
+      .subtitle { font: 400 16px system-ui, sans-serif; fill: #51657d; }
+      .folder { font: 700 18px system-ui, sans-serif; fill: #172b4d; }
+      .file { font: 400 14px system-ui, sans-serif; fill: #334e68; }
+      .note { font: 400 13px system-ui, sans-serif; fill: #627d98; }
+      .card { stroke-width: 2; rx: 16; }
+    </style>
+  </defs>
+  <rect width="1200" height="620" fill="#fbfcfe"/>
+  <text x="60" y="62" class="title">repository map</text>
+  <text x="60" y="92" class="subtitle">Each directory has one reviewable responsibility.</text>
+
+  <rect x="60" y="145" width="240" height="355" fill="#eef3ff" stroke="#7895ff" class="card"/>
+  <text x="180" y="188" text-anchor="middle" class="folder">src/</text>
+  <text x="95" y="235" class="file">model.mbt</text>
+  <text x="95" y="263" class="note">Event / Violation types</text>
+  <text x="95" y="310" class="file">contract.mbt</text>
+  <text x="95" y="338" class="note">deterministic evaluator</text>
+  <text x="95" y="385" class="file">contract_test.mbt</text>
+  <text x="95" y="413" class="note">five executable scenarios</text>
+  <text x="95" y="460" class="file">moon.pkg</text>
+  <text x="95" y="488" class="note">package boundary</text>
+
+  <rect x="340" y="145" width="240" height="355" fill="#eafaf3" stroke="#55a887" class="card"/>
+  <text x="460" y="188" text-anchor="middle" class="folder">examples/</text>
+  <text x="375" y="235" class="file">python_data_agent.py</text>
+  <text x="375" y="263" class="note">framework-neutral fixture</text>
+  <text x="375" y="310" class="file">offline events</text>
+  <text x="375" y="338" class="note">no model or network calls</text>
+  <text x="375" y="385" class="file">JSON output</text>
+  <text x="375" y="413" class="note">easy to inspect in a terminal</text>
+
+  <rect x="620" y="145" width="240" height="355" fill="#fff8ed" stroke="#e6a33a" class="card"/>
+  <text x="740" y="188" text-anchor="middle" class="folder">docs/</text>
+  <text x="655" y="235" class="file">architecture.svg</text>
+  <text x="655" y="263" class="note">system boundary</text>
+  <text x="655" y="310" class="file">evaluation-flow.svg</text>
+  <text x="655" y="338" class="note">state and violation flow</text>
+  <text x="655" y="385" class="file">behavior-contract.md</text>
+  <text x="655" y="413" class="note">rules and non-goals</text>
+  <text x="655" y="460" class="file">decisions/</text>
+  <text x="655" y="488" class="note">scope decisions</text>
+
+  <rect x="900" y="145" width="240" height="355" fill="#fff0f0" stroke="#e36b6b" class="card"/>
+  <text x="1020" y="188" text-anchor="middle" class="folder">project root</text>
+  <text x="935" y="235" class="file">moon.mod</text>
+  <text x="935" y="263" class="note">published module metadata</text>
+  <text x="935" y="310" class="file">README.md</text>
+  <text x="935" y="338" class="note">install and verification</text>
+  <text x="935" y="385" class="file">.github/workflows/ci.yml</text>
+  <text x="935" y="413" class="note">check + test on every change</text>
+  <text x="935" y="460" class="file">LICENSE</text>
+  <text x="935" y="488" class="note">Apache-2.0</text>
+
+  <path d="M300 315 H335 M580 315 H615 M860 315 H895" stroke="#9fb3c8" stroke-width="3" stroke-dasharray="8 8"/>
+  <text x="600" y="555" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#52606d">The layout makes source, evidence, documentation, and release metadata easy to review separately.</text>
+</svg>

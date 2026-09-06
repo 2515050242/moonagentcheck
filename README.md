@@ -4,6 +4,16 @@
 
 moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；结果可输出为人类可读文本或 JSON，便于放进 CI。
 
+## 项目结构图
+
+![Figure 1: moonagentcheck project structure](docs/figure1-overview.svg)
+
+![moonagentcheck architecture](docs/architecture.svg)
+
+![event evaluation flow](docs/evaluation-flow.svg)
+
+![repository map](docs/repository-map.svg)
+
 ## 当前状态
 
 这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前版本已交付可发布的 MoonBit 核心库、Python 对照实现、离线 fixture 和 CI 检查。
