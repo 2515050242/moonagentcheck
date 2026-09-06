@@ -14,6 +14,13 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 
 ![仓库结构图](docs/repository-map.svg)
 
+## 参赛与工程文档
+
+- [项目申报书](docs/proposal.md)
+- [验收矩阵](docs/acceptance-matrix.md)
+- [推进路线](docs/roadmap.md)
+- [行为契约](docs/behavior-contract.md)
+
 ## 当前状态
 
 这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前版本已交付可发布的 MoonBit 核心库、Python 对照实现、离线 fixture 和 CI 检查。
