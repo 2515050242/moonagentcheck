@@ -6,7 +6,28 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 
 ## 当前状态
 
-这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前仓库先交付设计、一个 Python 参考实现和 MoonBit 核心实验；API、目录和行为规则会在真实用例验证后稳定下来。
+这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前版本已交付可发布的 MoonBit 核心库、Python 对照实现、离线 fixture 和 CI 检查。
+
+## 核心 API
+
+`Event::new(kind, tool, call_id, operation_id, ok)` 创建一条适配器事件；`evaluate(events, max_retries)` 返回按事件顺序排列的 `Violation`。当前检查规则包括：
+
+- `orphan-result`：结果没有对应调用。
+- `missing-result`：调用结束时没有结果。
+- `retry-limit`：逻辑操作超过重试上限。
+- `duplicate-side-effect`：同一逻辑写操作完成两次。
+- `write-without-call`：写入完成事件没有对应调用。
+- `duplicate-call-id`：事件流复用了调用 ID。
+
+所有检查都是确定性的，不会访问模型、网络或真实文件系统，适合放进 agent 的离线回归测试。
+
+## 本地验证
+
+```powershell
+moon check
+moon test
+python examples/python_data_agent.py
+```
 
 ## 计划中的三个场景
 
@@ -24,7 +45,7 @@ python examples/python_data_agent.py
 
 ## MoonBit 计划接口
 
-首版会稳定以下概念：`Event`、`Contract`、`Violation`、`RunReport` 和 `evaluate`。具体构造器和 `moon.pkg` 配置以实际安装的 MoonBit 工具链验证结果为准。
+当前稳定概念是 `Event`、`Violation` 和 `evaluate`。`Contract`、`RunReport` 和 CLI 会在事件格式和实际适配器案例稳定后继续演进。
 
 ## 边界
 

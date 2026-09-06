@@ -5,9 +5,14 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
   let pending : Array[String] = []
   let attempts : Map[String, Int] = Map([])
   let completed : Map[String, Bool] = Map([])
+  let resolved : Map[String, Bool] = Map([])
   for index, event in events {
     if event.kind == "call" {
+      if pending.contains(event.call_id) {
+        violations.push({ rule: "duplicate-call-id", event_index: index, message: event.call_id })
+      }
       pending.push(event.call_id)
+      resolved[event.call_id] = false
       match event.operation_id {
         Some(operation) => {
           let count = match attempts.get(operation) { Some(value) => value + 1; None => 1 }
@@ -21,10 +26,15 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
     } else if event.kind == "result" {
       if !pending.contains(event.call_id) {
         violations.push({ rule: "orphan-result", event_index: index, message: event.call_id })
+      } else {
+        resolved[event.call_id] = true
       }
     } else if event.kind == "write-complete" {
       match event.operation_id {
         Some(operation) => {
+          if !pending.contains(event.call_id) {
+            violations.push({ rule: "write-without-call", event_index: index, message: event.call_id })
+          }
           if completed.get(operation) is Some(true) {
             violations.push({ rule: "duplicate-side-effect", event_index: index, message: operation })
           }
@@ -32,6 +42,11 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
         }
         None => ()
       }
+    }
+  }
+  for index, call_id in pending {
+    if resolved.get(call_id) is Some(false) {
+      violations.push({ rule: "missing-result", event_index: index, message: call_id })
     }
   }
   violations
