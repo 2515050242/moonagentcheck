@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
-  <title id="title">moonagentcheck event evaluation flow</title>
-  <desc id="desc">A state-oriented flow showing calls, results, retries, writes and violations.</desc>
+  <title id="title">moonagentcheck 事件评估流程</title>
+  <desc id="desc">展示调用、结果、重试、写入和违规之间关系的状态流程图。</desc>
   <defs>
     <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
       <path d="M0,0 L12,6 L0,12 z" fill="#4d6bfe"/>
@@ -17,62 +17,62 @@
     </style>
   </defs>
   <rect width="1200" height="700" fill="#f7fbff"/>
-  <text x="60" y="62" class="title">event evaluation flow</text>
-  <text x="60" y="92" class="subtitle">Every violation is derived from an explicit event relationship.</text>
+  <text x="60" y="62" class="title">事件评估流程</text>
+  <text x="60" y="92" class="subtitle">每一条违规都来自明确的事件关系。</text>
 
   <rect x="60" y="150" width="210" height="105" class="event"/>
-  <text x="165" y="188" text-anchor="middle" class="node">call</text>
+  <text x="165" y="188" text-anchor="middle" class="node">调用</text>
   <text x="165" y="216" text-anchor="middle" class="detail">call_id + operation_id</text>
-  <text x="165" y="238" text-anchor="middle" class="detail">record attempt</text>
+  <text x="165" y="238" text-anchor="middle" class="detail">记录一次尝试</text>
 
   <rect x="350" y="150" width="210" height="105" class="event"/>
-  <text x="455" y="188" text-anchor="middle" class="node">result</text>
-  <text x="455" y="216" text-anchor="middle" class="detail">same call_id?</text>
-  <text x="455" y="238" text-anchor="middle" class="detail">resolve pending call</text>
+  <text x="455" y="188" text-anchor="middle" class="node">结果</text>
+  <text x="455" y="216" text-anchor="middle" class="detail">是否有相同 call_id？</text>
+  <text x="455" y="238" text-anchor="middle" class="detail">解析待处理调用</text>
 
   <rect x="640" y="150" width="210" height="105" class="ok"/>
-  <text x="745" y="188" text-anchor="middle" class="node">completed</text>
-  <text x="745" y="216" text-anchor="middle" class="detail">safe to continue</text>
-  <text x="745" y="238" text-anchor="middle" class="detail">or inspect next event</text>
+  <text x="745" y="188" text-anchor="middle" class="node">已完成</text>
+  <text x="745" y="216" text-anchor="middle" class="detail">可以继续执行</text>
+  <text x="745" y="238" text-anchor="middle" class="detail">或检查下一事件</text>
 
   <rect x="930" y="150" width="210" height="105" class="bad"/>
-  <text x="1035" y="188" text-anchor="middle" class="node">orphan-result</text>
-  <text x="1035" y="216" text-anchor="middle" class="detail">no matching call_id</text>
-  <text x="1035" y="238" text-anchor="middle" class="detail">record event index</text>
+  <text x="1035" y="188" text-anchor="middle" class="node">孤立结果</text>
+  <text x="1035" y="216" text-anchor="middle" class="detail">没有匹配的 call_id</text>
+  <text x="1035" y="238" text-anchor="middle" class="detail">记录事件索引</text>
 
   <line x1="270" y1="202" x2="345" y2="202" stroke="#4d6bfe" stroke-width="3" marker-end="url(#arrow)"/>
   <line x1="560" y1="202" x2="635" y2="202" stroke="#4d6bfe" stroke-width="3" marker-end="url(#arrow)"/>
   <line x1="560" y1="220" x2="925" y2="220" stroke="#e36b6b" stroke-width="3" marker-end="url(#arrow)"/>
-  <text x="745" y="138" text-anchor="middle" class="label">matching call</text>
-  <text x="745" y="280" text-anchor="middle" class="label">no matching call</text>
+  <text x="745" y="138" text-anchor="middle" class="label">匹配到调用</text>
+  <text x="745" y="280" text-anchor="middle" class="label">没有匹配调用</text>
 
   <rect x="60" y="360" width="210" height="105" class="event"/>
-  <text x="165" y="398" text-anchor="middle" class="node">retry call</text>
-  <text x="165" y="426" text-anchor="middle" class="detail">same operation_id</text>
-  <text x="165" y="448" text-anchor="middle" class="detail">increment attempts</text>
+  <text x="165" y="398" text-anchor="middle" class="node">重试调用</text>
+  <text x="165" y="426" text-anchor="middle" class="detail">相同 operation_id</text>
+  <text x="165" y="448" text-anchor="middle" class="detail">增加尝试次数</text>
 
   <rect x="350" y="360" width="210" height="105" class="ok"/>
-  <text x="455" y="398" text-anchor="middle" class="node">within limit</text>
-  <text x="455" y="426" text-anchor="middle" class="detail">continue evaluating</text>
-  <text x="455" y="448" text-anchor="middle" class="detail">deterministically</text>
+  <text x="455" y="398" text-anchor="middle" class="node">未超过限制</text>
+  <text x="455" y="426" text-anchor="middle" class="detail">继续确定性评估</text>
+  <text x="455" y="448" text-anchor="middle" class="detail">不会改变外部状态</text>
 
   <rect x="640" y="360" width="210" height="105" class="bad"/>
-  <text x="745" y="398" text-anchor="middle" class="node">retry-limit</text>
+  <text x="745" y="398" text-anchor="middle" class="node">超过重试限制</text>
   <text x="745" y="426" text-anchor="middle" class="detail">attempts &gt; max_retries</text>
-  <text x="745" y="448" text-anchor="middle" class="detail">record operation_id</text>
+  <text x="745" y="448" text-anchor="middle" class="detail">记录 operation_id</text>
 
   <rect x="930" y="360" width="210" height="105" class="bad"/>
-  <text x="1035" y="398" text-anchor="middle" class="node">side effect guard</text>
-  <text x="1035" y="426" text-anchor="middle" class="detail">write needs a call</text>
-  <text x="1035" y="448" text-anchor="middle" class="detail">duplicate needs detection</text>
+  <text x="1035" y="398" text-anchor="middle" class="node">副作用保护</text>
+  <text x="1035" y="426" text-anchor="middle" class="detail">写入必须先有调用</text>
+  <text x="1035" y="448" text-anchor="middle" class="detail">重复完成必须检测</text>
 
   <line x1="270" y1="412" x2="345" y2="412" stroke="#4d6bfe" stroke-width="3" marker-end="url(#arrow)"/>
   <line x1="560" y1="412" x2="635" y2="412" stroke="#4d6bfe" stroke-width="3" marker-end="url(#arrow)"/>
   <line x1="270" y1="430" x2="925" y2="430" stroke="#e36b6b" stroke-width="3" marker-end="url(#arrow)"/>
-  <text x="455" y="348" text-anchor="middle" class="label">count ≤ limit</text>
-  <text x="600" y="500" text-anchor="middle" class="label">count &gt; limit</text>
+  <text x="455" y="348" text-anchor="middle" class="label">次数 ≤ 限制</text>
+  <text x="600" y="500" text-anchor="middle" class="label">次数 &gt; 限制</text>
 
   <rect x="60" y="560" width="1080" height="66" rx="16" fill="#172b4d"/>
-  <text x="600" y="588" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#ffffff">At end of stream: unresolved calls become missing-result violations.</text>
-  <text x="600" y="610" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#c8d6e5">No network calls, model calls, or hidden timing assumptions are needed.</text>
+  <text x="600" y="588" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#ffffff">事件流结束时：未解析调用会变成“缺失结果”违规。</text>
+  <text x="600" y="610" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#c8d6e5">整个过程不需要网络、模型调用或隐藏的时间假设。</text>
 </svg>

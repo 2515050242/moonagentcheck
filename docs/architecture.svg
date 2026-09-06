@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
-  <title id="title">moonagentcheck architecture</title>
-  <desc id="desc">An adapter-neutral architecture from agent applications to deterministic contract reports.</desc>
+  <title id="title">moonagentcheck 系统架构</title>
+  <desc id="desc">从 Agent 应用到确定性行为契约报告的适配器无关架构。</desc>
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#f7fbff"/>
@@ -22,52 +22,52 @@
     </style>
   </defs>
   <rect width="1200" height="620" fill="url(#bg)"/>
-  <text x="60" y="64" class="title">moonagentcheck architecture</text>
-  <text x="60" y="94" class="subtitle">An adapter-neutral, deterministic behavior contract layer for Agent applications</text>
+  <text x="60" y="64" class="title">moonagentcheck 系统架构</text>
+  <text x="60" y="94" class="subtitle">面向 Agent 应用的适配器无关、确定性行为契约层</text>
 
   <rect x="60" y="150" width="250" height="310" fill="#ffffff" stroke="#9bb7d4" class="box"/>
-  <text x="185" y="195" text-anchor="middle" class="head">Agent applications</text>
+  <text x="185" y="195" text-anchor="middle" class="head">Agent 应用</text>
   <text x="185" y="235" text-anchor="middle" class="body">MoonBit Agent SDK</text>
-  <text x="185" y="272" text-anchor="middle" class="body">Python application</text>
-  <text x="185" y="309" text-anchor="middle" class="body">MCP / workflow client</text>
+  <text x="185" y="272" text-anchor="middle" class="body">Python 应用</text>
+  <text x="185" y="309" text-anchor="middle" class="body">MCP / workflow 客户端</text>
   <line x1="105" y1="350" x2="265" y2="350" stroke="#d9e2ec"/>
-  <text x="185" y="390" text-anchor="middle" class="small">The runtime remains owned</text>
-  <text x="185" y="412" text-anchor="middle" class="small">by the application.</text>
+  <text x="185" y="390" text-anchor="middle" class="small">运行时仍由应用自己负责</text>
+  <text x="185" y="412" text-anchor="middle" class="small">检查器不接管 Agent。</text>
 
   <rect x="380" y="150" width="250" height="310" fill="#f0f5ff" stroke="#7895ff" class="box"/>
-  <text x="505" y="195" text-anchor="middle" class="head">Event adapter</text>
+  <text x="505" y="195" text-anchor="middle" class="head">事件适配器</text>
   <text x="505" y="235" text-anchor="middle" class="body">Event::new(...)</text>
   <text x="505" y="272" text-anchor="middle" class="body">call / result</text>
   <text x="505" y="309" text-anchor="middle" class="body">operation_id</text>
   <line x1="425" y1="350" x2="585" y2="350" stroke="#b6c6ff"/>
-  <text x="505" y="390" text-anchor="middle" class="small">Normalize framework-specific</text>
-  <text x="505" y="412" text-anchor="middle" class="small">records into a small event model.</text>
+  <text x="505" y="390" text-anchor="middle" class="small">把不同框架的记录统一转换为</text>
+  <text x="505" y="412" text-anchor="middle" class="small">简洁的事件模型。</text>
 
   <rect x="700" y="150" width="250" height="310" fill="#fff8ed" stroke="#e6a33a" class="box"/>
-  <text x="825" y="195" text-anchor="middle" class="head">Contract evaluator</text>
+  <text x="825" y="195" text-anchor="middle" class="head">行为契约评估器</text>
   <text x="825" y="235" text-anchor="middle" class="body">evaluate(events, limit)</text>
-  <text x="825" y="272" text-anchor="middle" class="body">deterministic state scan</text>
-  <text x="825" y="309" text-anchor="middle" class="body">O(n) event evaluation</text>
+  <text x="825" y="272" text-anchor="middle" class="body">确定性状态扫描</text>
+  <text x="825" y="309" text-anchor="middle" class="body">O(n) 事件评估</text>
   <line x1="745" y1="350" x2="905" y2="350" stroke="#f3c778"/>
-  <text x="825" y="390" text-anchor="middle" class="small">No model, network, or real</text>
-  <text x="825" y="412" text-anchor="middle" class="small">tool is contacted.</text>
+  <text x="825" y="390" text-anchor="middle" class="small">不调用模型、网络或</text>
+  <text x="825" y="412" text-anchor="middle" class="small">真实工具。</text>
 
   <rect x="1020" y="150" width="120" height="310" fill="#eafaf3" stroke="#55a887" class="box"/>
-  <text x="1080" y="195" text-anchor="middle" class="head">Report</text>
-  <text x="1080" y="245" text-anchor="middle" class="body">Violation</text>
-  <text x="1080" y="282" text-anchor="middle" class="body">rule</text>
-  <text x="1080" y="319" text-anchor="middle" class="body">index</text>
-  <text x="1080" y="356" text-anchor="middle" class="body">message</text>
+  <text x="1080" y="195" text-anchor="middle" class="head">评估报告</text>
+  <text x="1080" y="245" text-anchor="middle" class="body">违规记录</text>
+  <text x="1080" y="282" text-anchor="middle" class="body">规则</text>
+  <text x="1080" y="319" text-anchor="middle" class="body">索引</text>
+  <text x="1080" y="356" text-anchor="middle" class="body">说明</text>
   <text x="1080" y="405" text-anchor="middle" class="small">CI /</text>
-  <text x="1080" y="425" text-anchor="middle" class="small">developer</text>
+  <text x="1080" y="425" text-anchor="middle" class="small">开发者</text>
 
   <line x1="310" y1="305" x2="375" y2="305" stroke="#4d6bfe" stroke-width="4" marker-end="url(#arrow)"/>
   <line x1="630" y1="305" x2="695" y2="305" stroke="#4d6bfe" stroke-width="4" marker-end="url(#arrow)"/>
   <line x1="950" y1="305" x2="1015" y2="305" stroke="#4d6bfe" stroke-width="4" marker-end="url(#arrow)"/>
-  <text x="342" y="286" text-anchor="middle" class="small">records</text>
-  <text x="662" y="286" text-anchor="middle" class="small">events</text>
-  <text x="982" y="286" text-anchor="middle" class="small">violations</text>
+  <text x="342" y="286" text-anchor="middle" class="small">记录</text>
+  <text x="662" y="286" text-anchor="middle" class="small">事件</text>
+  <text x="982" y="286" text-anchor="middle" class="small">违规</text>
 
   <rect x="60" y="520" width="1080" height="48" rx="14" fill="#172b4d"/>
-  <text x="600" y="550" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#ffffff">The project checks behavior at the event boundary; it does not replace the Agent runtime.</text>
+  <text x="600" y="550" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#ffffff">项目在事件边界检查行为，不替代 Agent 运行时。</text>
 </svg>

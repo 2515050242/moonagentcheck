@@ -6,13 +6,13 @@ moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用�
 
 ## 项目结构图
 
-![Figure 1: moonagentcheck project structure](docs/figure1-overview.svg)
+![图 1：moonagentcheck 项目结构](docs/figure1-overview.svg)
 
-![moonagentcheck architecture](docs/architecture.svg)
+![moonagentcheck 系统架构](docs/architecture.svg)
 
-![event evaluation flow](docs/evaluation-flow.svg)
+![事件评估流程](docs/evaluation-flow.svg)
 
-![repository map](docs/repository-map.svg)
+![仓库结构图](docs/repository-map.svg)
 
 ## 当前状态
 
