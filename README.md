@@ -1,50 +1,10 @@
 # moonagentcheck
 
-给 agent 的工具行为写可重复测试。
+给 agent 的工具调用做一遍离线体检。
 
-moonagentcheck 计划提供一个 MoonBit 核心库：把 agent 的工具调用记录规范化为事件流，用行为契约检查调用与结果是否配对、是否满足资源前置条件、是否超过重试上限、是否发生重复副作用。测试使用受控 fixture，不访问真实服务；当前 API 返回结构化 `Violation` 数组，JSON 报告仍在计划中。
+这个项目目前很小：MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用没有结果”“结果找不到调用”“重试太多次”“同一个写操作完成了两遍”这类问题。它不连接模型，也不替你做沙箱；它只检查已经观察到的事件。
 
-## 项目结构图
-
-![图 1：moonagentcheck 项目结构](docs/figure1-overview.svg)
-
-![moonagentcheck 系统架构](docs/architecture.svg)
-
-![事件评估流程](docs/evaluation-flow.svg)
-
-![仓库结构图](docs/repository-map.svg)
-
-## 参赛与工程文档
-
-- [项目申报书](docs/proposal.md)
-- [验收矩阵](docs/acceptance-matrix.md)
-- [推进路线](docs/roadmap.md)
-- [行为契约](docs/behavior-contract.md)
-- [来源、许可证与适配说明](docs/provenance.md)
-- [工程风险审计记录](docs/audit.md)
-
-## 当前状态
-
-这是 2026 年 9 月 MoonBit 黑客松的开发中项目。当前版本已交付可发布的 MoonBit 核心库、Python 对照实现、离线 fixture 和 CI 检查。
-
-当前已发布版本为 `0.1.4`；master 上的审计修复记录在 `0.1.5` 开发版本中，发布前会继续经过 CI 和 Mooncakes 预检。
-
-## 核心 API
-
-`Event::new(kind, tool, call_id, operation_id, ok)` 创建一条适配器事件；`evaluate(events, max_retries)` 返回按事件顺序排列的 `Violation`。当前检查规则包括：
-
-- `orphan-result`：结果没有对应调用。
-- `missing-result`：调用结束时没有结果。
-- `retry-limit`：逻辑操作超过重试上限。
-- `duplicate-side-effect`：同一逻辑写操作完成两次。
-- `write-without-call`：写入完成事件没有对应调用。
-- `duplicate-call-id`：事件流复用了调用 ID。
-- `duplicate-result`：同一个调用收到了多次结果。
-- `missing-operation-id`：写入完成事件没有逻辑操作 ID。
-
-所有检查都是确定性的，不会访问模型、网络或真实文件系统，适合放进 agent 的离线回归测试。
-
-## 本地验证
+## 先跑起来
 
 ```powershell
 moon check
@@ -52,28 +12,23 @@ moon test
 python examples/python_data_agent.py
 ```
 
-## 计划中的三个场景
+`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。Python 文件是一个离线对照 fixture，不是第二套核心实现。
 
-1. 数据处理 agent：工具返回缺失列错误时，测试 agent 是否把错误误当成成功。
-2. 仓库助手：没有先读取目标文件，或没有获得对应授权时，测试是否阻止写入完成事件。
-3. 工单处理 agent：暂时错误触发重试时，测试重试上限和重复写回。
+## 现在的边界
 
-## 快速试用 Python 参考实现
+- 检查是确定性的，不访问网络、真实服务或真实文件系统；
+- `call_id` 标识一次工具调用，`operation_id` 标识一次可能重试的逻辑操作；
+- 当前结果是结构化数组，JSON 报告和 CLI 还没有稳定下来；
+- 事件格式和规则会先跟着真实场景长出来，再考虑更大的适配层。
 
-```powershell
-python examples/python_data_agent.py
-```
+## 仓库里的几条线
 
-参考实现只用于验证事件模型和场景，不替代 MoonBit 核心。它不连接模型、网络或真实文件系统。
+代码在 `src/`，可运行的离线样例在 `examples/`。`docs/` 里留着选题、验收和决策记录——它们是开发过程的旁证，不是使用手册。想看整体关系，可以从 [行为契约](docs/behavior-contract.md) 和 [推进路线](docs/roadmap.md) 开始。
 
-## MoonBit 计划接口
+## 正在推进
 
-当前稳定概念是 `Event`、`Violation` 和 `evaluate`。`Contract`、`RunReport` 和 CLI 会在事件格式和实际适配器案例稳定后继续演进。
+下一步先让 `Violation` 更容易被机器消费，然后把数据处理、仓库助手和工单处理三个场景逐个变成回归 fixture。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设，不用为了“看起来完成”扩大范围。
 
-## 边界
-
-首版不实现 LLM 推理、操作系统沙箱、完整 MCP 传输、云端工作台或通用 JSON Schema 解析器。行为检查验证观察到的事件，不提供实时安全隔离。
-
-## 许可证
+## 许可
 
 Apache-2.0，见 [LICENSE](LICENSE)。
