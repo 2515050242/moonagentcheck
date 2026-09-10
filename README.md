@@ -12,13 +12,13 @@ moon test
 python examples/python_data_agent.py
 ```
 
-`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。Python 文件是一个离线对照 fixture，不是第二套核心实现。
+`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC009`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是一个离线对照 fixture，不是第二套核心实现。
 
 ## 现在的边界
 
 - 检查是确定性的，不访问网络、真实服务或真实文件系统；
 - `call_id` 标识一次工具调用，`operation_id` 标识一次可能重试的逻辑操作；
-- 当前结果是结构化数组，JSON 报告和 CLI 还没有稳定下来；
+- 当前结果是结构化数组和稳定规则代码；JSON 报告和 CLI 还没有稳定下来；
 - 事件格式和规则会先跟着真实场景长出来，再考虑更大的适配层。
 
 ## 仓库里的几条线
