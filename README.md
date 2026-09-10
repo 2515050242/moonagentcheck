@@ -23,7 +23,7 @@ python examples/python_data_agent.py
 
 ## 仓库里的几条线
 
-代码在 `src/`，可运行的离线样例在 `examples/`。`docs/` 里留着选题、验收和决策记录——它们是开发过程的旁证，不是使用手册。想看整体关系，可以从 [行为契约](docs/behavior-contract.md) 和 [推进路线](docs/roadmap.md) 开始。
+代码在 `src/`，可运行的离线样例在 `examples/`。`docs/` 里留着选题、验收和决策记录——它们是开发过程的旁证，不是使用手册。想看整体关系，可以从 [架构说明](docs/architecture.md)、[行为契约](docs/behavior-contract.md) 和 [开发记录](docs/development-log.md) 开始。
 
 ## 当前进度
 
