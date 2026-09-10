@@ -16,7 +16,7 @@ jobs:
       - name: Test
         run: moon test
 
-  python-example:
+  smoke-fixtures:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run deterministic Python fixture
-        run: python examples/python_data_agent.py
+      - name: Run deterministic Python fixtures
+        run: |
+          python examples/python_data_agent.py
+          python examples/python_repository_agent.py
 
