@@ -5,6 +5,7 @@ pub struct Event {
   tool : String
   call_id : String
   operation_id : String?
+  /// Whether the tool reported success. A reported failure is a contract violation.
   ok : Bool?
 } derive(Debug, Eq)
 

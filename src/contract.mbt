@@ -30,6 +30,9 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
         violations.push({ rule: "duplicate-result", event_index: index, message: event.call_id })
       } else {
         resolved[event.call_id] = true
+        if event.ok is Some(false) {
+          violations.push({ rule: "failed-result", event_index: index, message: event.call_id })
+        }
       }
     } else if event.kind == "write-complete" {
       match event.operation_id {

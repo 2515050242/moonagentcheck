@@ -39,6 +39,8 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
                 violations.append(f"duplicate-result:{event.call_id}")
             else:
                 resolved.add(event.call_id)
+                if event.ok is False:
+                    violations.append(f"failed-result:{event.call_id}")
         elif event.kind == "write-complete":
             if event.call_id not in calls:
                 violations.append(f"write-without-call:{event.call_id}")
@@ -60,7 +62,9 @@ def main() -> None:
         Event("write-complete", "ticket_write", "c3", "reply-42"),
         Event("write-complete", "ticket_write", "c4", "reply-42"),
     ]
-    print(json.dumps({"violations": evaluate(events)}, ensure_ascii=False, indent=2))
+    violations = evaluate(events)
+    assert "failed-result:c1" in violations, "a missing-column error must not be accepted as success"
+    print(json.dumps({"violations": violations}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

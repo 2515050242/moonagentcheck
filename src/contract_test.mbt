@@ -29,9 +29,21 @@ test "enforces retry limit" {
     Event::new("call", "ticket", "call-2", Some("reply"), None),
   ]
   let report = evaluate(events, 1)
-  assert_true(report.length() == 2)
-  assert_true(report[0].rule == "retry-limit")
-  assert_true(report[1].rule == "missing-result")
+  assert_true(report.length() == 3)
+  assert_true(report[0].rule == "failed-result")
+  assert_true(report[1].rule == "retry-limit")
+  assert_true(report[2].rule == "missing-result")
+}
+
+test "reports failed tool results" {
+  let events = [
+    Event::new("call", "data", "call-1", Some("load"), None),
+    Event::new("result", "data", "call-1", Some("load"), Some(false)),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "failed-result")
+  assert_true(report[0].message == "call-1")
 }
 
 test "requires a call before a write" {
