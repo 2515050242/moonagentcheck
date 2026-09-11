@@ -10,6 +10,8 @@
 moon check
 moon test
 python examples/python_data_agent.py
+python examples/python_repository_agent.py
+python examples/python_ticket_agent.py
 ```
 
 `Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC009`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是一个离线对照 fixture，不是第二套核心实现。
@@ -27,7 +29,7 @@ python examples/python_data_agent.py
 
 ## 当前进度
 
-第一轮核心能力已经落地：`Violation` 有稳定错误码，失败工具结果会被报告，数据处理和仓库助手各有一个离线 fixture，GitHub Actions 会跑 MoonBit 与 Python 两组检查。接下来再评估 JSON 报告和工单重试场景，不为了堆功能提前扩大范围。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
+第一轮核心能力已经落地：`Violation` 有稳定错误码，失败工具结果会被报告，数据处理、仓库助手和工单重试各有一个离线 fixture，GitHub Actions 会跑 MoonBit 与 Python 两组检查。接下来再评估 JSON 报告，不为了堆功能提前扩大范围。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
 
 ## 许可
 

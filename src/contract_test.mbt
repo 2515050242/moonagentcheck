@@ -35,6 +35,19 @@ test "enforces retry limit" {
   assert_true(report[2].rule == "missing-result")
 }
 
+test "ticket retry writes back only once" {
+  let events = [
+    Event::new("call", "update_ticket", "ticket-1", Some("reply-42"), None),
+    Event::new("result", "update_ticket", "ticket-1", Some("reply-42"), Some(false)),
+    Event::new("call", "update_ticket", "ticket-2", Some("reply-42"), None),
+    Event::new("result", "update_ticket", "ticket-2", Some("reply-42"), Some(true)),
+    Event::new("write-complete", "update_ticket", "ticket-2", Some("reply-42"), Some(true)),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "failed-result")
+}
+
 test "reports failed tool results" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
