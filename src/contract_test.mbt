@@ -46,6 +46,17 @@ test "reports failed tool results" {
   assert_true(report[0].message == "call-1")
 }
 
+test "data agent missing-column result stays failed" {
+  let events = [
+    Event::new("call", "read_csv", "csv-1", Some("inspect-columns"), None),
+    Event::new("result", "read_csv", "csv-1", Some("inspect-columns"), Some(false)),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "failed-result")
+  assert_true(violation_code(report[0]) == "AGC009")
+}
+
 test "requires a call before a write" {
   let events = [
     Event::new("write-complete", "repo", "write-1", Some("edit"), Some(true)),
