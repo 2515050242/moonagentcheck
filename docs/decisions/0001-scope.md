@@ -1,12 +1,12 @@
-# 0001：先做行为契约，不做通用 agent 框架
+# 0001：本次项目不重新实现 Agent 框架，先做行为契约
 
 ## 背景
 
-Mooncakes 已有 LLM 客户端、多个 agent loop、`moonbitlang/workflow`、MCP SDK/Inspector、事件回放和 OpenTelemetry agent 遥测项目。直接实现又一个 agent 框架会产生明显重合。
+Mooncakes 已有 LLM 客户端、多个 agent loop、`moonbitlang/workflow`、MCP SDK/Inspector、事件回放和 OpenTelemetry agent 遥测项目。本次项目如果直接实现又一个 Agent 框架，会产生明显重合，也会模糊参赛项目真正要解决的问题。
 
 ## 决策
 
-首版只实现跨框架的工具行为检查：受控 fixture、事件关联、重试和重复副作用诊断。核心逻辑由 MoonBit 提供，Python 仅作为接入示例。
+本次项目只实现跨框架的工具行为检查：受控 fixture、事件关联、失败结果识别、重试和重复副作用诊断。核心逻辑由 MoonBit 提供，Python 仅作为接入示例；具体 Agent runtime、MCP transport 和模型 SDK 不进入核心层。
 
 ## 取舍
 

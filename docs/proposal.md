@@ -42,7 +42,7 @@ Agent / LLM / MCP / Workflow
     可复现的违规与回归报告
 ```
 
-项目不重新实现 Agent runtime，也不与 workflow、replay 或 telemetry 竞争。它只约束事件边界，因此可以作为这些项目的测试组件使用。
+本次项目不选择重新实现 Agent 框架，也不把项目绑定到某一个 MCP 或模型 SDK。MoonAgentCheck 定位为 Agent 运行结果之后的一层轻量行为验证，可以作为 workflow、replay、telemetry 或具体 Agent runtime 的测试组件使用。
 
 这个生态位的重要性在于 Agent 的错误可能产生真实副作用：重复写数据库、重复提交工单、覆盖文件、误发消息或在失败后继续执行。模型回复有时可以人工修正，但已经发生的副作用很难恢复。一个不依赖模型和网络的检查器，可以把这类问题提前变成 CI 中可复现的失败。
 
@@ -92,7 +92,7 @@ Agent / LLM / MCP / Workflow
 
 ## 实现路径与技术理解
 
-项目没有采用“重新实现一个完整 Agent 框架”的路径，也没有绑定某个单一 SDK。实现路径是：
+本次项目明确不走“重新实现一个完整 Agent 框架”的路径，也不绑定某个单一 SDK。实现路径是：
 
 1. 用 adapter 将具体框架的调用日志转换为小型事件模型；
 2. 用 `call_id` 关联一次具体调用，用 `operation_id` 关联一次业务动作；
