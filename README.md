@@ -2,7 +2,7 @@
 
 给 agent 的工具调用做一遍离线体检。
 
-这个项目目前很小：MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用没有结果”“结果找不到调用”“重试太多次”“同一个写操作完成了两遍”这类问题。它不连接模型，也不替你做沙箱；它只检查已经观察到的事件。
+MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用没有结果”“结果找不到调用”“重试太多次”“失败或未确认的调用之后仍然写入”“同一个写操作完成了两遍”这类问题。它不连接模型，也不替你做沙箱；它只检查已经观察到的事件。
 
 ## 先跑起来
 
@@ -14,7 +14,7 @@ python examples/python_repository_agent.py
 python examples/python_ticket_agent.py
 ```
 
-`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC009`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是一个离线对照 fixture，不是第二套核心实现。
+`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。写入完成事件必须关联到返回明确成功结果的调用；失败或结果状态未知都会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC010`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
 
 ## 现在的边界
 

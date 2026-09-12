@@ -20,6 +20,7 @@ pub fn rule_code(rule : String) -> String {
     "duplicate-result" => "AGC007"
     "missing-operation-id" => "AGC008"
     "failed-result" => "AGC009"
+    "write-without-successful-result" => "AGC010"
     _ => "unknown"
   }
 }

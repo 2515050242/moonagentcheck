@@ -19,6 +19,7 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
     pending: set[str] = set()
     calls: set[str] = set()
     resolved: set[str] = set()
+    successful: set[str] = set()
     attempts: dict[str, int] = {}
     completed: set[str] = set()
 
@@ -41,9 +42,13 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
                 resolved.add(event.call_id)
                 if event.ok is False:
                     violations.append(f"failed-result:{event.call_id}")
+                elif event.ok is True:
+                    successful.add(event.call_id)
         elif event.kind == "write-complete":
             if event.call_id not in calls:
                 violations.append(f"write-without-call:{event.call_id}")
+            elif event.call_id not in successful:
+                violations.append(f"write-without-successful-result:{event.call_id}")
             if not event.operation_id:
                 violations.append(f"missing-operation-id:{event.call_id}")
             if event.operation_id in completed:
@@ -64,6 +69,7 @@ def main() -> None:
     ]
     violations = evaluate(events)
     assert "failed-result:c1" in violations, "a missing-column error must not be accepted as success"
+    assert "write-without-successful-result:c1" not in violations
     print(json.dumps({"violations": violations}, ensure_ascii=False, indent=2))
 
 

@@ -13,6 +13,7 @@
 | 事件结束时完整性 | `missing-result` 规则 | `detects orphan and missing results` | 增加空事件流和多调用场景 |
 | 结果唯一性 | `duplicate-result` 规则 | `detects duplicate results` | 增加乱序结果和失败结果场景 |
 | 写入关联完整性 | `missing-operation-id` 规则 | `requires an operation id for a write` | 接入 adapter 时保留业务操作 ID |
+| 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败与未知结果的写入回归测试 | 增加关联 ID 不一致的输入检查 |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
 | Python 接入参考 | `examples/python_data_agent.py` | 本地 Python 运行 | 增加通用 adapter 和 JSON 输出 |
 | CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |

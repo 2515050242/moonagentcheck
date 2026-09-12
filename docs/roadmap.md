@@ -10,6 +10,7 @@
 - 添加 GitHub Actions、Python fixture 和中文 SVG 审核图；
 - 添加申报书、验收矩阵和工程决策记录。
 - 数据处理 Agent：缺失列失败结果不会被当成成功，并有离线回归 fixture。
+- 写入前置条件：失败或未知结果不能被记作成功写入，规则码 `AGC010` 已加入 MoonBit 与 Python 离线回归。
 
 ## 比赛阶段
 

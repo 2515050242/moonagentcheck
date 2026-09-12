@@ -3,14 +3,27 @@ test "detects duplicate side effect" {
   let events = [
     Event::new("call", "ticket", "call-1", Some("reply-42"), None),
     Event::new("result", "ticket", "call-1", Some("reply-42"), Some(true)),
-    Event::new("write-complete", "ticket", "call-1", Some("reply-42"), Some(true)),
-    Event::new("write-complete", "ticket", "call-1", Some("reply-42"), Some(true)),
+    Event::new(
+      "write-complete",
+      "ticket",
+      "call-1",
+      Some("reply-42"),
+      Some(true),
+    ),
+    Event::new(
+      "write-complete",
+      "ticket",
+      "call-1",
+      Some("reply-42"),
+      Some(true),
+    ),
   ]
   let report = evaluate(events, 2)
   assert_true(report.length() == 1)
   assert_true(report[0].rule == "duplicate-side-effect")
 }
 
+///|
 test "detects orphan and missing results" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
@@ -22,6 +35,7 @@ test "detects orphan and missing results" {
   assert_true(report[1].rule == "missing-result")
 }
 
+///|
 test "enforces retry limit" {
   let events = [
     Event::new("call", "ticket", "call-1", Some("reply"), None),
@@ -35,19 +49,39 @@ test "enforces retry limit" {
   assert_true(report[2].rule == "missing-result")
 }
 
+///|
 test "ticket retry writes back only once" {
   let events = [
     Event::new("call", "update_ticket", "ticket-1", Some("reply-42"), None),
-    Event::new("result", "update_ticket", "ticket-1", Some("reply-42"), Some(false)),
+    Event::new(
+      "result",
+      "update_ticket",
+      "ticket-1",
+      Some("reply-42"),
+      Some(false),
+    ),
     Event::new("call", "update_ticket", "ticket-2", Some("reply-42"), None),
-    Event::new("result", "update_ticket", "ticket-2", Some("reply-42"), Some(true)),
-    Event::new("write-complete", "update_ticket", "ticket-2", Some("reply-42"), Some(true)),
+    Event::new(
+      "result",
+      "update_ticket",
+      "ticket-2",
+      Some("reply-42"),
+      Some(true),
+    ),
+    Event::new(
+      "write-complete",
+      "update_ticket",
+      "ticket-2",
+      Some("reply-42"),
+      Some(true),
+    ),
   ]
   let report = evaluate(events, 2)
   assert_true(report.length() == 1)
   assert_true(report[0].rule == "failed-result")
 }
 
+///|
 test "reports failed tool results" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
@@ -59,10 +93,17 @@ test "reports failed tool results" {
   assert_true(report[0].message == "call-1")
 }
 
+///|
 test "data agent missing-column result stays failed" {
   let events = [
     Event::new("call", "read_csv", "csv-1", Some("inspect-columns"), None),
-    Event::new("result", "read_csv", "csv-1", Some("inspect-columns"), Some(false)),
+    Event::new(
+      "result",
+      "read_csv",
+      "csv-1",
+      Some("inspect-columns"),
+      Some(false),
+    ),
   ]
   let report = evaluate(events, 2)
   assert_true(report.length() == 1)
@@ -70,6 +111,7 @@ test "data agent missing-column result stays failed" {
   assert_true(violation_code(report[0]) == "AGC009")
 }
 
+///|
 test "requires a call before a write" {
   let events = [
     Event::new("write-complete", "repo", "write-1", Some("edit"), Some(true)),
@@ -79,6 +121,7 @@ test "requires a call before a write" {
   assert_true(report[0].rule == "write-without-call")
 }
 
+///|
 test "accepts a completed call" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
@@ -87,6 +130,7 @@ test "accepts a completed call" {
   assert_true(evaluate(events, 2).length() == 0)
 }
 
+///|
 test "detects duplicate call ids" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
@@ -98,6 +142,7 @@ test "detects duplicate call ids" {
   assert_true(report[0].rule == "duplicate-call-id")
 }
 
+///|
 test "detects duplicate results" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),
@@ -109,6 +154,7 @@ test "detects duplicate results" {
   assert_true(report[0].rule == "duplicate-result")
 }
 
+///|
 test "requires an operation id for a write" {
   let events = [
     Event::new("call", "repo", "call-1", None, None),
@@ -118,4 +164,48 @@ test "requires an operation id for a write" {
   let report = evaluate(events, 2)
   assert_true(report.length() == 1)
   assert_true(report[0].rule == "missing-operation-id")
+}
+
+///|
+test "does not accept a write after a failed tool result" {
+  let events = [
+    Event::new("call", "update_ticket", "ticket-1", Some("reply-42"), None),
+    Event::new(
+      "result",
+      "update_ticket",
+      "ticket-1",
+      Some("reply-42"),
+      Some(false),
+    ),
+    Event::new(
+      "write-complete",
+      "update_ticket",
+      "ticket-1",
+      Some("reply-42"),
+      Some(true),
+    ),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 2)
+  assert_true(report[0].rule == "failed-result")
+  assert_true(report[1].rule == "write-without-successful-result")
+  assert_true(violation_code(report[1]) == "AGC010")
+}
+
+///|
+test "does not accept a write while the call result is unknown" {
+  let events = [
+    Event::new("call", "update_ticket", "ticket-1", Some("reply-42"), None),
+    Event::new("result", "update_ticket", "ticket-1", Some("reply-42"), None),
+    Event::new(
+      "write-complete",
+      "update_ticket",
+      "ticket-1",
+      Some("reply-42"),
+      Some(true),
+    ),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "write-without-successful-result")
 }

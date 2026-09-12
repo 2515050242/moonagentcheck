@@ -9,6 +9,7 @@ pub struct Event {
   ok : Bool?
 } derive(Debug, Eq)
 
+///|
 pub fn Event::new(
   kind : String,
   tool : String,
@@ -16,7 +17,7 @@ pub fn Event::new(
   operation_id : String?,
   ok : Bool?,
 ) -> Event {
-  { kind, tool, call_id, operation_id, ok }
+  { kind, tool, call_id, operation_id, ok, }
 }
 
 ///|

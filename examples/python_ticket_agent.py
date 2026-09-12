@@ -16,6 +16,15 @@ def ticket_agent_events() -> list[Event]:
 def main() -> None:
     violations = evaluate(ticket_agent_events(), max_retries=2)
     assert violations == ["failed-result:ticket-1"]
+    blocked_write = evaluate([
+        Event("call", "update_ticket", "ticket-1", "reply-42"),
+        Event("result", "update_ticket", "ticket-1", "reply-42", ok=False),
+        Event("write-complete", "update_ticket", "ticket-1", "reply-42", ok=True),
+    ])
+    assert blocked_write == [
+        "failed-result:ticket-1",
+        "write-without-successful-result:ticket-1",
+    ]
     print("ticket agent fixture passed")
 
 
