@@ -18,6 +18,7 @@
 
 - `fca34de`：增加 `AGC001`–`AGC009` 稳定错误码，未知规则保留 `unknown` 回退。
 - `535d416`：把失败工具结果纳入核心检查，并补数据处理场景的回归测试。
+- 本轮：增加 `AGC011`，拒绝工具名或 `operation_id` 与同一 `call_id` 不一致的 result，并让该调用不能成为成功结果。
 - `306cef1`：修复无效的 MoonBit CI action，改用官方 CLI 安装脚本。
 - `1e7c087`：刷新 README、CHANGELOG 和审计记录，让公开材料与代码、测试结果一致。
 

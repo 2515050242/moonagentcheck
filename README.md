@@ -14,7 +14,7 @@ python examples/python_repository_agent.py
 python examples/python_ticket_agent.py
 ```
 
-`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。写入完成事件必须关联到返回明确成功结果的调用；失败或结果状态未知都会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC010`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
+`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成必须关联到返回明确成功结果的调用；失败、状态未知或关联不一致都会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC011`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
 
 ## 现在的边界
 

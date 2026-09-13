@@ -52,8 +52,19 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
             event_index: index,
             message: event.call_id,
           })
-        Some(_) =>
-          if resolved.get(event.call_id) is Some(state) && state != Pending {
+        Some(call) =>
+          if call.tool != event.tool || call.operation_id != event.operation_id {
+            // A result with the right call ID but different metadata cannot
+            // establish a successful call. Preserve that fact even if an
+            // otherwise valid result appeared earlier in the stream.
+            resolved[event.call_id] = Failed
+            violations.push({
+              rule: "result-call-mismatch",
+              event_index: index,
+              message: event.call_id,
+            })
+          } else if resolved.get(event.call_id) is Some(state) &&
+            state != Pending {
             violations.push({
               rule: "duplicate-result",
               event_index: index,

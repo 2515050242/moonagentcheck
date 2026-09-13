@@ -21,6 +21,7 @@ pub fn rule_code(rule : String) -> String {
     "missing-operation-id" => "AGC008"
     "failed-result" => "AGC009"
     "write-without-successful-result" => "AGC010"
+    "result-call-mismatch" => "AGC011"
     _ => "unknown"
   }
 }
