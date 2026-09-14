@@ -12,6 +12,7 @@
 - 增加仓库助手的读后写 smoke fixture；
 - 修复 CI 中失效的 MoonBit action，改用官方 CLI 安装脚本。
 - 增加 `result-call-mismatch` / `AGC011`，拒绝工具名或 `operation_id` 不一致的工具 result。
+- 增加命名场景套件 API，批量评估多条相互隔离的 trace 并保留逐场景结果。
 
 ## 0.1.4 - 2026-09-06
 

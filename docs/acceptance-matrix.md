@@ -15,6 +15,7 @@
 | 写入关联完整性 | `missing-operation-id` 规则 | `requires an operation id for a write` | 接入 adapter 时保留业务操作 ID |
 | 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
+| 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios` | `suite_test.mbt` 检查隔离、顺序与标签 | 接入真实 trace fixture 并导出汇总报告 |
 | Python 接入参考 | `examples/python_data_agent.py` | 本地 Python 运行 | 增加通用 adapter 和 JSON 输出 |
 | CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
