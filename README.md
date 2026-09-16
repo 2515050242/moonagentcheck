@@ -16,11 +16,23 @@ python examples/python_ticket_agent.py
 
 `Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组，并继续保持不限制工具的兼容行为。需要配置策略时，使用 `EvaluationPolicy::new(max_retries, tool_allowlist)` 和 `evaluate_with_policy(events, policy)`：`None` 表示不限制工具，`Some([])` 表示拒绝所有工具；allowlist 以外的调用报告 `tool-not-allowed`（`AGC012`），并继续检查其他规则。要在一次回归中检查多条独立轨迹，可用 `Scenario::new(name, events)` 和 `evaluate_scenarios(scenarios, max_retries)`；结果按输入顺序保留场景名称、通过状态和违规明细，每条轨迹单独评估。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成必须关联到返回明确成功结果的调用；失败或状态未知会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC012`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
 
+## JSON 报告
+
+`scenario_results_json(results)` 将 `evaluate_scenarios` 的结果转成紧凑、稳定的 JSON 数组。场景和违规项均保留输入/评估顺序；每个违规项固定包含 `code`、`rule`、`event_index` 与 `message`，适合 CI 采集和后续聚合。
+
+```moonbit
+let results = evaluate_scenarios(scenarios, 2)
+let report = scenario_results_json(results)
+// [{"name":"read-ok","passed":true,"violations":[]}]
+```
+
+报告使用 MoonBit 标准库 JSON 编码器，因此引号、反斜线、换行、控制字符和中文字符串都会被正确表示；API 不读写文件，也不引入 CLI。
+
 ## 现在的边界
 
 - 检查是确定性的，不访问网络、真实服务或真实文件系统；
 - `call_id` 标识一次工具调用，`operation_id` 标识一次可能重试的逻辑操作；
-- 当前结果是结构化数组和稳定规则代码；JSON 报告和 CLI 还没有稳定下来；
+- 当前结果提供结构化数组、稳定规则代码和稳定 JSON 报告；不提供 CLI；
 - 事件格式和规则会先跟着真实场景长出来，再考虑更大的适配层。
 
 ## 仓库里的几条线

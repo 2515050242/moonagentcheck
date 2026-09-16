@@ -26,3 +26,32 @@ pub fn rule_code(rule : String) -> String {
     _ => "unknown"
   }
 }
+
+///|
+/// Serialize evaluated scenarios as a compact, deterministic JSON report.
+///
+/// The report preserves the scenario and violation order supplied by
+/// `evaluate_scenarios`. Each violation contains its stable `code`, rule,
+/// event index, and human-readable message. JSON string escaping is delegated
+/// to MoonBit's standard `Json::stringify` implementation.
+pub fn scenario_results_json(results : Array[ScenarioResult]) -> String {
+  let report = Json::array(
+    results.map(result => {
+      Json::object({
+        "name": Json(result.name),
+        "passed": Json(result.passed),
+        "violations": Json::array(
+          result.violations.map(violation => {
+            Json::object({
+              "code": Json(violation_code(violation)),
+              "rule": Json(violation.rule),
+              "event_index": Json(violation.event_index),
+              "message": Json(violation.message),
+            })
+          }),
+        ),
+      })
+    }),
+  )
+  report.stringify()
+}
