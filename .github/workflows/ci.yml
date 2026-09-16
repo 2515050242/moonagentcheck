@@ -35,4 +35,5 @@ jobs:
           python examples/python_data_agent.py
           python examples/python_repository_agent.py
           python examples/python_ticket_agent.py
+          python examples/python_adapter.py
 

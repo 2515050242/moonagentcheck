@@ -19,7 +19,7 @@ Agent 应用的难点不只在于模型能否生成正确文本，更在于它�
 
 MoonAgentCheck 将 Agent 的工具调用记录规范化为事件流，再通过确定性的状态扫描检查行为契约。它不运行模型、不连接真实服务、不接管 Agent runtime，因此可以放进本地测试和 CI，复现同一段行为并得到同样的违规报告。
 
-项目当前已经发布 `2515050242/moonagentcheck@0.1.4`，核心检查、MoonBit 测试、Python 对照 fixture、CI 和中文结构图均已进入公开仓库。比赛阶段将在此基础上继续补齐结构化报告和三个完整场景。
+项目当前已经发布 `2515050242/moonagentcheck@0.1.4`，核心检查、MoonBit 测试、Python 对照 fixture、CI 和中文结构图均已进入公开仓库。当前开发线进一步补齐了可复用轨迹工具、输入诊断、场景聚合、JSON 汇总和通用 Python adapter。
 
 ## 项目价值与生态定位
 
@@ -62,17 +62,19 @@ Agent / LLM / MCP / Workflow
 - 检查同一事件流复用调用 ID 的 `duplicate-call-id`；
 - 检查同一个调用收到多次结果的 `duplicate-result`；
 - 检查写入完成事件缺少逻辑操作 ID 的 `missing-operation-id`；
-- 提供八个 MoonBit 可执行测试；
+- 提供 Trace 构造器、事件统计、输入预检和规则/套件级聚合 API；
+- 提供场景明细 JSON 与套件汇总 JSON，字段顺序稳定，便于 CI 消费；
+- 提供覆盖数据处理、仓库助手、工单重试的离线场景和通用 Python 记录 adapter；
+- 提供三十二个 MoonBit 可执行测试；
 - 提供不访问模型、网络和真实文件系统的 Python 对照 fixture；
-- 提供 GitHub Actions，自动执行 `moon check` 和 `moon test`；
+- 提供 GitHub Actions，自动执行 `moon check`、`moon test` 和 Python adapter smoke test；
 - 提供中文 SVG 架构图、事件流程图和仓库结构图，降低项目审核成本。
 
-### 比赛阶段计划交付
+### 后续迭代计划
 
-- 增加结构化 JSON 报告，便于 CI 和 Python adapter 消费；
-- 增加三个完整可复现场景：数据处理 Agent、仓库助手 Agent、工单处理 Agent；
-- 为缺失字段、重复调用、无结果写入、边界重试次数增加测试；
-- 增加一个简洁的 Python adapter，把常见调用记录转换成 `Event`；
+- 增加更多真实框架的字段映射 adapter，并保持核心事件模型稳定；
+- 为乱序结果、跨场景隔离和更复杂的重试轨迹增加 fixture；
+- 在 CI 中增加违规阈值门禁和汇总报告归档；
 - 在 README 中提供从安装 Mooncakes 包到执行测试的完整示例；
 - 保持核心评估器无网络、无模型、无隐式时间依赖；
 - 发布一份真实开发记录和验收矩阵，让每个功能都能对应到源码、测试和运行命令。
@@ -119,5 +121,5 @@ Agent / LLM / MCP / Workflow
 
 ## 项目推进状态
 
-当前公开版本为 `0.1.4`。已经完成源码包、Mooncakes 发布、CI、核心测试、Python fixture 和审核用 SVG 图。下一阶段重点是结构化报告、三个场景 fixture、Python adapter 和验收矩阵。提交历史会继续按真实功能拆分，避免空提交和只修改时间戳的提交。
+当前公开版本为 `0.1.4`，GitHub 开发线已完成核心规则、三类离线场景、结构化报告、Trace 工具、输入预检、规则聚合、Python adapter 和验收证据。提交历史继续按真实功能拆分，避免空提交和只修改时间戳的提交。
 

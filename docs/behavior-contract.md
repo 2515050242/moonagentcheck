@@ -2,7 +2,7 @@
 
 moonagentcheck 只判断适配器实际提交给它的事件。事件不完整或无法建立关联时，报告应返回 `inconclusive` 或明确的输入错误，而不是默认为通过。
 
-当前版本的十一条契约：
+当前版本的十二条契约：
 
 1. 每个工具结果必须对应一个已经出现的调用 ID。
 2. 同一个逻辑操作的调用次数不能超过配置的重试上限。
@@ -17,6 +17,12 @@ moonagentcheck 只判断适配器实际提交给它的事件。事件不完整�
 11. 工具 result 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `result-call-mismatch`（`AGC011`），且该调用不得评估为成功。
 12. 配置了工具 allowlist 时，每个 call 的工具名必须在其中；不在列表中为 `tool-not-allowed`（`AGC012`），但不会跳过同一事件流的其他规则检查。未配置 allowlist 不限制工具；显式空列表拒绝所有工具。
 
+## 输入与回归接口
+
+- `Trace` 提供不依赖具体 Agent 框架的事件流构造方法；
+- `validate_events` 在语义评估前检查空标识、未知事件类型和非法重试策略；
+- `evaluate_scenarios` 让多条轨迹保持独立；
+- `summarize_violations` 与 `summarize_scenarios` 把逐事件证据聚合到规则和场景层。
 “逻辑操作 ID”由接入应用提供。两个写入内容相同不自动等于重复，避免工具误把合法的两次写入判成冲突。
 
 ## 不在首版保证的事情

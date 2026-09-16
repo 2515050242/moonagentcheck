@@ -12,13 +12,19 @@ MoonAgentCheck 不把自己做成 Agent runtime。它更像一段放在 runtime 
           │  call_id：哪一次调用
           │  operation_id：哪一个业务动作
           ▼
+     validate_events 预检
+          │
+          ▼
      evaluate 一次扫描
           │
           ├── Violation(rule, event_index, message)
           └── rule_code / violation_code
                     │
                     ▼
-       MoonBit test + Python fixture + CI
+       场景/规则聚合 → JSON 报告
+                    │
+                    ▼
+       MoonBit test + Python adapter + CI
 ```
 
 这条线刻意没有模型、网络、真实工具和隐式时间条件。它让错误能够在没有服务凭证的环境里复现，也让“为什么失败”可以回到某一条事件和某一条规则。
@@ -36,11 +42,14 @@ MoonAgentCheck 不把自己做成 Agent runtime。它更像一段放在 runtime 
 
 - `src/model.mbt`：事件和违规数据模型；
 - `src/contract.mbt`：确定性状态扫描；
-- `src/report.mbt`：稳定规则编码；
+- `src/trace.mbt`：可回放轨迹构造和事件统计；
+- `src/validation.mbt`：适配器输入预检；
+- `src/analysis.mbt`：规则与场景聚合；
+- `src/report.mbt`：稳定规则编码和 JSON 报告；
 - `src/*_test.mbt`：规则、边界和报告编码测试；
-- `examples/`：数据处理与仓库助手的离线对照 fixture；
+- `examples/`：三个场景 fixture 和通用 Python 记录适配器；
 - `.github/workflows/ci.yml`：MoonBit 和 Python 的公开验证入口。
 
 ## 有意留下的空位
 
-JSON 报告、CLI、完整 MCP transport 和真实 Agent adapter 没有被提前塞进核心层。它们将来可以接在 `Violation` 之后，但只有在事件格式和使用场景稳定后才进入主线。这是质量边界，不是遗漏的隐藏功能。
+CLI、完整 MCP transport 和真实 Agent runtime 没有被提前塞进核心层。JSON 报告、Trace 工具和 Python adapter 已经接在 `Violation` 之后，但仍保持无网络、无模型、无真实副作用的质量边界。这是质量边界，不是遗漏的隐藏功能。

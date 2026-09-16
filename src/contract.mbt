@@ -18,7 +18,10 @@ pub fn evaluate_with_policy(
   events : Array[Event],
   policy : EvaluationPolicy,
 ) -> Array[Violation] {
-  let violations : Array[Violation] = []
+  let violations : Array[Violation] = validate_events(
+    events,
+    policy.max_retries,
+  )
   let pending : Array[String] = []
   let calls : Map[String, Event] = Map([])
   let attempts : Map[String, Int] = Map([])

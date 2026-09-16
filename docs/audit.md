@@ -19,20 +19,22 @@
 - 已把失败工具结果纳入契约检查，并用数据处理 fixture 固化“失败不能当成功”。
 - 已增加仓库助手的读后写 smoke fixture，并让它进入 CI。
 - 已将 CI 的失效 MoonBit action 替换为官方 CLI 安装脚本。
+- 已把场景评估扩展为 Trace 构造、输入预检、事件统计和规则/套件聚合，避免只靠核心扫描器堆叠规则。
+- 已加入通用 Python 记录 adapter，缺字段、非法类型和未知事件会在进入评估器前失败，并进入 CI smoke test。
 
 ## 当前验证
 
 ```text
 moon check  → 通过
-moon test   → 11 个测试通过
-Python fixtures → 数据处理与仓库助手均通过
+moon test   → 32 个测试通过
+Python fixtures → 三个场景与通用 adapter 均通过
 ```
 
 GitHub Actions 当前的 MoonBit 与 Python 两个 job 均通过。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
 
 ## 尚未宣称的能力
 
-- 尚未实现 JSON 报告，因此 README 和申报书将它列为比赛阶段计划；
+- JSON 报告已覆盖场景明细和套件汇总；尚未实现 CLI 文件输出；
 - 尚未提供性能基准，因此不声称优于其他实现；
 - 尚未接入真实 Agent、MCP 服务或云端系统，因此示例全部是离线 fixture；
 - Mooncakes 已发布版本仍是 `0.1.4`，当前 GitHub 版本为 `0.1.5` 开发线；发布前仍需单独确认包内容和公开联系方式范围。

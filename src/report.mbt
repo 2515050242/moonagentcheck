@@ -23,6 +23,9 @@ pub fn rule_code(rule : String) -> String {
     "write-without-successful-result" => "AGC010"
     "result-call-mismatch" => "AGC011"
     "tool-not-allowed" => "AGC012"
+    "invalid-event" => "AGC013"
+    "unknown-event-kind" => "AGC014"
+    "invalid-policy" => "AGC015"
     _ => "unknown"
   }
 }
@@ -54,4 +57,24 @@ pub fn scenario_results_json(results : Array[ScenarioResult]) -> String {
     }),
   )
   report.stringify()
+}
+
+///|
+/// Serialize the aggregate view used by CI gates and dashboards.
+pub fn suite_summary_json(summary : SuiteSummary) -> String {
+  Json::object({
+    "scenario_count": Json(summary.scenario_count),
+    "passed_count": Json(summary.passed_count),
+    "failed_count": Json(summary.failed_count),
+    "violation_count": Json(summary.violation_count),
+    "rules": Json::array(
+      summary.rules.map(rule => {
+        Json::object({
+          "code": Json(rule.code),
+          "rule": Json(rule.rule),
+          "count": Json(rule.count),
+        })
+      }),
+    ),
+  }).stringify()
 }

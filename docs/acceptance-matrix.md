@@ -16,8 +16,11 @@
 | 写入关联完整性 | `missing-operation-id` 规则 | `requires an operation id for a write` | 接入 adapter 时保留业务操作 ID |
 | 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
-| 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios` | `suite_test.mbt` 检查隔离、顺序与标签 | 接入真实 trace fixture 并导出汇总报告 |
-| Python 接入参考 | `examples/python_data_agent.py` | 本地 Python 运行 | 增加通用 adapter 和 JSON 输出 |
+| 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios`、`suite_summary_json` | `suite_test.mbt` 与 `analysis_test.mbt` 检查隔离、顺序和汇总 | 增加违规阈值门禁 |
+| 轨迹构造与统计 | `Trace` builder、`TraceStats`、`trace_stats` | `trace_test.mbt` 检查 call/result/write 和状态计数 | 提供框架 adapter 的字段映射 |
+| 输入预检 | `validate_events` / `AGC013`–`AGC015` | 空字段、未知事件、负重试策略测试 | 增加错误定位和 adapter 诊断 |
+| 违规聚合 | `RuleSummary`、`SuiteSummary` | `analysis_test.mbt` 检查规则计数和套件汇总 | 接入 CI 门禁与阈值 |
+| Python 接入参考 | `examples/python_adapter.py`、三个场景 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
 | CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
 | 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |
