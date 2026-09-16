@@ -17,6 +17,8 @@ python examples/python_ticket_agent.py
 `Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组，并继续保持不限制工具的兼容行为。需要配置策略时，使用 `EvaluationPolicy::new(max_retries, tool_allowlist)` 和 `evaluate_with_policy(events, policy)`：`None` 表示不限制工具，`Some([])` 表示拒绝所有工具；allowlist 以外的调用报告 `tool-not-allowed`（`AGC012`），并继续检查其他规则。要在一次回归中检查多条独立轨迹，可用 `Scenario::new(name, events)` 和 `evaluate_scenarios(scenarios, max_retries)`；结果按输入顺序保留场景名称、通过状态和违规明细，每条轨迹单独评估。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成必须关联到返回明确成功结果的调用；失败或状态未知会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC015`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
 适配器也可以使用 `Trace::new()`、`trace.call(...)`、`trace.result(...)` 和 `trace.write_complete(...)` 逐步构造可回放事件流；`trace_stats(...)` 提供事件、调用、结果、写入以及成功/失败/未知结果的统计。`summarize_violations(...)` 和 `summarize_scenarios(...)` 可将逐事件证据聚合到规则与套件层。输入预检会报告空 `call_id`、空工具名、未知事件类型和负重试策略（`AGC013`–`AGC015`）。
 
+在更完整的接入场景中，`TraceQuery` 负责按工具、调用、业务操作和事件窗口检索；`Replay` 支持逐步回放、暂停、检查点和前缀验证；`diff_events` 比较期望轨迹与实际轨迹；`collect_metrics` 汇总工具和业务操作风险；`ScenarioCatalog`、`SuiteRunner` 和 `QualityGate` 则提供带标签回归、运行历史和 CI 门禁。
+
 ## JSON 报告
 
 `scenario_results_json(results)` 将 `evaluate_scenarios` 的结果转成紧凑、稳定的 JSON 数组。场景和违规项均保留输入/评估顺序；每个违规项固定包含 `code`、`rule`、`event_index` 与 `message`，适合 CI 采集和后续聚合。
@@ -45,6 +47,8 @@ let report = scenario_results_json(results)
 ## 当前进度
 
 当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。MoonBit 测试覆盖核心规则和工具层，Python 侧保留三个真实问题 fixture，并在 CI 中执行通用 adapter smoke test。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
+
+当前开发版本为 `0.2.0`：MoonBit 非测试源码约 4,242 行，配套测试 66 个。行数只是规模审计数据，是否通过仍取决于代码是否真实可运行、功能边界是否清楚以及材料是否与仓库一致。
 
 ## 许可
 

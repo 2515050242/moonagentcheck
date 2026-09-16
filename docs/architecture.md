@@ -43,7 +43,15 @@ MoonAgentCheck 不把自己做成 Agent runtime。它更像一段放在 runtime 
 - `src/model.mbt`：事件和违规数据模型；
 - `src/contract.mbt`：确定性状态扫描；
 - `src/trace.mbt`：可回放轨迹构造和事件统计；
+- `src/trace_query.mbt`：按工具、调用、操作和窗口查询轨迹；
 - `src/validation.mbt`：适配器输入预检；
+- `src/diagnostics.mbt`：严重级别、建议和诊断 JSON；
+- `src/policy.mbt`：策略预设、权限决策和策略审计；
+- `src/replay.mbt`：逐步回放、检查点和前缀验证；
+- `src/diff.mbt`：期望轨迹与实际轨迹的字段级差分；
+- `src/metrics.mbt`：工具和 operation 维度的风险统计；
+- `src/scenarios.mbt` / `src/catalog.mbt`：内置场景和可检索目录；
+- `src/quality_gate.mbt` / `src/runner.mbt`：CI 门禁与套件运行历史；
 - `src/analysis.mbt`：规则与场景聚合；
 - `src/report.mbt`：稳定规则编码和 JSON 报告；
 - `src/*_test.mbt`：规则、边界和报告编码测试；
@@ -53,3 +61,5 @@ MoonAgentCheck 不把自己做成 Agent runtime。它更像一段放在 runtime 
 ## 有意留下的空位
 
 CLI、完整 MCP transport 和真实 Agent runtime 没有被提前塞进核心层。JSON 报告、Trace 工具和 Python adapter 已经接在 `Violation` 之后，但仍保持无网络、无模型、无真实副作用的质量边界。这是质量边界，不是遗漏的隐藏功能。
+
+模块之间保持单向依赖：模型和扫描器不依赖报告；查询、诊断、差分和指标只消费事件/违规；目录、运行器和门禁组合这些能力服务于回归，不反向改变核心规则。

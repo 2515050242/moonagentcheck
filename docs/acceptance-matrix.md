@@ -20,6 +20,10 @@
 | 轨迹构造与统计 | `Trace` builder、`TraceStats`、`trace_stats` | `trace_test.mbt` 检查 call/result/write 和状态计数 | 提供框架 adapter 的字段映射 |
 | 输入预检 | `validate_events` / `AGC013`–`AGC015` | 空字段、未知事件、负重试策略测试 | 增加错误定位和 adapter 诊断 |
 | 违规聚合 | `RuleSummary`、`SuiteSummary` | `analysis_test.mbt` 检查规则计数和套件汇总 | 接入 CI 门禁与阈值 |
+| 轨迹检索与回放 | `TraceQuery`、`Replay`、检查点 | `trace_query_test.mbt`、`replay_test.mbt` | 接入真实日志查看器 |
+| 期望/实际差分 | `diff_events`、字段级 `EventDiff` | `diff_test.mbt` 检查新增、删除和元数据变化 | 增加跨版本 fixture |
+| 工具与操作指标 | `collect_metrics`、风险统计 | `metrics_test.mbt` 检查成功率和重复写入 | 输出长期趋势 |
+| 策略与 CI 门禁 | `PolicyProfile`、`QualityGate`、`SuiteRunner` | `policy_test.mbt`、`quality_gate_test.mbt`、`runner_test.mbt` | 增加报告归档 |
 | Python 接入参考 | `examples/python_adapter.py`、三个场景 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
 | CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
