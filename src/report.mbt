@@ -22,6 +22,7 @@ pub fn rule_code(rule : String) -> String {
     "failed-result" => "AGC009"
     "write-without-successful-result" => "AGC010"
     "result-call-mismatch" => "AGC011"
+    "tool-not-allowed" => "AGC012"
     _ => "unknown"
   }
 }

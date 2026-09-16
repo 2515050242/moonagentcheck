@@ -27,3 +27,21 @@ pub struct Violation {
   event_index : Int
   message : String
 } derive(Debug, Eq)
+
+///|
+/// Configuration for an evaluation run.
+///
+/// When `tool_allowlist` is `None`, calls to every tool are permitted. An
+/// explicit empty allowlist permits no tools.
+pub struct EvaluationPolicy {
+  max_retries : Int
+  tool_allowlist : Array[String]?
+}
+
+///|
+pub fn EvaluationPolicy::new(
+  max_retries : Int,
+  tool_allowlist : Array[String]?,
+) -> EvaluationPolicy {
+  { max_retries, tool_allowlist, }
+}

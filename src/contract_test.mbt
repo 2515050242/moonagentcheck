@@ -256,3 +256,44 @@ test "does not accept a write while the call result is unknown" {
   assert_true(report.length() == 1)
   assert_true(report[0].rule == "write-without-successful-result")
 }
+
+///|
+test "policy allows calls in its tool allowlist" {
+  let events = [
+    Event::new("call", "read_file", "call-1", Some("inspect"), None),
+    Event::new("result", "read_file", "call-1", Some("inspect"), Some(true)),
+  ]
+  let policy = EvaluationPolicy::new(2, Some(["read_file"]))
+  assert_true(evaluate_with_policy(events, policy).length() == 0)
+}
+
+///|
+test "policy rejects disallowed tools and continues other checks" {
+  let events = [Event::new("call", "write_file", "call-1", Some("write"), None)]
+  let policy = EvaluationPolicy::new(2, Some(["read_file"]))
+  let report = evaluate_with_policy(events, policy)
+  assert_true(report.length() == 2)
+  assert_true(report[0].rule == "tool-not-allowed")
+  assert_true(violation_code(report[0]) == "AGC012")
+  assert_true(report[1].rule == "missing-result")
+}
+
+///|
+test "an empty tool allowlist rejects every tool" {
+  let events = [
+    Event::new("call", "read_file", "call-1", Some("inspect"), None),
+    Event::new("result", "read_file", "call-1", Some("inspect"), Some(true)),
+  ]
+  let report = evaluate_with_policy(events, EvaluationPolicy::new(2, Some([])))
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "tool-not-allowed")
+}
+
+///|
+test "legacy evaluate remains unrestricted" {
+  let events = [
+    Event::new("call", "unlisted_tool", "call-1", Some("inspect"), None),
+    Event::new("result", "unlisted_tool", "call-1", Some("inspect"), Some(true)),
+  ]
+  assert_true(evaluate(events, 2).length() == 0)
+}

@@ -9,6 +9,15 @@ priv enum ResultState {
 ///|
 /// Evaluate a deterministic event sequence against basic tool-call contracts.
 pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
+  evaluate_with_policy(events, EvaluationPolicy::new(max_retries, None))
+}
+
+///|
+/// Evaluate an event sequence using retry and optional tool-permission policy.
+pub fn evaluate_with_policy(
+  events : Array[Event],
+  policy : EvaluationPolicy,
+) -> Array[Violation] {
   let violations : Array[Violation] = []
   let pending : Array[String] = []
   let calls : Map[String, Event] = Map([])
@@ -17,6 +26,17 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
   let resolved : Map[String, ResultState] = Map([])
   for index, event in events {
     if event.kind == "call" {
+      match policy.tool_allowlist {
+        Some(allowlist) =>
+          if !allowlist.contains(event.tool) {
+            violations.push({
+              rule: "tool-not-allowed",
+              event_index: index,
+              message: event.tool,
+            })
+          }
+        None => ()
+      }
       if calls.get(event.call_id) is Some(_) {
         violations.push({
           rule: "duplicate-call-id",
@@ -34,7 +54,7 @@ pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
             None => 1
           }
           attempts[operation] = count
-          if count > max_retries {
+          if count > policy.max_retries {
             violations.push({
               rule: "retry-limit",
               event_index: index,

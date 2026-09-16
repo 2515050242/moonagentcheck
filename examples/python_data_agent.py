@@ -13,7 +13,20 @@ class Event:
     ok: bool | None = None
 
 
+@dataclass(frozen=True)
+class EvaluationPolicy:
+    max_retries: int = 2
+    tool_allowlist: frozenset[str] | None = None
+
+
 def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
+    """Compatibility entry point with no tool allowlist restriction."""
+    return evaluate_with_policy(events, EvaluationPolicy(max_retries))
+
+
+def evaluate_with_policy(
+    events: list[Event], policy: EvaluationPolicy
+) -> list[str]:
     """Return contract violations without contacting a model or a real tool."""
     violations: list[str] = []
     pending: set[str] = set()
@@ -25,13 +38,18 @@ def evaluate(events: list[Event], max_retries: int = 2) -> list[str]:
 
     for event in events:
         if event.kind == "call":
+            if (
+                policy.tool_allowlist is not None
+                and event.tool not in policy.tool_allowlist
+            ):
+                violations.append(f"tool-not-allowed:{event.tool}")
             if event.call_id in calls:
                 violations.append(f"duplicate-call-id:{event.call_id}")
             calls[event.call_id] = event
             pending.add(event.call_id)
             if event.operation_id:
                 attempts[event.operation_id] = attempts.get(event.operation_id, 0) + 1
-                if attempts[event.operation_id] > max_retries:
+                if attempts[event.operation_id] > policy.max_retries:
                     violations.append(f"retry-limit:{event.operation_id}")
         elif event.kind == "result":
             call = calls.get(event.call_id)
@@ -89,6 +107,14 @@ def main() -> None:
         Event("call", "read_csv", "match-3", "inspect-columns"),
         Event("result", "read_csv", "match-3", "inspect-columns", ok=True),
     ]) == []
+    assert evaluate_with_policy(
+        [Event("call", "write_csv", "policy-1", "write")],
+        EvaluationPolicy(tool_allowlist=frozenset({"read_csv"})),
+    ) == ["tool-not-allowed:write_csv", "missing-result:policy-1"]
+    assert evaluate_with_policy(
+        [Event("call", "read_csv", "policy-2", "read")],
+        EvaluationPolicy(tool_allowlist=frozenset()),
+    ) == ["tool-not-allowed:read_csv", "missing-result:policy-2"]
     print(json.dumps({"violations": violations}, ensure_ascii=False, indent=2))
 
 
