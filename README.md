@@ -9,10 +9,13 @@ MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用
 ```powershell
 moon check
 moon test
+moon run main
 python examples/python_data_agent.py
 python examples/python_repository_agent.py
 python examples/python_ticket_agent.py
 ```
+
+`moon run main` 是可直接运行的 MoonBit 验收演示：它构造一个读取后写入的事件轨迹，故意重复完成同一写操作，并输出稳定的场景报告与工具指标。演示会断言重复副作用产生 `AGC004`，因此若核心行为回归，命令会以失败退出；GitHub Actions 也会运行此演示。
 
 `Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组，并继续保持不限制工具的兼容行为。需要配置策略时，使用 `EvaluationPolicy::new(max_retries, tool_allowlist)` 和 `evaluate_with_policy(events, policy)`：`None` 表示不限制工具，`Some([])` 表示拒绝所有工具；allowlist 以外的调用报告 `tool-not-allowed`（`AGC012`），并继续检查其他规则。要在一次回归中检查多条独立轨迹，可用 `Scenario::new(name, events)` 和 `evaluate_scenarios(scenarios, max_retries)`；结果按输入顺序保留场景名称、通过状态和违规明细，每条轨迹单独评估。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成必须关联到返回明确成功结果的调用；失败或状态未知会产生 `AGC010`。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC015`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
 适配器也可以使用 `Trace::new()`、`trace.call(...)`、`trace.result(...)` 和 `trace.write_complete(...)` 逐步构造可回放事件流；`trace_stats(...)` 提供事件、调用、结果、写入以及成功/失败/未知结果的统计。`summarize_violations(...)` 和 `summarize_scenarios(...)` 可将逐事件证据聚合到规则与套件层。输入预检会报告空 `call_id`、空工具名、未知事件类型和负重试策略（`AGC013`–`AGC015`）。

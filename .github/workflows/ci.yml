@@ -21,6 +21,8 @@ jobs:
         run: moon check
       - name: Test
         run: moon test
+      - name: Run MoonBit acceptance demo
+        run: moon run main
 
   smoke-fixtures:
     runs-on: ubuntu-latest
