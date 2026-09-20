@@ -286,7 +286,23 @@ pub fn QualityGate::check_catalog(
   catalog : ScenarioCatalog,
   max_retries : Int,
 ) -> GateDecision {
-  let results = evaluate_catalog(catalog, max_retries)
+  gate.check_catalog_with_policy(
+    catalog,
+    EvaluationPolicy::new(max_retries, None),
+  )
+}
+
+///|
+/// Check every catalog entry with an explicit evaluation policy.
+///
+/// The legacy retry-only overload remains unrestricted for compatibility; this
+/// entry point keeps a catalog gate aligned with policy-aware suite evaluation.
+pub fn QualityGate::check_catalog_with_policy(
+  gate : QualityGate,
+  catalog : ScenarioCatalog,
+  policy : EvaluationPolicy,
+) -> GateDecision {
+  let results = evaluate_catalog_with_policy(catalog, policy)
   let scenario_results : Array[ScenarioResult] = []
   for result in results {
     scenario_results.push({

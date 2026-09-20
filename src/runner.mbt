@@ -284,7 +284,7 @@ fn record_for_outcome(sequence : Int, outcome : RunOutcome) -> RunRecord {
 ///|
 pub fn SuiteRunner::run(runner : SuiteRunner, config : RunConfig) -> RunOutcome {
   let scenarios = scenarios_for_config(runner.catalog, config)
-  let results = evaluate_scenarios(scenarios, config.max_retries)
+  let results = evaluate_scenarios_with_policy(scenarios, config.policy)
   let summary = summarize_scenarios(results)
   let diagnostics = outcome_diagnostics(results)
   let gate = QualityGate::for_regression().check_suite(results)
@@ -340,7 +340,7 @@ pub fn SuiteRunner::run_events(
   policy : EvaluationPolicy,
 ) -> RunOutcome {
   let scenario = Scenario::new(name, events)
-  let results = evaluate_scenarios([scenario], policy.max_retries)
+  let results = evaluate_scenarios_with_policy([scenario], policy)
   let summary = summarize_scenarios(results)
   let diagnostics = outcome_diagnostics(results)
   let gate = QualityGate::for_library().check_events(events, policy)

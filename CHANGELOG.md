@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 增加策略感知的多场景与目录评估 API；`SuiteRunner` 现在完整传递工具 allowlist，避免回归套件意外放宽权限检查。
+
 - 增加 `duplicate-result` 和 `missing-operation-id` 行为检查；
 - 增加重复调用、重复结果和缺少操作 ID 的回归测试；
 - CI 增加 Python 对照示例的可运行验证；

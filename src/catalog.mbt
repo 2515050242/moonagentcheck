@@ -159,7 +159,16 @@ pub fn ScenarioCatalog::evaluate(
   catalog : ScenarioCatalog,
   max_retries : Int,
 ) -> Array[ScenarioResult] {
-  evaluate_scenarios(catalog.scenarios(), max_retries)
+  catalog.evaluate_with_policy(EvaluationPolicy::new(max_retries, None))
+}
+
+///|
+/// Evaluate every catalog scenario with one explicit policy.
+pub fn ScenarioCatalog::evaluate_with_policy(
+  catalog : ScenarioCatalog,
+  policy : EvaluationPolicy,
+) -> Array[ScenarioResult] {
+  evaluate_scenarios_with_policy(catalog.scenarios(), policy)
 }
 
 ///|
@@ -168,7 +177,20 @@ pub fn ScenarioCatalog::evaluate_tag(
   tag : String,
   max_retries : Int,
 ) -> Array[ScenarioResult] {
-  evaluate_scenarios(catalog.scenarios_with_tag(tag), max_retries)
+  catalog.evaluate_tag_with_policy(
+    tag,
+    EvaluationPolicy::new(max_retries, None),
+  )
+}
+
+///|
+/// Evaluate tagged catalog scenarios with one explicit policy.
+pub fn ScenarioCatalog::evaluate_tag_with_policy(
+  catalog : ScenarioCatalog,
+  tag : String,
+  policy : EvaluationPolicy,
+) -> Array[ScenarioResult] {
+  evaluate_scenarios_with_policy(catalog.scenarios_with_tag(tag), policy)
 }
 
 ///|
@@ -185,9 +207,21 @@ pub fn evaluate_catalog(
   catalog : ScenarioCatalog,
   max_retries : Int,
 ) -> Array[CatalogResult] {
+  evaluate_catalog_with_policy(
+    catalog,
+    EvaluationPolicy::new(max_retries, None),
+  )
+}
+
+///|
+/// Evaluate catalog entries while preserving catalog metadata and one policy.
+pub fn evaluate_catalog_with_policy(
+  catalog : ScenarioCatalog,
+  policy : EvaluationPolicy,
+) -> Array[CatalogResult] {
   let results : Array[CatalogResult] = []
   for entry in catalog.entries {
-    let violations = evaluate(entry.scenario.events, max_retries)
+    let violations = evaluate_with_policy(entry.scenario.events, policy)
     results.push({
       name: entry.name(),
       owner: entry.owner,

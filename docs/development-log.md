@@ -43,3 +43,9 @@
 ## 当前工作方法
 
 每个功能先有一个能说明问题的事件序列，再有 MoonBit 规则和测试，最后才补 Python fixture 或 CI。发现假设不成立时，优先修正规则和测试，不用增加一层空抽象。后续提交继续沿用 `feat`、`fix`、`test`、`docs` 前缀，但提交信息只描述实际发生的变化。
+
+## 策略穿透多场景回归
+
+- 本轮：补齐 `evaluate_scenarios_with_policy`，并让场景目录、质量门禁和 `SuiteRunner` 传递完整 `EvaluationPolicy`；此前它们只传递重试上限，会在回归批次中丢失工具 allowlist。
+- 新增允许/拒绝场景、标签选择和单条运行的 MoonBit 回归，确保只读策略下的 `write_file` 保留 `AGC012`，而允许的读取轨迹不受其他场景影响。
+- 这项修复不扩张到策略 DSL、外部授权或 Agent runtime；它只使已有离线策略在用户实际调用的套件入口与单轨入口一致。

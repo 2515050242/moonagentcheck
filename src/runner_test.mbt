@@ -60,3 +60,48 @@ test "run configurations describe selectors and aggregate outcomes" {
   assert_true(run_outcomes_failed_names([one, two]).length() > 0)
   assert_true(run_outcomes_summary([two]).scenario_count == 1)
 }
+
+///|
+test "suite runner applies policy to all selected run modes" {
+  let catalog = ScenarioCatalog::new()
+  assert_true(
+    catalog.add_scenario(
+      Scenario::new("read", [
+        Event::new("call", "read_file", "r1", Some("read"), None),
+        Event::new("result", "read_file", "r1", Some("read"), Some(true)),
+      ]),
+      ["read"],
+      "test",
+      "allowed read",
+    ),
+  )
+  assert_true(
+    catalog.add_scenario(
+      Scenario::new("write", [
+        Event::new("call", "write_file", "w1", Some("write"), None),
+        Event::new("result", "write_file", "w1", Some("write"), Some(true)),
+      ]),
+      ["write"],
+      "test",
+      "denied write",
+    ),
+  )
+  let runner = SuiteRunner::new(catalog)
+  let policy = EvaluationPolicy::new(1, Some(["read_file"]))
+  let all = runner.run_all("all", policy)
+  assert_true(all.passed_names() == ["read"])
+  assert_true(all.failed_names() == ["write"])
+  assert_true(all.diagnostic_codes().contains("AGC012"))
+  let tagged = runner.run_tag("writes", policy, "write")
+  assert_true(tagged.failed_names() == ["write"])
+  let single = runner.run_events(
+    "single-write",
+    [
+      Event::new("call", "write_file", "w2", Some("write"), None),
+      Event::new("result", "write_file", "w2", Some("write"), Some(true)),
+    ],
+    policy,
+  )
+  assert_true(single.failed_names() == ["single-write"])
+  assert_true(single.diagnostic_codes() == ["AGC012"])
+}

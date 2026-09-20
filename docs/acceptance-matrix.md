@@ -7,7 +7,7 @@
 | MoonBit 为主要实现语言 | `src/*.mbt`、`moon.mod` | `moon check` | 保持核心规则在 MoonBit 中实现 |
 | 包可发布 | `moon.mod`、Mooncakes 版本 `0.1.4` | `moon publish --dry-run` / `moon publish` | 发布比赛截止前版本 |
 | 调用与结果配对 | `src/contract.mbt` 的 `result-call-mismatch` / `AGC011` | 工具名不匹配、`operation_id` 不匹配与完全匹配的 MoonBit/Python 回归 | 增加乱序结果边界 |
-| 可配置工具策略 | `EvaluationPolicy`、`evaluate_with_policy`、`tool-not-allowed` / `AGC012` | allowlist 允许、拒绝、空列表及旧 API 兼容的 MoonBit/Python 回归 | 增加 adapter 权限来源 |
+| 可配置工具策略 | `EvaluationPolicy`、`evaluate_with_policy`、`evaluate_scenarios_with_policy`、`tool-not-allowed` / `AGC012` | allowlist 允许、拒绝、空列表、策略感知套件与旧 API 兼容的 MoonBit/Python 回归 | 增加 adapter 权限来源 |
 | 重试次数限制 | `attempts` 状态表 | `enforces retry limit` | 增加 0、1、最大值边界 |
 | 副作用防重复 | `completed` 状态表 | `detects duplicate side effect` | 增加不同 operation_id 对照 |
 | 写入前置调用 | `write-without-call` 规则 | `requires a call before a write` | 增加授权字段 adapter |

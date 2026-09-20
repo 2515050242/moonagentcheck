@@ -57,3 +57,40 @@ test "catalog tag selection stays independent" {
     ).contains("ticket"),
   )
 }
+
+///|
+test "catalog policy evaluation retains metadata and allowlist failures" {
+  let catalog = ScenarioCatalog::new()
+  assert_true(
+    catalog.add_scenario(
+      Scenario::new("allowed", [
+        Event::new("call", "read_file", "read-1", Some("read"), None),
+        Event::new("result", "read_file", "read-1", Some("read"), Some(true)),
+      ]),
+      ["read"],
+      "test",
+      "allowed read",
+    ),
+  )
+  assert_true(
+    catalog.add_scenario(
+      Scenario::new("denied", [
+        Event::new("call", "write_file", "write-1", Some("write"), None),
+        Event::new("result", "write_file", "write-1", Some("write"), Some(true)),
+      ]),
+      ["write"],
+      "test",
+      "denied write",
+    ),
+  )
+  let policy = EvaluationPolicy::new(1, Some(["read_file"]))
+  let scenarios = catalog.evaluate_with_policy(policy)
+  assert_true(scenarios[0].passed)
+  assert_true(!scenarios[1].passed)
+  let tagged = catalog.evaluate_tag_with_policy("write", policy)
+  assert_true(tagged.length() == 1)
+  assert_true(!tagged[0].passed)
+  let results = evaluate_catalog_with_policy(catalog, policy)
+  assert_true(results[1].owner == "test")
+  assert_true(violation_code(results[1].violations[0]) == "AGC012")
+}

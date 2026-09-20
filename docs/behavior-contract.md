@@ -21,7 +21,7 @@ moonagentcheck 只判断适配器实际提交给它的事件。事件不完整�
 
 - `Trace` 提供不依赖具体 Agent 框架的事件流构造方法；
 - `validate_events` 在语义评估前检查空标识、未知事件类型和非法重试策略；
-- `evaluate_scenarios` 让多条轨迹保持独立；
+- `evaluate_scenarios` 让多条轨迹保持独立；`evaluate_scenarios_with_policy` 会把同一重试和 allowlist 策略应用到每条轨迹，目录、质量门禁与 `SuiteRunner` 的策略入口也保持该约束；
 - `summarize_violations` 与 `summarize_scenarios` 把逐事件证据聚合到规则和场景层。
 “逻辑操作 ID”由接入应用提供。两个写入内容相同不自动等于重复，避免工具误把合法的两次写入判成冲突。
 

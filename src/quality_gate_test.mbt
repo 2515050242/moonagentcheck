@@ -66,3 +66,27 @@ test "policy gates align with explicit read-only policy" {
     ).passed,
   )
 }
+
+///|
+test "catalog gates retain the explicit policy" {
+  let catalog = ScenarioCatalog::new()
+  assert_true(
+    catalog.add_scenario(
+      Scenario::new("write", [
+        Event::new("call", "write_file", "w1", Some("write"), None),
+        Event::new("result", "write_file", "w1", Some("write"), Some(true)),
+      ]),
+      ["write"],
+      "test",
+      "write must be denied",
+    ),
+  )
+  let gate = QualityGate::for_library()
+  let decision = gate.check_catalog_with_policy(
+    catalog,
+    EvaluationPolicy::new(1, Some(["read_file"])),
+  )
+  assert_true(!decision.passed)
+  assert_true(decision.diagnostics.length() == 1)
+  assert_true(decision.diagnostics[0].code == "AGC012")
+}
