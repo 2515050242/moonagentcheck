@@ -16,6 +16,7 @@ moonagentcheck 只判断适配器实际提交给它的事件。事件不完整�
 10. 写入完成必须对应到 `ok: true` 的调用结果；失败或状态未知时报告违规。
 11. 工具 result 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `result-call-mismatch`（`AGC011`），且该调用不得评估为成功。
 12. 配置了工具 allowlist 时，每个 call 的工具名必须在其中；不在列表中为 `tool-not-allowed`（`AGC012`），但不会跳过同一事件流的其他规则检查。未配置 allowlist 不限制工具；显式空列表拒绝所有工具。
+13. `write-complete` 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `write-call-mismatch`（`AGC016`），防止另一工具或逻辑操作借用成功结果。
 
 ## 输入与回归接口
 

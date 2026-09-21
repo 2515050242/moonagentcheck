@@ -49,3 +49,9 @@
 - 本轮：补齐 `evaluate_scenarios_with_policy`，并让场景目录、质量门禁和 `SuiteRunner` 传递完整 `EvaluationPolicy`；此前它们只传递重试上限，会在回归批次中丢失工具 allowlist。
 - 新增允许/拒绝场景、标签选择和单条运行的 MoonBit 回归，确保只读策略下的 `write_file` 保留 `AGC012`，而允许的读取轨迹不受其他场景影响。
 - 这项修复不扩张到策略 DSL、外部授权或 Agent runtime；它只使已有离线策略在用户实际调用的套件入口与单轨入口一致。
+
+## 写入完成必须回指同一调用
+
+- 本轮：补齐 `write-complete` 的元数据关联检查。此前成功 result 仅按 `call_id` 使写入通过，错配的工具名或 `operation_id` 可以借用那次成功。
+- 现在错误路径固定产生 `write-call-mismatch`（`AGC016`）；MoonBit 测试覆盖工具名和业务操作错配及正常路径，Python 离线 fixture 保持同一判断。
+- 这是事件证据链的完整性修复，不增加 Agent runtime、传输层或外部副作用执行能力。

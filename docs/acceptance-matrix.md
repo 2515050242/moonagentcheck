@@ -13,7 +13,7 @@
 | 写入前置调用 | `write-without-call` 规则 | `requires a call before a write` | 增加授权字段 adapter |
 | 事件结束时完整性 | `missing-result` 规则 | `detects orphan and missing results` | 增加空事件流和多调用场景 |
 | 结果唯一性 | `duplicate-result` 规则 | `detects duplicate results` | 增加乱序结果和失败结果场景 |
-| 写入关联完整性 | `missing-operation-id` 规则 | `requires an operation id for a write` | 接入 adapter 时保留业务操作 ID |
+| 写入关联完整性 | `missing-operation-id`、`write-call-mismatch` / `AGC016` | 写入必须保留业务操作 ID，并与成功调用的工具名、操作 ID 一致 | 接入 adapter 时保留业务操作 ID |
 | 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
 | MoonBit 可运行演示 | `main/main.mbt` | `moon run main`，断言重复写入返回 `AGC004` 并输出 JSON | 持续扩展真实适配示例 |

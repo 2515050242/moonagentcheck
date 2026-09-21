@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- 增加 `write-call-mismatch` / `AGC016`：写入完成必须与对应成功调用的工具名和业务操作 ID 一致，并加入 MoonBit/Python 对照回归。
 - 增加策略感知的多场景与目录评估 API；`SuiteRunner` 现在完整传递工具 allowlist，避免回归套件意外放宽权限检查。
 
 - 增加 `duplicate-result` 和 `missing-operation-id` 行为检查；

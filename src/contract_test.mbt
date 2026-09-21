@@ -214,6 +214,60 @@ test "requires an operation id for a write" {
 }
 
 ///|
+test "rejects a write completion whose tool does not match its call" {
+  let events = [
+    Event::new("call", "write_file", "write-1", Some("update"), None),
+    Event::new("result", "write_file", "write-1", Some("update"), Some(true)),
+    Event::new(
+      "write-complete",
+      "send_email",
+      "write-1",
+      Some("update"),
+      Some(true),
+    ),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "write-call-mismatch")
+  assert_true(violation_code(report[0]) == "AGC016")
+}
+
+///|
+test "rejects a write completion whose operation does not match its call" {
+  let events = [
+    Event::new("call", "write_file", "write-1", Some("update-a"), None),
+    Event::new("result", "write_file", "write-1", Some("update-a"), Some(true)),
+    Event::new(
+      "write-complete",
+      "write_file",
+      "write-1",
+      Some("update-b"),
+      Some(true),
+    ),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 1)
+  assert_true(report[0].rule == "write-call-mismatch")
+  assert_true(report[0].message == "write-1")
+}
+
+///|
+test "accepts a write completion that matches a successful call" {
+  let events = [
+    Event::new("call", "write_file", "write-1", Some("update"), None),
+    Event::new("result", "write_file", "write-1", Some("update"), Some(true)),
+    Event::new(
+      "write-complete",
+      "write_file",
+      "write-1",
+      Some("update"),
+      Some(true),
+    ),
+  ]
+  assert_true(evaluate(events, 2).length() == 0)
+}
+
+///|
 test "does not accept a write after a failed tool result" {
   let events = [
     Event::new("call", "update_ticket", "ticket-1", Some("reply-42"), None),

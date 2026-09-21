@@ -70,8 +70,14 @@ def evaluate_with_policy(
                 elif event.ok is True:
                     successful.add(event.call_id)
         elif event.kind == "write-complete":
-            if event.call_id not in calls:
+            call = calls.get(event.call_id)
+            if call is None:
                 violations.append(f"write-without-call:{event.call_id}")
+            elif (
+                call.tool != event.tool
+                or call.operation_id != event.operation_id
+            ):
+                violations.append(f"write-call-mismatch:{event.call_id}")
             elif event.call_id not in successful:
                 violations.append(f"write-without-successful-result:{event.call_id}")
             if not event.operation_id:
@@ -107,6 +113,11 @@ def main() -> None:
         Event("call", "read_csv", "match-3", "inspect-columns"),
         Event("result", "read_csv", "match-3", "inspect-columns", ok=True),
     ]) == []
+    assert evaluate([
+        Event("call", "write_csv", "write-match", "daily-export"),
+        Event("result", "write_csv", "write-match", "daily-export", ok=True),
+        Event("write-complete", "send_email", "write-match", "daily-export"),
+    ]) == ["write-call-mismatch:write-match"]
     assert evaluate_with_policy(
         [Event("call", "write_csv", "policy-1", "write")],
         EvaluationPolicy(tool_allowlist=frozenset({"read_csv"})),

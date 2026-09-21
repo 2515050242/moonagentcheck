@@ -26,6 +26,7 @@ pub fn rule_code(rule : String) -> String {
     "invalid-event" => "AGC013"
     "unknown-event-kind" => "AGC014"
     "invalid-policy" => "AGC015"
+    "write-call-mismatch" => "AGC016"
     _ => "unknown"
   }
 }

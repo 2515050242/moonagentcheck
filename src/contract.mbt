@@ -116,6 +116,16 @@ pub fn evaluate_with_policy(
           event_index: index,
           message: event.call_id,
         })
+      } else if calls.get(event.call_id) is Some(call) &&
+        (call.tool != event.tool || call.operation_id != event.operation_id) {
+        // A completion is evidence of the specific call that produced it.
+        // Matching only call_id would allow a different tool or logical
+        // operation to borrow a successful result from an unrelated write.
+        violations.push({
+          rule: "write-call-mismatch",
+          event_index: index,
+          message: event.call_id,
+        })
       } else if (match resolved.get(event.call_id) {
           Some(Succeeded) => false
           Some(Pending) => true
