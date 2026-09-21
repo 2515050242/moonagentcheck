@@ -2,7 +2,7 @@
 
 moonagentcheck 只判断适配器实际提交给它的事件。事件不完整或无法建立关联时，报告应返回 `inconclusive` 或明确的输入错误，而不是默认为通过。
 
-当前版本的十二条契约：
+当前版本的十四条契约：
 
 1. 每个工具结果必须对应一个已经出现的调用 ID。
 2. 同一个逻辑操作的调用次数不能超过配置的重试上限。
@@ -17,11 +17,13 @@ moonagentcheck 只判断适配器实际提交给它的事件。事件不完整�
 11. 工具 result 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `result-call-mismatch`（`AGC011`），且该调用不得评估为成功。
 12. 配置了工具 allowlist 时，每个 call 的工具名必须在其中；不在列表中为 `tool-not-allowed`（`AGC012`），但不会跳过同一事件流的其他规则检查。未配置 allowlist 不限制工具；显式空列表拒绝所有工具。
 13. `write-complete` 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `write-call-mismatch`（`AGC016`），防止另一工具或逻辑操作借用成功结果。
+14. 使用 `PolicyContext` 的评估必须标注非空配置来源；空来源为 `missing-policy-source`（`AGC017`），且来源不得从待验证事件取得。
 
 ## 输入与回归接口
 
 - `Trace` 提供不依赖具体 Agent 框架的事件流构造方法；
 - `validate_events` 在语义评估前检查空标识、未知事件类型和非法重试策略；
+- `PolicyContext` 将策略与接入配置来源绑定；`evaluate_with_context` 和 `evaluation_report_json` 让受限策略的来源、参数和违规证据可以一同归档；
 - `evaluate_scenarios` 让多条轨迹保持独立；`evaluate_scenarios_with_policy` 会把同一重试和 allowlist 策略应用到每条轨迹，目录、质量门禁与 `SuiteRunner` 的策略入口也保持该约束；
 - `summarize_violations` 与 `summarize_scenarios` 把逐事件证据聚合到规则和场景层。
 “逻辑操作 ID”由接入应用提供。两个写入内容相同不自动等于重复，避免工具误把合法的两次写入判成冲突。

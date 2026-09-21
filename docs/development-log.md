@@ -50,6 +50,11 @@
 - 新增允许/拒绝场景、标签选择和单条运行的 MoonBit 回归，确保只读策略下的 `write_file` 保留 `AGC012`，而允许的读取轨迹不受其他场景影响。
 - 这项修复不扩张到策略 DSL、外部授权或 Agent runtime；它只使已有离线策略在用户实际调用的套件入口与单轨入口一致。
 
+## 策略来源成为可归档证据
+
+- 本轮：新增 `PolicyContext` 与 `evaluation_report_json`，将策略的非空接入配置来源、allowlist、重试上限和违规明细放入同一稳定 JSON 证据；空来源固定报告 `AGC017`。
+- 策略来源由接入方配置提供，不能从待检 trace 读取；这避免日志自述扩大权限，仍不引入外部权限服务或 Agent runtime。
+
 ## 写入完成必须回指同一调用
 
 - 本轮：补齐 `write-complete` 的元数据关联检查。此前成功 result 仅按 `call_id` 使写入通过，错配的工具名或 `operation_id` 可以借用那次成功。

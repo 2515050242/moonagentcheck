@@ -52,3 +52,20 @@ test "escapes report strings with standard JSON encoding" {
   )
   assert_true(@json.valid(output))
 }
+
+///|
+test "policy evaluation report retains source policy and violations" {
+  let context = PolicyContext::new(
+    "ci/read-only-policy",
+    EvaluationPolicy::new(1, Some(["read_file"])),
+  )
+  let output = evaluation_report_json(
+    [Event::new("call", "write_file", "write-1", Some("update"), None)],
+    context,
+  )
+  assert_true(
+    output ==
+    "{\"policy_source\":\"ci/read-only-policy\",\"policy\":{\"max_retries\":1,\"tool_allowlist\":[\"read_file\"],\"restricted\":true,\"valid\":true},\"passed\":false,\"violations\":[{\"code\":\"AGC012\",\"rule\":\"tool-not-allowed\",\"event_index\":0,\"message\":\"write_file\"},{\"code\":\"AGC002\",\"rule\":\"missing-result\",\"event_index\":0,\"message\":\"write-1\"}]}",
+  )
+  assert_true(@json.valid(output))
+}

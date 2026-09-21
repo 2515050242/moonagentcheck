@@ -112,6 +112,8 @@ pub fn advice_for_rule(rule : String) -> String {
     "unknown-event-kind" =>
       "将框架事件映射到 call、result 或 write-complete。"
     "invalid-policy" => "重试策略必须是非负整数。"
+    "missing-policy-source" =>
+      "为策略上下文标记接入方配置来源，避免 allowlist 无法审计。"
     _ => "检查 adapter 的字段映射和该规则的行为契约。"
   }
 }
@@ -122,6 +124,7 @@ pub fn severity_for_rule(rule : String) -> DiagnosticSeverity {
     "invalid-event" => Error
     "unknown-event-kind" => Error
     "invalid-policy" => Error
+    "missing-policy-source" => Error
     "write-without-call" => Error
     "write-without-successful-result" => Error
     "duplicate-side-effect" => Error
@@ -433,6 +436,8 @@ pub fn diagnostic_message_for_code(code : String) -> String {
     "AGC013" => "事件字段非法"
     "AGC014" => "事件类型未知"
     "AGC015" => "策略参数非法"
+    "AGC016" => "写入与原始调用身份不一致"
+    "AGC017" => "策略缺少配置来源"
     _ => "未知诊断编码"
   }
 }

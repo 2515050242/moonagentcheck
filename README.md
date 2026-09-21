@@ -44,6 +44,21 @@ let results = evaluate_scenarios_with_policy(scenarios, policy)
 
 `suite_summary_json(summarize_scenarios(results))` 输出场景通过数、失败数、违规总数和按规则聚合的稳定编码，适合作为 CI 门禁的单条汇总结果。
 
+## 策略来源报告
+
+受限策略应由接入配置显式提供，而不能从待检查的事件里读取。`PolicyContext` 将策略与可读来源名绑定；`evaluate_with_context` 在保留既有规则的同时拒绝空来源（`AGC017`），`evaluation_report_json` 则输出可归档的来源、策略和违规报告。
+
+```moonbit
+let context = PolicyContext::new(
+  "ci/read-only-policy",
+  EvaluationPolicy::new(1, Some(["read_file"])),
+)
+let report = evaluation_report_json(events, context)
+// {"policy_source":"ci/read-only-policy", ...}
+```
+
+来源只是接入方配置的标识，不是授权凭证；事件自身不能声明或扩大 allowlist。旧的 `evaluate` / `evaluate_with_policy` API 仍可用于不需要这份审计证据的调用。
+
 ## 现在的边界
 
 - 检查是确定性的，不访问网络、真实服务或真实文件系统；
@@ -57,9 +72,9 @@ let results = evaluate_scenarios_with_policy(scenarios, policy)
 
 ## 当前进度
 
-当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。MoonBit 测试覆盖核心规则和工具层，Python 侧保留三个真实问题 fixture，并在 CI 中执行通用 adapter smoke test。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
+当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。策略上下文还会将实际 allowlist 与接入配置来源一并归档，避免离线报告失去权限判断的来处。MoonBit 测试覆盖核心规则和工具层，Python 侧保留三个真实问题 fixture，并在 CI 中执行通用 adapter smoke test。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
 
-当前开发版本为 `0.2.0`：MoonBit 非测试源码约 4,242 行，配套测试 66 个。行数只是规模审计数据，是否通过仍取决于代码是否真实可运行、功能边界是否清楚以及材料是否与仓库一致。
+当前开发版本为 `0.2.0`：MoonBit 非测试源码约 4,242 行，配套测试 75 个。行数只是规模审计数据，是否通过仍取决于代码是否真实可运行、功能边界是否清楚以及材料是否与仓库一致。
 
 ## 许可
 

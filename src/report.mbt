@@ -27,8 +27,48 @@ pub fn rule_code(rule : String) -> String {
     "unknown-event-kind" => "AGC014"
     "invalid-policy" => "AGC015"
     "write-call-mismatch" => "AGC016"
+    "missing-policy-source" => "AGC017"
     _ => "unknown"
   }
+}
+
+///|
+/// Serialize one policy-context evaluation for CI artifacts or offline review.
+///
+/// The report identifies the configuration source separately from observed
+/// events, includes the actual policy values, and preserves violation order.
+/// A blank source is reported as `AGC017` instead of silently losing the
+/// provenance needed to interpret an allowlist decision.
+pub fn evaluation_report_json(
+  events : Array[Event],
+  context : PolicyContext,
+) -> String {
+  let policy = context.policy
+  let tools = match policy.tool_allowlist {
+    None => Json::null()
+    Some(values) => Json::array(unique_strings(values).map(tool => Json(tool)))
+  }
+  let violations = evaluate_with_context(events, context)
+  Json::object({
+    "policy_source": Json(context.source),
+    "policy": Json::object({
+      "max_retries": Json(policy.max_retries),
+      "tool_allowlist": tools,
+      "restricted": Json(policy_is_restricted(policy)),
+      "valid": Json(policy_is_valid(policy)),
+    }),
+    "passed": Json(violations.length() == 0),
+    "violations": Json::array(
+      violations.map(violation => {
+        Json::object({
+          "code": Json(violation_code(violation)),
+          "rule": Json(violation.rule),
+          "event_index": Json(violation.event_index),
+          "message": Json(violation.message),
+        })
+      }),
+    ),
+  }).stringify()
 }
 
 ///|

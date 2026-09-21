@@ -67,3 +67,26 @@ test "policy audit and comparison explain changes" {
   assert_true(comparison.added_tools == ["write"])
   assert_true(comparison.same_retry_limit == false)
 }
+
+///|
+test "policy context applies its policy and requires a source" {
+  let restricted = PolicyContext::new(
+    "ci/read-only-policy",
+    EvaluationPolicy::new(1, Some(["read_file"])),
+  )
+  let events = [
+    Event::new("call", "write_file", "write-1", Some("update"), None),
+  ]
+  let violations = evaluate_with_context(events, restricted)
+  assert_true(restricted.is_valid())
+  assert_true(violations.length() == 2)
+  assert_true(violations[0].rule == "tool-not-allowed")
+  assert_true(violations[1].rule == "missing-result")
+
+  let unnamed = PolicyContext::new("", EvaluationPolicy::new(1, None))
+  let unnamed_violations = evaluate_with_context([], unnamed)
+  assert_true(!unnamed.is_valid())
+  assert_true(unnamed_violations.length() == 1)
+  assert_true(unnamed_violations[0].rule == "missing-policy-source")
+  assert_true(violation_code(unnamed_violations[0]) == "AGC017")
+}

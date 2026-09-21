@@ -10,6 +10,65 @@ pub enum PolicyProfile {
 } derive(Eq, Debug)
 
 ///|
+/// A policy plus the configuration location that supplied it.
+///
+/// The source is deliberately supplied outside the observed event stream: a
+/// trace must not be able to grant itself extra tools by claiming a policy.
+pub struct PolicyContext {
+  source : String
+  policy : EvaluationPolicy
+}
+
+///|
+/// Create an auditable policy context for an adapter, CI config, or test.
+///
+/// `source` must be non-empty when the context is evaluated. It is a human
+/// readable identifier such as `ci/read-only-policy`, not a credential.
+pub fn PolicyContext::new(
+  source : String,
+  policy : EvaluationPolicy,
+) -> PolicyContext {
+  { source, policy, }
+}
+
+///|
+/// Build a named context from one of the built-in policy profiles.
+pub fn PolicyContext::from_profile(
+  source : String,
+  profile : PolicyProfile,
+) -> PolicyContext {
+  PolicyContext::new(source, policy_for_profile(profile))
+}
+
+///|
+/// Return whether both the policy and its audit source are usable.
+pub fn PolicyContext::is_valid(context : PolicyContext) -> Bool {
+  context.source != "" && policy_is_valid(context.policy)
+}
+
+///|
+/// Apply a policy context while retaining evidence of which configuration
+/// supplied the allowlist. Legacy evaluation entry points remain available for
+/// callers that do not need policy provenance.
+pub fn evaluate_with_context(
+  events : Array[Event],
+  context : PolicyContext,
+) -> Array[Violation] {
+  let violations : Array[Violation] = []
+  if context.source == "" {
+    violations.push({
+      rule: "missing-policy-source",
+      event_index: -1,
+      message: "policy source is empty",
+    })
+  }
+  for violation in evaluate_with_policy(events, context.policy) {
+    violations.push(violation)
+  }
+  violations
+}
+
+///|
 pub fn policy_profile_name(profile : PolicyProfile) -> String {
   match profile {
     Permissive => "permissive"

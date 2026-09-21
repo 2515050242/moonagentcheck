@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- 增加 `PolicyContext`、`evaluate_with_context` 与 `evaluation_report_json`：受限策略必须带非空配置来源，空来源报告 `missing-policy-source` / `AGC017`，便于离线 CI 审计 allowlist 的来处。
 - 增加 `write-call-mismatch` / `AGC016`：写入完成必须与对应成功调用的工具名和业务操作 ID 一致，并加入 MoonBit/Python 对照回归。
 - 增加策略感知的多场景与目录评估 API；`SuiteRunner` 现在完整传递工具 allowlist，避免回归套件意外放宽权限检查。
 
