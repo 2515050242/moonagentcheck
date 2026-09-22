@@ -7,6 +7,7 @@ MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用
 ## 先跑起来
 
 ```powershell
+moon fmt --check src main
 moon check
 moon test
 moon run main

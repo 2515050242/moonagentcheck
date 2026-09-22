@@ -27,11 +27,12 @@
 
 ```text
 moon check  → 通过
-moon test   → 66 个测试通过
+moon test   → 73 个测试通过
+moon fmt --check src main → 通过
 Python fixtures → 三个场景与通用 adapter 均通过
 ```
 
-GitHub Actions 当前的 MoonBit 与 Python 两个 job 均通过。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
+GitHub Actions 当前的 MoonBit 与 Python 两个 job 均通过。MoonBit job 会先执行 `moon fmt --check src main`，再进行编译、测试与 demo。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
 
 ## 尚未宣称的能力
 

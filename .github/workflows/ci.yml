@@ -17,6 +17,8 @@ jobs:
       - name: Show MoonBit version
         shell: bash
         run: moon version --all
+      - name: Verify MoonBit formatting
+        run: moon fmt --check src main
       - name: Check
         run: moon check
       - name: Test

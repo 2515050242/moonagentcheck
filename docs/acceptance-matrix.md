@@ -26,7 +26,7 @@
 | 工具与操作指标 | `collect_metrics`、风险统计 | `metrics_test.mbt` 检查成功率和重复写入 | 输出长期趋势 |
 | 策略与 CI 门禁 | `PolicyProfile`、`QualityGate`、`SuiteRunner` | `policy_test.mbt`、`quality_gate_test.mbt`、`runner_test.mbt` | 增加报告归档 |
 | Python 接入参考 | `examples/python_adapter.py`、三个场景 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
-| CI 自动验证 | `.github/workflows/ci.yml` | GitHub Actions | 增加示例 smoke test |
+| CI 自动验证 | `.github/workflows/ci.yml`：MoonBit 格式、检查、测试、验收 demo 与 Python fixture | GitHub Actions | 增加报告归档 |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
 | 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |
 

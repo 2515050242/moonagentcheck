@@ -60,3 +60,9 @@
 - 本轮：补齐 `write-complete` 的元数据关联检查。此前成功 result 仅按 `call_id` 使写入通过，错配的工具名或 `operation_id` 可以借用那次成功。
 - 现在错误路径固定产生 `write-call-mismatch`（`AGC016`）；MoonBit 测试覆盖工具名和业务操作错配及正常路径，Python 离线 fixture 保持同一判断。
 - 这是事件证据链的完整性修复，不增加 Agent runtime、传输层或外部副作用执行能力。
+
+## CI 在编译前固定格式边界
+
+- 本轮：在 MoonBit job 的 `moon check` 前加入 `moon fmt --check src main`，同时覆盖核心库和可运行验收 demo；
+- 选择复用本地已执行的官方 MoonBit 格式检查，而非新增格式化工具或脚本，避免引入依赖和第二套规则；
+- 格式漂移会在编译、测试和 demo 前立即失败，使公开复现路径与本地验收命令保持一致。
