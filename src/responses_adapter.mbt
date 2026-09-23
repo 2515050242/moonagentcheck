@@ -149,3 +149,53 @@ pub fn adapt_responses_items(
   }
   { events, issues, }
 }
+
+///|
+/// Produce one stable archive report for a Responses telemetry batch.
+///
+/// Mapping issues and core violations deliberately remain separate: an item
+/// that cannot be mapped into a trustworthy Event is not promoted to a
+/// contract violation. The batch passes only when neither kind of evidence is
+/// present.
+pub fn responses_evaluation_report_json(
+  items : Array[ResponsesItem],
+  context : PolicyContext,
+) -> String {
+  let adaptation = adapt_responses_items(items)
+  let policy = context.policy
+  let tools = match policy.tool_allowlist {
+    None => Json::null()
+    Some(values) => Json::array(unique_strings(values).map(tool => Json(tool)))
+  }
+  let violations = evaluate_with_context(adaptation.events, context)
+  Json::object({
+    "adapter": Json("openai-responses-function-call"),
+    "mapped_event_count": Json(adaptation.events.length()),
+    "mapping_issues": Json::array(
+      adaptation.issues.map(issue => {
+        Json::object({
+          "item_index": Json(issue.item_index),
+          "message": Json(issue.message),
+        })
+      }),
+    ),
+    "policy_source": Json(context.source),
+    "policy": Json::object({
+      "max_retries": Json(policy.max_retries),
+      "tool_allowlist": tools,
+      "restricted": Json(policy_is_restricted(policy)),
+      "valid": Json(policy_is_valid(policy)),
+    }),
+    "passed": Json(adaptation.issues.length() == 0 && violations.length() == 0),
+    "violations": Json::array(
+      violations.map(violation => {
+        Json::object({
+          "code": Json(violation_code(violation)),
+          "rule": Json(violation.rule),
+          "event_index": Json(violation.event_index),
+          "message": Json(violation.message),
+        })
+      }),
+    ),
+  }).stringify()
+}

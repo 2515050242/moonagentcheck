@@ -40,4 +40,5 @@ jobs:
           python examples/python_repository_agent.py
           python examples/python_ticket_agent.py
           python examples/python_adapter.py
+          python examples/python_openai_responses_fixture.py
 

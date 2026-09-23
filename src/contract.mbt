@@ -46,26 +46,30 @@ pub fn evaluate_with_policy(
           event_index: index,
           message: event.call_id,
         })
-      }
-      pending.push(event.call_id)
-      calls[event.call_id] = event
-      resolved[event.call_id] = Pending
-      match event.operation_id {
-        Some(operation) => {
-          let count = match attempts.get(operation) {
-            Some(value) => value + 1
-            None => 1
+      } else {
+        // Keep the first observation as the identity for this call. A duplicate
+        // record must not replace its metadata and make a later result or write
+        // appear valid for a different tool or logical operation.
+        pending.push(event.call_id)
+        calls[event.call_id] = event
+        resolved[event.call_id] = Pending
+        match event.operation_id {
+          Some(operation) => {
+            let count = match attempts.get(operation) {
+              Some(value) => value + 1
+              None => 1
+            }
+            attempts[operation] = count
+            if count > policy.max_retries {
+              violations.push({
+                rule: "retry-limit",
+                event_index: index,
+                message: operation,
+              })
+            }
           }
-          attempts[operation] = count
-          if count > policy.max_retries {
-            violations.push({
-              rule: "retry-limit",
-              event_index: index,
-              message: operation,
-            })
-          }
+          None => ()
         }
-        None => ()
       }
     } else if event.kind == "result" {
       match calls.get(event.call_id) {

@@ -98,3 +98,51 @@ test "Responses adapter rejects empty identity fields before producing events" {
   assert_true(adaptation.events.length() == 0)
   assert_true(adaptation.issues.length() == 3)
 }
+
+///|
+test "Responses archive report retains mapping and policy evidence" {
+  let context = PolicyContext::new(
+    "ci/ticketing-policy",
+    EvaluationPolicy::new(1, Some(["get_ticket"])),
+  )
+  let output = responses_evaluation_report_json(
+    [
+      responses_function_call(
+        "resp-46",
+        Some("ticket-46"),
+        "call-46",
+        "update_ticket",
+      ),
+      responses_function_call_output(
+        "call-missing",
+        responses_completed(),
+        Some(true),
+      ),
+    ],
+    context,
+  )
+  assert_true(
+    output ==
+    "{\"adapter\":\"openai-responses-function-call\",\"mapped_event_count\":1,\"mapping_issues\":[{\"item_index\":1,\"message\":\"function call output has no preceding function call: call-missing\"}],\"policy_source\":\"ci/ticketing-policy\",\"policy\":{\"max_retries\":1,\"tool_allowlist\":[\"get_ticket\"],\"restricted\":true,\"valid\":true},\"passed\":false,\"violations\":[{\"code\":\"AGC012\",\"rule\":\"tool-not-allowed\",\"event_index\":0,\"message\":\"update_ticket\"},{\"code\":\"AGC002\",\"rule\":\"missing-result\",\"event_index\":0,\"message\":\"call-46\"}]}",
+  )
+  assert_true(@json.valid(output))
+}
+
+///|
+test "Responses archive report JSON-escapes mapping issue evidence" {
+  let output = responses_evaluation_report_json(
+    [
+      responses_function_call_output(
+        "call\nquote\"slash\\",
+        responses_completed(),
+        Some(true),
+      ),
+    ],
+    PolicyContext::new("ci/fixture", EvaluationPolicy::new(1, None)),
+  )
+  assert_true(
+    output ==
+    "{\"adapter\":\"openai-responses-function-call\",\"mapped_event_count\":0,\"mapping_issues\":[{\"item_index\":0,\"message\":\"function call output has no preceding function call: call\\nquote\\\"slash\\\\\"}],\"policy_source\":\"ci/fixture\",\"policy\":{\"max_retries\":1,\"tool_allowlist\":null,\"restricted\":false,\"valid\":true},\"passed\":false,\"violations\":[]}",
+  )
+  assert_true(@json.valid(output))
+}

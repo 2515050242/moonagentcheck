@@ -66,3 +66,9 @@
 - 本轮：在 MoonBit job 的 `moon check` 前加入 `moon fmt --check src main`，同时覆盖核心库和可运行验收 demo；
 - 选择复用本地已执行的官方 MoonBit 格式检查，而非新增格式化工具或脚本，避免引入依赖和第二套规则；
 - 格式漂移会在编译、测试和 demo 前立即失败，使公开复现路径与本地验收命令保持一致。
+
+## 重复调用不能重定义证据链
+
+- 本轮：重复 `call_id` 曾会覆盖已记录的 tool 和 `operation_id`，使后续 result 或 `write-complete` 能匹配错误的第二条 call；现改为保留首个 call，重复记录只报告既有的 `duplicate-call-id`。
+- 新增 MoonBit 与 Python 离线回归：第二条 call 试图把文件写入改成邮件发送时，结果与写入分别固定报告 `result-call-mismatch`、`write-call-mismatch`，不能借用成功。
+- 该修复只收紧不可信遥测的身份关联，不限制不同 call ID 的异步结果顺序，也不增加 Agent runtime 或外部状态。

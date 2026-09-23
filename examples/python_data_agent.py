@@ -45,12 +45,15 @@ def evaluate_with_policy(
                 violations.append(f"tool-not-allowed:{event.tool}")
             if event.call_id in calls:
                 violations.append(f"duplicate-call-id:{event.call_id}")
-            calls[event.call_id] = event
-            pending.add(event.call_id)
-            if event.operation_id:
-                attempts[event.operation_id] = attempts.get(event.operation_id, 0) + 1
-                if attempts[event.operation_id] > policy.max_retries:
-                    violations.append(f"retry-limit:{event.operation_id}")
+            else:
+                # The first call owns this identity. A duplicate record cannot
+                # redefine the tool or operation that later events must match.
+                calls[event.call_id] = event
+                pending.add(event.call_id)
+                if event.operation_id:
+                    attempts[event.operation_id] = attempts.get(event.operation_id, 0) + 1
+                    if attempts[event.operation_id] > policy.max_retries:
+                        violations.append(f"retry-limit:{event.operation_id}")
         elif event.kind == "result":
             call = calls.get(event.call_id)
             if event.call_id not in pending:
@@ -118,6 +121,16 @@ def main() -> None:
         Event("result", "write_csv", "write-match", "daily-export", ok=True),
         Event("write-complete", "send_email", "write-match", "daily-export"),
     ]) == ["write-call-mismatch:write-match"]
+    assert evaluate([
+        Event("call", "write_file", "shared-1", "update-a"),
+        Event("call", "send_email", "shared-1", "notify-b"),
+        Event("result", "send_email", "shared-1", "notify-b", ok=True),
+        Event("write-complete", "send_email", "shared-1", "notify-b"),
+    ]) == [
+        "duplicate-call-id:shared-1",
+        "result-call-mismatch:shared-1",
+        "write-call-mismatch:shared-1",
+    ]
     assert evaluate_with_policy(
         [Event("call", "write_csv", "policy-1", "write")],
         EvaluationPolicy(tool_allowlist=frozenset({"read_csv"})),

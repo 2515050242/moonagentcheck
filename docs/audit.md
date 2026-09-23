@@ -27,7 +27,7 @@
 
 ```text
 moon check  → 通过
-moon test   → 73 个测试通过
+moon test   → 76 个测试通过
 moon fmt --check src main → 通过
 Python fixtures → 三个场景与通用 adapter 均通过
 ```

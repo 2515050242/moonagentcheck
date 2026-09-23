@@ -37,6 +37,21 @@ let violations = evaluate(trace.events, 2)
 
 没有先前 `function_call` 的 output 不会凭空创建 `tool`；它会出现在 `trace.issues` 中。若应用确实完成了写入，仍需从执行器记录既有 `write-complete` 事件，让核心规则验证副作用与成功 result 的关联。
 
+## 归档一批适配与评估证据
+
+`responses_evaluation_report_json(items, context)` 将同一批的适配问题、策略来源和核心违规编码为稳定 JSON。顶层 `passed` 只有在没有 `mapping_issues`、也没有核心 `violations` 时才是 `true`；前者不是伪造的核心规则，后者仍保留 `AGC` 代码。
+
+```moonbit
+let context = PolicyContext::new(
+  "ci/ticketing-policy",
+  EvaluationPolicy::new(1, Some(["get_ticket"])),
+)
+let archive = responses_evaluation_report_json(items, context)
+// {"adapter":"openai-responses-function-call", ...}
+```
+
+报告不读取或写入文件，也不解析网络响应；调用方仍负责提取并按观测顺序提供 `ResponsesItem`。
+
 ## 可复现 fixture
 
 `examples/python_openai_responses_fixture.py` 用 Python 标准库构造相同的公开字段形状，验证 call/result 的关联和“不能由孤立 output 猜工具名”的边界。它是离线 fixture，不是产品的第二套规则实现。

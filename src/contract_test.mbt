@@ -190,6 +190,30 @@ test "detects duplicate call ids" {
 }
 
 ///|
+test "duplicate call id cannot replace the original call identity" {
+  let events = [
+    Event::new("call", "write_file", "shared-1", Some("update-a"), None),
+    Event::new("call", "send_email", "shared-1", Some("notify-b"), None),
+    Event::new("result", "send_email", "shared-1", Some("notify-b"), Some(true)),
+    Event::new(
+      "write-complete",
+      "send_email",
+      "shared-1",
+      Some("notify-b"),
+      Some(true),
+    ),
+  ]
+  let report = evaluate(events, 2)
+  assert_true(report.length() == 3)
+  assert_true(report[0].rule == "duplicate-call-id")
+  assert_true(report[0].event_index == 1)
+  assert_true(report[1].rule == "result-call-mismatch")
+  assert_true(report[1].event_index == 2)
+  assert_true(report[2].rule == "write-call-mismatch")
+  assert_true(report[2].event_index == 3)
+}
+
+///|
 test "detects duplicate results" {
   let events = [
     Event::new("call", "data", "call-1", Some("load"), None),

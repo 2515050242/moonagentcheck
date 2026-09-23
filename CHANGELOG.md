@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- 重复 `call_id` 不再覆盖首个调用的工具、业务操作或状态；后续 result/write 必须继续匹配原始身份，防止重复遥测借用另一调用的成功结果。
 - 增加 `PolicyContext`、`evaluate_with_context` 与 `evaluation_report_json`：受限策略必须带非空配置来源，空来源报告 `missing-policy-source` / `AGC017`，便于离线 CI 审计 allowlist 的来处。
 - CI 在编译前执行 `moon fmt --check src main`，将核心库和验收 demo 的格式检查纳入公开复现门禁。
 - 增加 `write-call-mismatch` / `AGC016`：写入完成必须与对应成功调用的工具名和业务操作 ID 一致，并加入 MoonBit/Python 对照回归。
