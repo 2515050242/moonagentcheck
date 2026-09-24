@@ -100,6 +100,34 @@ test "Responses adapter rejects empty identity fields before producing events" {
 }
 
 ///|
+test "Responses output retains the first call identity after duplicate telemetry" {
+  let adaptation = adapt_responses_items([
+    responses_function_call(
+      "resp-47",
+      Some("export-47"),
+      "call-47",
+      "write_file",
+    ),
+    responses_function_call(
+      "resp-48",
+      Some("notify-48"),
+      "call-47",
+      "send_email",
+    ),
+    responses_function_call_output("call-47", responses_completed(), Some(true)),
+  ])
+  assert_true(adaptation.issues.length() == 0)
+  assert_true(
+    adaptation.events[2] ==
+    Event::new("result", "write_file", "call-47", Some("export-47"), Some(true)),
+  )
+  let violations = evaluate(adaptation.events, 2)
+  assert_true(violations.length() == 1)
+  assert_true(violations[0].rule == "duplicate-call-id")
+  assert_true(violations[0].event_index == 1)
+}
+
+///|
 test "Responses archive report retains mapping and policy evidence" {
   let context = PolicyContext::new(
     "ci/ticketing-policy",

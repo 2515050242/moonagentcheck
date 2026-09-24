@@ -72,3 +72,9 @@
 - 本轮：重复 `call_id` 曾会覆盖已记录的 tool 和 `operation_id`，使后续 result 或 `write-complete` 能匹配错误的第二条 call；现改为保留首个 call，重复记录只报告既有的 `duplicate-call-id`。
 - 新增 MoonBit 与 Python 离线回归：第二条 call 试图把文件写入改成邮件发送时，结果与写入分别固定报告 `result-call-mismatch`、`write-call-mismatch`，不能借用成功。
 - 该修复只收紧不可信遥测的身份关联，不限制不同 call ID 的异步结果顺序，也不增加 Agent runtime 或外部状态。
+
+## Responses 适配同样固定首个调用身份
+
+- 本轮：Responses adapter 曾会在重复 `function_call.call_id` 时覆盖内部字段映射；后续 output 因而可能被映射为第二条记录的工具和业务操作，与核心评估器的首个身份规则矛盾。
+- 现在适配器保留所有原始 call 事件供核心报告重复 ID，但仅用首条 call 回填 output；MoonBit 回归与 Python 离线 fixture 都检查该 output 仍映射为 `write_file` / `export-47`，评估结果只留下 `duplicate-call-id`。
+- 这只修复已观测 Responses 字段的离线映射一致性，不接入 API、JSON 解析、执行器或 Agent runtime。

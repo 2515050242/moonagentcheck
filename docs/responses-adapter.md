@@ -15,6 +15,8 @@
 
 `response_id` 会被校验为非空，作为采集到的协议身份；当前核心 `Event` 没有该字段，因此不会把它改写为 operation ID。一个 response 可包含并行工具调用，这种改写会错误地把并行调用算作同一业务操作的重试。
 
+若采集流里重复出现同一 `call_id`，适配器仍保留两条 call 事件，交给核心规则报告 `duplicate-call-id`；但后续 output 只会回填**首条** call 的工具名和 `operation_id`。这与核心的身份固定契约一致，避免晚到的重复遥测把 result 伪装成另一工具的成功。
+
 ## MoonBit 用法
 
 ```moonbit

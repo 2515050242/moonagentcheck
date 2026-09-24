@@ -23,7 +23,10 @@ def adapt_response_items(items: list[dict[str, object]]) -> list[Event]:
             if operation_id is not None and not isinstance(operation_id, str):
                 raise ValueError(f"item {index}: operation_id must be a string")
             event = Event("call", name, call_id, operation_id)
-            calls[call_id] = event
+            # Preserve the first observed identity just as the MoonBit
+            # evaluator does. The repeated call remains in `events`, where the
+            # contract reports it, but a later output cannot be rebound to it.
+            calls.setdefault(call_id, event)
             events.append(event)
         elif item_type == "function_call_output":
             call_id = item.get("call_id")
@@ -66,6 +69,32 @@ def main() -> None:
         Event("result", "update_ticket", "call_42", "ticket-42", True),
     ]
     assert evaluate(events) == []
+    duplicate_events = adapt_response_items([
+        {
+            "type": "function_call",
+            "response_id": "resp_47",
+            "operation_id": "export-47",
+            "call_id": "call_47",
+            "name": "write_file",
+        },
+        {
+            "type": "function_call",
+            "response_id": "resp_48",
+            "operation_id": "notify-48",
+            "call_id": "call_47",
+            "name": "send_email",
+        },
+        {
+            "type": "function_call_output",
+            "call_id": "call_47",
+            "status": "completed",
+            "outcome": True,
+        },
+    ])
+    assert duplicate_events[2] == Event(
+        "result", "write_file", "call_47", "export-47", True
+    )
+    assert evaluate(duplicate_events) == ["duplicate-call-id:call_47"]
     try:
         adapt_response_items([
             {"type": "function_call_output", "call_id": "unknown", "status": "completed"},

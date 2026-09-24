@@ -117,7 +117,13 @@ pub fn adapt_responses_items(
         } else {
           let event = Event::new("call", name, call_id, operation_id, None)
           events.push(event)
-          calls[call_id] = event
+          // Match the evaluator's evidence contract: the first observed call
+          // owns the identity. A repeated telemetry item stays in the event
+          // stream for duplicate-call detection, but must not alter the tool
+          // or operation used when a later output is mapped.
+          if calls.get(call_id) is None {
+            calls[call_id] = event
+          }
         }
       FunctionCallOutput(call_id, status, observed_outcome) =>
         if call_id == "" {
