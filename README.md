@@ -14,6 +14,8 @@ moon run main
 python examples/python_data_agent.py
 python examples/python_repository_agent.py
 python examples/python_ticket_agent.py
+python examples/python_adapter.py
+python examples/python_openai_responses_fixture.py
 ```
 
 `moon run main` 是可直接运行的 MoonBit 验收演示：它构造一个读取后写入的事件轨迹，故意重复完成同一写操作，并输出稳定的场景报告与工具指标。演示会断言重复副作用产生 `AGC004`，因此若核心行为回归，命令会以失败退出；GitHub Actions 也会运行此演示。
@@ -75,9 +77,9 @@ let report = evaluation_report_json(events, context)
 
 ## 当前进度
 
-当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。策略上下文还会将实际 allowlist 与接入配置来源一并归档，避免离线报告失去权限判断的来处。MoonBit 测试覆盖核心规则和工具层，Python 侧保留三个真实问题 fixture，并在 CI 中执行通用 adapter smoke test。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
+当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。策略上下文还会将实际 allowlist 与接入配置来源一并归档，避免离线报告失去权限判断的来处。Python 侧保留三类业务场景，并增加通用 adapter 与 Responses function-call fixture，共 5 个可运行 fixture；MoonBit 测试覆盖核心规则和工具层。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
 
-当前开发版本为 `0.2.0`：MoonBit 非测试源码约 4,242 行，配套测试 76 个。行数只是规模审计数据，是否通过仍取决于代码是否真实可运行、功能边界是否清楚以及材料是否与仓库一致。
+当前开发版本为 `0.2.0`：MoonBit 非测试源码约 4,637 行，测试源码约 1,398 行，当前共有 85 个测试。行数只是规模审计数据，是否通过仍取决于代码是否真实可运行、功能边界是否清楚以及材料是否与仓库一致。
 
 ## 许可
 

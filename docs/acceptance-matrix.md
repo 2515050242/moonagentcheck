@@ -5,7 +5,7 @@
 | 验收项 | 当前证据 | 验证方式 | 比赛阶段补强 |
 | --- | --- | --- | --- |
 | MoonBit 为主要实现语言 | `src/*.mbt`、`moon.mod` | `moon check` | 保持核心规则在 MoonBit 中实现 |
-| 包可发布 | `moon.mod`、Mooncakes 版本 `0.1.4` | `moon publish --dry-run` / `moon publish` | 发布比赛截止前版本 |
+| 包元数据与可发布性 | `moon.mod`（开发线 `0.2.0`）、`README.md`、`LICENSE` | `moon check`；如提交包则另行执行 `moon publish --dry-run` | 截止前核对发布版本与包内容 |
 | 调用与结果配对 | `src/contract.mbt` 的 `result-call-mismatch` / `AGC011` 与首个调用身份固定 | 工具名、`operation_id`、重复 `call_id` 改写身份与完全匹配的 MoonBit/Python 回归 | 增加乱序结果边界 |
 | 可配置工具策略 | `EvaluationPolicy`、`PolicyContext`、`evaluate_with_context`、`evaluation_report_json`、`tool-not-allowed` / `AGC012`、`missing-policy-source` / `AGC017` | allowlist 允许、拒绝、空列表、来源缺失、策略报告与旧 API 兼容的 MoonBit 回归 | 为具体框架补充字段映射 fixture |
 | 重试次数限制 | `attempts` 状态表 | `enforces retry limit` | 增加 0、1、最大值边界 |
@@ -25,7 +25,7 @@
 | 期望/实际差分 | `diff_events`、字段级 `EventDiff` | `diff_test.mbt` 检查新增、删除和元数据变化 | 增加跨版本 fixture |
 | 工具与操作指标 | `collect_metrics`、风险统计 | `metrics_test.mbt` 检查成功率和重复写入 | 输出长期趋势 |
 | 策略与 CI 门禁 | `PolicyProfile`、`QualityGate`、`SuiteRunner` | `policy_test.mbt`、`quality_gate_test.mbt`、`runner_test.mbt` | 增加报告归档 |
-| Python 接入参考 | `examples/python_adapter.py`、三个场景 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
+| Python 接入参考 | 三类业务场景、`python_adapter.py`、`python_openai_responses_fixture.py`，共 5 个 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
 | CI 自动验证 | `.github/workflows/ci.yml`：MoonBit 格式、检查、测试、验收 demo 与 Python fixture | GitHub Actions | 增加报告归档 |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
 | 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |

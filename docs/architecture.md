@@ -57,7 +57,7 @@ MoonAgentCheck 不把自己做成 Agent runtime。它更像一段放在 runtime 
 - `src/analysis.mbt`：规则与场景聚合；
 - `src/report.mbt`：稳定规则编码和 JSON 报告；
 - `src/*_test.mbt`：规则、边界和报告编码测试；
-- `examples/`：三个场景 fixture 和通用 Python 记录适配器；
+- `examples/`：三类业务场景、通用 Python 记录适配器和 Responses function-call fixture；
 - `.github/workflows/ci.yml`：MoonBit 和 Python 的公开验证入口。
 
 ## 有意留下的空位

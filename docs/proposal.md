@@ -19,7 +19,7 @@ Agent 应用的难点不只在于模型能否生成正确文本，更在于它�
 
 MoonAgentCheck 将 Agent 的工具调用记录规范化为事件流，再通过确定性的状态扫描检查行为契约。它不运行模型、不连接真实服务、不接管 Agent runtime，因此可以放进本地测试和 CI，复现同一段行为并得到同样的违规报告。
 
-项目当前已经发布 `2515050242/moonagentcheck@0.1.4`，核心检查、MoonBit 测试、Python 对照 fixture、CI 和中文结构图均已进入公开仓库。当前开发线进一步补齐了可复用轨迹工具、输入诊断、场景聚合、JSON 汇总和通用 Python adapter。
+项目已发布 `2515050242/moonagentcheck@0.1.4`；当前 GitHub 开发线为 `0.2.0`。核心检查、MoonBit 测试、Python 对照 fixture、CI 和中文结构图均已进入公开仓库，开发线进一步补齐了可复用轨迹工具、输入诊断、场景聚合、JSON 汇总、通用 Python adapter 和 Responses function-call 适配。
 
 ## 项目价值与生态定位
 
@@ -66,10 +66,10 @@ Agent / LLM / MCP / Workflow
 - 提供场景明细 JSON 与套件汇总 JSON，字段顺序稳定，便于 CI 消费；
 - 提供轨迹查询、逐步回放、检查点恢复和期望/实际字段级差分；
 - 提供工具/业务操作指标、策略预设、权限审计、场景目录、套件运行器和质量门禁；
-- 提供覆盖数据处理、仓库助手、工单重试的离线场景和通用 Python 记录 adapter；
-- 提供六十六个 MoonBit 可执行测试；
-- 提供不访问模型、网络和真实文件系统的 Python 对照 fixture；
-- 提供 GitHub Actions，自动执行 `moon check`、`moon test` 和 Python adapter smoke test；
+- 提供覆盖数据处理、仓库助手、工单重试的三类离线场景，以及通用 Python 记录 adapter 和 Responses function-call 适配 fixture；
+- 提供 85 个 MoonBit 回归测试；
+- 提供不访问模型、网络和真实文件系统的 5 个 Python 对照 fixture；
+- 提供 GitHub Actions，自动执行格式检查、`moon check`、`moon test`、MoonBit 演示和 5 个 Python fixture；
 - 提供中文 SVG 架构图、事件流程图和仓库结构图，降低项目审核成本。
 
 ### 后续迭代计划
@@ -123,5 +123,5 @@ Agent / LLM / MCP / Workflow
 
 ## 项目推进状态
 
-当前公开版本为 `0.1.4`，GitHub 开发线包版本推进到 `0.2.0`，已完成核心规则、三类离线场景、结构化报告、Trace 工具、查询回放、输入预检、规则聚合、差分指标、策略门禁、Python adapter 和验收证据。提交历史继续按真实功能拆分，避免空提交和只修改时间戳的提交。
+Mooncakes 已发布版本为 `0.1.4`，GitHub 开发线包版本为 `0.2.0`；当前已完成核心规则、三类离线业务场景、结构化报告、Trace 工具、查询回放、输入预检、规则聚合、差分指标、策略门禁、Python/Responses adapter 和验收证据。提交历史继续按真实功能拆分，避免空提交和只修改时间戳的提交。
 

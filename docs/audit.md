@@ -8,7 +8,7 @@
 
 ## 已发现并修复
 
-- README 曾把 JSON 输出写成当前能力，已改为明确说明“当前返回 `Violation` 数组，JSON 报告计划中”；
+- 早期 README 对 JSON 能力的描述曾落后于实现，现已补齐场景明细、套件汇总、策略来源和 Responses 适配报告的说明；
 - CI 只有 MoonBit 检查，已加入 Python 3.12 示例 smoke test；
 - `duplicate-call-id` 没有独立回归测试，已补充；
 - 重复结果此前没有明确报告，已加入 `duplicate-result` 规则和测试；
@@ -27,9 +27,9 @@
 
 ```text
 moon check  → 通过
-moon test   → 76 个测试通过
+moon test   → 85 个测试通过
 moon fmt --check src main → 通过
-Python fixtures → 三个场景与通用 adapter 均通过
+Python fixtures → 三类业务场景、通用 adapter 和 Responses fixture 共 5 个均通过
 ```
 
 GitHub Actions 当前的 MoonBit 与 Python 两个 job 均通过。MoonBit job 会先执行 `moon fmt --check src main`，再进行编译、测试与 demo。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
