@@ -1,15 +1,15 @@
 ///|
 test "suite runner selects all, names and tags" {
-  let runner = SuiteRunner::new(builtin_scenario_catalog())
-  let all = runner.run_all("all", EvaluationPolicy::new(2, None))
+  let runner = @src.SuiteRunner::new(@src.builtin_scenario_catalog())
+  let all = runner.run_all("all", @src.EvaluationPolicy::new(2, None))
   assert_true(all.results.length() == 11)
-  let named = runner.run_names("named", EvaluationPolicy::new(2, None), [
+  let named = runner.run_names("named", @src.EvaluationPolicy::new(2, None), [
     "data-read-ok", "repository-read-ok",
   ])
   assert_true(named.results.length() == 2)
   let tagged = runner.run_tag(
     "ticket",
-    EvaluationPolicy::new(2, None),
+    @src.EvaluationPolicy::new(2, None),
     "ticket",
   )
   assert_true(tagged.results.length() == 2)
@@ -22,14 +22,14 @@ test "suite runner selects all, names and tags" {
 
 ///|
 test "suite runner supports one trace and keeps history JSON" {
-  let runner = SuiteRunner::new(ScenarioCatalog::new())
+  let runner = @src.SuiteRunner::new(@src.ScenarioCatalog::new())
   let outcome = runner.run_events(
     "single",
     [
-      Event::new("call", "read", "c1", Some("read"), None),
-      Event::new("result", "read", "c1", Some("read"), Some(true)),
+      @src.Event::new("call", "read", "c1", Some("read"), None),
+      @src.Event::new("result", "read", "c1", Some("read"), Some(true)),
     ],
-    EvaluationPolicy::new(1, Some(["read"])),
+    @src.EvaluationPolicy::new(1, Some(["read"])),
   )
   assert_true(outcome.passed())
   assert_true(outcome.passed_names() == ["single"])
@@ -43,32 +43,32 @@ test "suite runner supports one trace and keeps history JSON" {
 
 ///|
 test "run configurations describe selectors and aggregate outcomes" {
-  let config = RunConfig::tagged(
+  let config = @src.RunConfig::tagged(
     "ticket-run",
-    EvaluationPolicy::new(2, None),
+    @src.EvaluationPolicy::new(2, None),
     "ticket",
   )
   assert_true(config.mode_name() == "tagged")
   assert_true(config.describe().contains("tag=ticket"))
-  assert_true(run_config_json(config).contains("max_retries"))
-  let runner = SuiteRunner::new(builtin_scenario_catalog())
+  assert_true(@src.run_config_json(config).contains("max_retries"))
+  let runner = @src.SuiteRunner::new(@src.builtin_scenario_catalog())
   let one = runner.run(config)
-  let two = runner.run_names("data", EvaluationPolicy::new(2, None), [
+  let two = runner.run_names("data", @src.EvaluationPolicy::new(2, None), [
     "data-read-ok",
   ])
-  assert_true(!run_outcomes_passed([one, two]))
-  assert_true(run_outcomes_failed_names([one, two]).length() > 0)
-  assert_true(run_outcomes_summary([two]).scenario_count == 1)
+  assert_true(!@src.run_outcomes_passed([one, two]))
+  assert_true(@src.run_outcomes_failed_names([one, two]).length() > 0)
+  assert_true(@src.run_outcomes_summary([two]).scenario_count == 1)
 }
 
 ///|
 test "suite runner applies policy to all selected run modes" {
-  let catalog = ScenarioCatalog::new()
+  let catalog = @src.ScenarioCatalog::new()
   assert_true(
     catalog.add_scenario(
-      Scenario::new("read", [
-        Event::new("call", "read_file", "r1", Some("read"), None),
-        Event::new("result", "read_file", "r1", Some("read"), Some(true)),
+      @src.Scenario::new("read", [
+        @src.Event::new("call", "read_file", "r1", Some("read"), None),
+        @src.Event::new("result", "read_file", "r1", Some("read"), Some(true)),
       ]),
       ["read"],
       "test",
@@ -77,17 +77,17 @@ test "suite runner applies policy to all selected run modes" {
   )
   assert_true(
     catalog.add_scenario(
-      Scenario::new("write", [
-        Event::new("call", "write_file", "w1", Some("write"), None),
-        Event::new("result", "write_file", "w1", Some("write"), Some(true)),
+      @src.Scenario::new("write", [
+        @src.Event::new("call", "write_file", "w1", Some("write"), None),
+        @src.Event::new("result", "write_file", "w1", Some("write"), Some(true)),
       ]),
       ["write"],
       "test",
       "denied write",
     ),
   )
-  let runner = SuiteRunner::new(catalog)
-  let policy = EvaluationPolicy::new(1, Some(["read_file"]))
+  let runner = @src.SuiteRunner::new(catalog)
+  let policy = @src.EvaluationPolicy::new(1, Some(["read_file"]))
   let all = runner.run_all("all", policy)
   assert_true(all.passed_names() == ["read"])
   assert_true(all.failed_names() == ["write"])
@@ -97,8 +97,8 @@ test "suite runner applies policy to all selected run modes" {
   let single = runner.run_events(
     "single-write",
     [
-      Event::new("call", "write_file", "w2", Some("write"), None),
-      Event::new("result", "write_file", "w2", Some("write"), Some(true)),
+      @src.Event::new("call", "write_file", "w2", Some("write"), None),
+      @src.Event::new("result", "write_file", "w2", Some("write"), Some(true)),
     ],
     policy,
   )

@@ -1,15 +1,27 @@
 ///|
 test "evaluates named scenarios independently and preserves order" {
   let scenarios = [
-    Scenario::new("read-ok", [
-      Event::new("call", "read_file", "same-id", Some("read"), None),
-      Event::new("result", "read_file", "same-id", Some("read"), Some(true)),
+    @src.Scenario::new("read-ok", [
+      @src.Event::new("call", "read_file", "same-id", Some("read"), None),
+      @src.Event::new(
+        "result",
+        "read_file",
+        "same-id",
+        Some("read"),
+        Some(true),
+      ),
     ]),
-    Scenario::new("orphan-result", [
-      Event::new("result", "read_file", "same-id", Some("read"), Some(true)),
+    @src.Scenario::new("orphan-result", [
+      @src.Event::new(
+        "result",
+        "read_file",
+        "same-id",
+        Some("read"),
+        Some(true),
+      ),
     ]),
   ]
-  let results = evaluate_scenarios(scenarios, 2)
+  let results = @src.evaluate_scenarios(scenarios, 2)
   assert_true(results.length() == 2)
   assert_true(results[0].name == "read-ok")
   assert_true(results[0].passed)
@@ -21,27 +33,33 @@ test "evaluates named scenarios independently and preserves order" {
 
 ///|
 test "empty scenario suite produces an empty result" {
-  assert_true(evaluate_scenarios([], 2).length() == 0)
+  assert_true(@src.evaluate_scenarios([], 2).length() == 0)
 }
 
 ///|
 test "policy-aware scenarios preserve isolation and reject disallowed tools" {
   let scenarios = [
-    Scenario::new("read-ok", [
-      Event::new("call", "read_file", "read-1", Some("read"), None),
-      Event::new("result", "read_file", "read-1", Some("read"), Some(true)),
+    @src.Scenario::new("read-ok", [
+      @src.Event::new("call", "read_file", "read-1", Some("read"), None),
+      @src.Event::new("result", "read_file", "read-1", Some("read"), Some(true)),
     ]),
-    Scenario::new("write-denied", [
-      Event::new("call", "write_file", "write-1", Some("write"), None),
-      Event::new("result", "write_file", "write-1", Some("write"), Some(true)),
+    @src.Scenario::new("write-denied", [
+      @src.Event::new("call", "write_file", "write-1", Some("write"), None),
+      @src.Event::new(
+        "result",
+        "write_file",
+        "write-1",
+        Some("write"),
+        Some(true),
+      ),
     ]),
   ]
-  let results = evaluate_scenarios_with_policy(
+  let results = @src.evaluate_scenarios_with_policy(
     scenarios,
-    EvaluationPolicy::new(1, Some(["read_file"])),
+    @src.EvaluationPolicy::new(1, Some(["read_file"])),
   )
   assert_true(results.length() == 2)
   assert_true(results[0].passed)
   assert_true(!results[1].passed)
-  assert_true(violation_code(results[1].violations[0]) == "AGC012")
+  assert_true(@src.violation_code(results[1].violations[0]) == "AGC012")
 }
