@@ -4,9 +4,22 @@
 
 MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用没有结果”“结果找不到调用”“重试太多次”“失败或未确认的调用之后仍然写入”“同一个写操作完成了两遍”这类问题。它不连接模型，也不替你做沙箱；它只检查已经观察到的事件。
 
+## 环境与安装
+
+需要 MoonBit 工具链，且 `moonc` 版本不低于 `0.10.14`。可用 `moon version --all` 查看当前版本；安装和升级方式见 [MoonBit 官方工具链文档](https://docs.moonbitlang.com/en/latest/toolchain/moon/commands.html)。Python 3.12 只用于运行下面的离线对照 fixture，MoonBit 核心和演示不依赖 Python。
+
+在其他 MoonBit 项目中添加已发布的 Mooncakes 包：
+
+```sh
+moon add 2515050242/moonagentcheck
+```
+
+Mooncakes 上当前已发布版本为 `0.1.4`；GitHub 上的 `0.2.0` 是持续开发线，包含更新的报告与适配 API，须等该版本发布后才可由 `moon add` 获取。需要验证 GitHub 开发线时，克隆本仓库并运行 `moon run main`，或按下方命令执行完整回归。
+
 ## 先跑起来
 
 ```powershell
+moon version --all
 moon fmt --check src main
 moon check
 moon test

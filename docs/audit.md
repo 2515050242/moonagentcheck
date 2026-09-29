@@ -26,18 +26,22 @@
 ## 当前验证
 
 ```text
+moonc v0.10.14 → 满足赛事最低版本
+moon fmt --check src main → 通过
 moon check  → 通过
 moon test   → 85 个测试通过
-moon fmt --check src main → 通过
+moon run main → 通过
 Python fixtures → 三类业务场景、通用 adapter 和 Responses fixture 共 5 个均通过
 ```
 
-GitHub Actions 当前的 MoonBit 与 Python 两个 job 均通过。MoonBit job 会先执行 `moon fmt --check src main`，再进行编译、测试与 demo。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
+远端最新已核实的 GitHub Actions 运行（提交 `b581e87`）中，MoonBit 与 Python 两个 job 均通过。当前本地改动新增了最低编译器版本门禁；该改动尚未推送，因此其 GitHub runner 结果需要在推送后观察。MoonBit job 会执行格式、版本、编译、测试与 demo。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
+
+按赛事要求版本的编译器执行 `moon check` 时会报告 440 条非阻断警告，主要是测试文件隐式引用同包符号（415 条）和派生 trait 隐式提升为方法的弃用提示（24 条），另有 1 条未使用包提示。当前编译、测试与演示均通过；这些警告尚未作为错误屏蔽，后续应逐步清理。
 
 ## 尚未宣称的能力
 
 - JSON 报告已覆盖场景明细和套件汇总；尚未实现 CLI 文件输出；
 - 尚未提供性能基准，因此不声称优于其他实现；
 - 尚未接入真实 Agent、MCP 服务或云端系统，因此示例全部是离线 fixture；
-- Mooncakes 已发布版本仍是 `0.1.4`，当前 GitHub 包元数据为 `0.2.0` 开发线；发布前仍需单独确认包内容和公开联系方式范围。
+- Mooncakes 已发布版本仍是 `0.1.4`，当前 GitHub 包元数据为 `0.2.0` 开发线；`moon publish --dry-run` 服务端返回 dry-run 完成，但本机 CLI 对 HTTP 202 返回非零退出，故不将其记作完整命令成功。正式发布 `0.2.0` 仍待授权与处理 CLI 响应问题。
 - 尚未提供性能基准或真实框架兼容承诺；当前证据仍是可复现的离线事件与 CI 测试。
