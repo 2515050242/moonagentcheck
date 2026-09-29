@@ -34,14 +34,14 @@ moon run main → 通过
 Python fixtures → 三类业务场景、通用 adapter 和 Responses fixture 共 5 个均通过
 ```
 
-远端最新已核实的 GitHub Actions 运行（提交 `b581e87`）中，MoonBit 与 Python 两个 job 均通过。当前本地改动新增了最低编译器版本门禁；该改动尚未推送，因此其 GitHub runner 结果需要在推送后观察。MoonBit job 会执行格式、版本、编译、测试与 demo。工作区使用的是 Codex 提供的 Python 3.12.14 运行时，系统 PATH 里的 `python` 命令仍未配置；这不影响 fixture 本身的验证。
+远端 CI 状态以 [GitHub Actions](https://github.com/2515050242/moonagentcheck/actions) 中针对最新 `master` 提交的运行结果为准。MoonBit job 显式执行格式检查、最低版本门禁、`moon build`、`moon check`、`moon test` 和验收演示；另一个 job 执行 5 个 Python fixtures。每次改动推送后都应核实对应提交的两个 job，而不是沿用旧 SHA 的结果。
 
-为避免覆盖本机现有安装，本轮在临时隔离目录使用 `moonc v0.10.14` 验证；系统默认终端仍可能解析到 `v0.10.11`，本机后续直接运行时应先按 README 升级工具链。最初 0.10.14 检查报告的 440 条警告中，415 条来自测试文件隐式引用同包符号；本地修正后，这类警告已清零。当前仍有 24 条派生 trait 隐式提升为方法的弃用提示，以及 1 条未使用包提示（合计 25 条非阻断警告）。当前编译、测试与演示均通过；剩余警告没有被屏蔽。
+为避免覆盖本机现有安装，本轮在临时隔离目录使用 `moonc v0.10.14` 验证；系统默认终端仍可能解析到 `v0.10.11`，本机后续直接运行时应先按 README 升级工具链。最初 0.10.14 检查报告的 440 条警告中，415 条来自测试文件隐式引用同包符号；本地修正后，这类警告已清零。当前仍有 24 条派生 trait 隐式提升为方法的弃用提示，以及 1 条未使用包提示（合计 25 条非阻断警告）。这些警告没有被屏蔽，也不阻止构建和测试。
 
 ## 尚未宣称的能力
 
 - JSON 报告已覆盖场景明细和套件汇总；尚未实现 CLI 文件输出；
 - 尚未提供性能基准，因此不声称优于其他实现；
 - 尚未接入真实 Agent、MCP 服务或云端系统，因此示例全部是离线 fixture；
-- Mooncakes 已发布版本仍是 `0.1.4`，当前 GitHub 包元数据为 `0.2.0` 开发线；`moon publish --dry-run` 服务端返回 dry-run 完成，但本机 CLI 对 HTTP 202 返回非零退出，故不将其记作完整命令成功。正式发布 `0.2.0` 仍待授权与处理 CLI 响应问题。
+- Mooncakes `0.2.0` 发布状态以 registry 页面可安装版本为准；本地 dry-run 已由服务端确认“Dry run completed successfully”，但 CLI 将 HTTP 202 记为非零退出码，不能仅凭 CLI 输出确认正式发布成功。
 - 尚未提供性能基准或真实框架兼容承诺；当前证据仍是可复现的离线事件与 CI 测试。
