@@ -78,3 +78,11 @@
 - 本轮：Responses adapter 曾会在重复 `function_call.call_id` 时覆盖内部字段映射；后续 output 因而可能被映射为第二条记录的工具和业务操作，与核心评估器的首个身份规则矛盾。
 - 现在适配器保留所有原始 call 事件供核心报告重复 ID，但仅用首条 call 回填 output；MoonBit 回归与 Python 离线 fixture 都检查该 output 仍映射为 `write_file` / `export-47`，评估结果只留下 `duplicate-call-id`。
 - 这只修复已观测 Responses 字段的离线映射一致性，不接入 API、JSON 解析、执行器或 Agent runtime。
+
+## 验收整改与 0.2.0 发布
+
+- `1e6dc10`：将仓库中不完整的 Apache 许可证摘录替换为 Apache 官方完整 2.0 文本；GitHub 现可识别 SPDX `Apache-2.0`。
+- `551b093`：在 CI 中单列 `moon build`，让验收清单中的构建证据清楚可见；最低版本、格式、构建、检查、测试和可运行 demo 均由 MoonBit job 验证。
+- `554bd08`：刷新 0.2.0 发布说明与审计材料；该提交对应的 MoonBit 和 Python CI jobs 均通过。
+- 发布 Mooncakes `2515050242/moonagentcheck@0.2.0`；registry manifest 将其标记为 latest 且 build success。随后在隔离消费方中安装包、import `src` 并真实调用 `Event::new` 与 `evaluate`，`moon run cmd/main` 成功。
+- 本轮没有修改申报书，也没有把离线 fixture 描述为真实 Agent runtime 或线上系统测试。
