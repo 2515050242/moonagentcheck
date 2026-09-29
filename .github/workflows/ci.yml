@@ -29,6 +29,8 @@ jobs:
           echo "moonc $compiler_version satisfies the minimum $required_version"
       - name: Verify MoonBit formatting
         run: moon fmt --check src main
+      - name: Build MoonBit packages
+        run: moon build
       - name: Check
         run: moon check
       - name: Test
