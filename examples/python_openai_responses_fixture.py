@@ -1,4 +1,4 @@
-"""Offline fixture for the documented OpenAI Responses function-call shape.
+"""Offline fixture for mixed OpenAI Responses output items.
 
 This is a fixture-side adapter only. The product contract remains implemented
 and tested in MoonBit under src/responses_adapter.mbt.
@@ -43,6 +43,11 @@ def adapt_response_items(items: list[dict[str, object]]) -> list[Event]:
                 raise ValueError(f"item {index}: output has no preceding call: {call_id}")
             ok = False if status == "incomplete" else outcome if status == "completed" else None
             events.append(Event("result", call.tool, call_id, call.operation_id, ok))
+        elif item_type in {"message", "reasoning"}:
+            # These items may appear beside tool calls in a Responses output
+            # array. They are not tool behavior events, but their positions
+            # remain visible to diagnostics for later items.
+            continue
         else:
             raise ValueError(f"item {index}: unsupported Responses item type")
     return events
@@ -69,6 +74,30 @@ def main() -> None:
         Event("result", "update_ticket", "call_42", "ticket-42", True),
     ]
     assert evaluate(events) == []
+    mixed_events = adapt_response_items([
+        {"type": "message", "role": "assistant", "content": []},
+        {
+            "type": "function_call",
+            "response_id": "resp_mixed",
+            "operation_id": "record-42",
+            "call_id": "call_mixed",
+            "name": "read_record",
+        },
+        {"type": "reasoning", "summary": []},
+        {
+            "type": "function_call_output",
+            "call_id": "call_mixed",
+            "status": "completed",
+            "outcome": True,
+        },
+        {"type": "message", "role": "assistant", "content": []},
+    ])
+    assert mixed_events == [
+        Event("call", "read_record", "call_mixed", "record-42"),
+        Event("result", "read_record", "call_mixed", "record-42", True),
+    ]
+    assert evaluate(mixed_events) == []
+
     duplicate_events = adapt_response_items([
         {
             "type": "function_call",
@@ -101,9 +130,19 @@ def main() -> None:
         ])
     except ValueError as error:
         assert "no preceding call" in str(error)
-        print("OpenAI Responses fixture passed")
     else:
         raise AssertionError("output cannot invent a tool name")
+    try:
+        adapt_response_items([
+            {"type": "message", "role": "assistant", "content": []},
+            {"type": "web_search_call"},
+        ])
+    except ValueError as error:
+        assert "item 1" in str(error)
+        assert "unsupported Responses item type" in str(error)
+        print("OpenAI Responses fixture passed")
+    else:
+        raise AssertionError("unsupported tool items must not be ignored")
 
 
 if __name__ == "__main__":

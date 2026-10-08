@@ -26,7 +26,8 @@
 | 期望/实际差分 | `diff_events`、字段级 `EventDiff` | `diff_test.mbt` 检查新增、删除和元数据变化 | 增加跨版本 fixture |
 | 工具与操作指标 | `collect_metrics`、风险统计 | `metrics_test.mbt` 检查成功率和重复写入 | 输出长期趋势 |
 | 策略与 CI 门禁 | `PolicyProfile`、`QualityGate`、`SuiteRunner` | `policy_test.mbt`、`quality_gate_test.mbt`、`runner_test.mbt` | 增加报告归档 |
-| Python 接入参考 | 三类业务场景、`python_adapter.py`、`python_openai_responses_fixture.py`，共 5 个 fixture | 本地 Python 运行与 malformed-record smoke test | 增加更多框架字段映射 |
+| Python 接入参考 | 三类业务场景、`python_adapter.py`、`python_openai_responses_fixture.py`，共 5 个 fixture；Responses 样例覆盖 message/reasoning 混合输出 | 本地 Python 运行与 malformed-record smoke test | 为更多实际输入样例补充字段映射 |
+| Responses 混合输出 | `responses_non_tool_item` 只跳过 `message`、`reasoning`；不支持的类型保留 `item_index` 并产生映射问题 | `responses_adapter_test.mbt` 与 Python fixture 覆盖混合序列和不支持类型 | 新增受支持的非工具类型时，先补字段语义和回归用例 |
 | CI 自动验证 | `.github/workflows/ci.yml`：MoonBit 格式、显式构建、检查、测试、验收 demo 与 Python fixture | GitHub Actions | 增加报告归档 |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
 | 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |

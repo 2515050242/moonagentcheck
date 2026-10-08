@@ -79,10 +79,11 @@ Agent / LLM / MCP / Workflow
 - 检查写入完成事件缺少逻辑操作 ID 的 `missing-operation-id`；
 - 提供 Trace 构造器、事件统计、输入预检和规则/套件级聚合 API；
 - 提供场景明细 JSON 与套件汇总 JSON，字段顺序稳定，便于 CI 消费；
+- Responses 适配器显式跳过 `message` 与 `reasoning`，未支持的输出项保留输入索引并产生映射问题；
 - 提供轨迹查询、逐步回放、检查点恢复和期望/实际字段级差分；
 - 提供工具/业务操作指标、策略预设、权限审计、场景目录、套件运行器和质量门禁；
 - 提供覆盖数据处理、仓库助手、工单重试的三类离线场景，以及通用 Python 记录 adapter 和 Responses function-call 适配 fixture；
-- 提供 85 个 MoonBit 回归测试；
+- 提供 87 个 MoonBit 回归测试；
 - 提供不访问模型、网络和真实文件系统的 5 个 Python 对照 fixture；
 - 提供 GitHub Actions，自动执行格式检查、`moon check`、`moon test`、MoonBit 演示和 5 个 Python fixture；
 - 提供中文 SVG 架构图、事件流程图和仓库结构图，降低项目审核成本。

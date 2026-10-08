@@ -86,3 +86,9 @@
 - `554bd08`：刷新 0.2.0 发布说明与审计材料；该提交对应的 MoonBit 和 Python CI jobs 均通过。
 - 发布 Mooncakes `2515050242/moonagentcheck@0.2.0`；registry manifest 将其标记为 latest 且 build success。随后在隔离消费方中安装包、import `src` 并真实调用 `Event::new` 与 `evaluate`，`moon run cmd/main` 成功。
 - 本轮没有修改申报书，也没有把离线 fixture 描述为真实 Agent runtime 或线上系统测试。
+
+## Responses 混合输出保持行为边界
+
+- 十月范围聚焦在完整 Responses 输出序列中区分工具行为与普通消息内容；`message`、`reasoning` 不代表工具调用，不应进入核心事件评估。
+- MoonBit 适配器新增显式非工具项标记，只跳过已支持的两类项目；其他项目类型保留输入索引并报告映射问题。
+- 新增混合输出和未支持类型的回归用例，并扩展现有 Python fixture。示例不含用户数据，也不连接模型或网络。

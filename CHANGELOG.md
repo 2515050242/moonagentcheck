@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Responses 适配器支持显式跳过 `message` 与 `reasoning` 项，并为未支持的输出项保留输入索引和映射问题；
+- 增加混合输出的 MoonBit 回归用例与 Python 离线示例。
+- 当前 MoonBit 回归测试数为 87 项。
+
 ## 0.2.0 - 2026-09-29
 
 - 增加策略上下文与来源审计报告；拒绝空策略来源，并保留稳定机器码；
