@@ -33,6 +33,54 @@ test "Responses function-call fields map to a complete core result" {
 }
 
 ///|
+test "Responses message and reasoning items do not disturb tool pairing" {
+  let adaptation = @src.adapt_responses_items([
+    @src.responses_non_tool_item("message"),
+    @src.responses_function_call(
+      "resp-mixed",
+      Some("operation-mixed"),
+      "call-mixed",
+      "read_record",
+    ),
+    @src.responses_non_tool_item("reasoning"),
+    @src.responses_function_call_output(
+      "call-mixed",
+      @src.responses_completed(),
+      Some(true),
+    ),
+    @src.responses_non_tool_item("message"),
+  ])
+  assert_true(adaptation.issues.length() == 0)
+  assert_true(adaptation.events.length() == 2)
+  assert_true(adaptation.events[0].kind == "call")
+  assert_true(adaptation.events[1].kind == "result")
+  assert_true(adaptation.events[1].call_id == "call-mixed")
+  assert_true(adaptation.events[1].operation_id == Some("operation-mixed"))
+  assert_true(@src.evaluate(adaptation.events, 1).length() == 0)
+}
+
+///|
+test "Responses adapter reports unsupported items at their source position" {
+  let adaptation = @src.adapt_responses_items([
+    @src.responses_non_tool_item("message"),
+    @src.responses_function_call(
+      "resp-supported",
+      None,
+      "call-supported",
+      "read_record",
+    ),
+    @src.responses_non_tool_item("web_search_call"),
+  ])
+  assert_true(adaptation.events.length() == 1)
+  assert_true(adaptation.issues.length() == 1)
+  assert_true(adaptation.issues[0].item_index == 2)
+  assert_true(
+    adaptation.issues[0].message ==
+    "unsupported Responses item type: web_search_call",
+  )
+}
+
+///|
 test "Responses output cannot invent a tool name without its call" {
   let adaptation = @src.adapt_responses_items([
     @src.responses_function_call_output(

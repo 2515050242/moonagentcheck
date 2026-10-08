@@ -35,6 +35,7 @@ pub fn responses_incomplete() -> ResponsesOutputStatus {
 pub enum ResponsesItem {
   FunctionCall(String, String?, String, String)
   FunctionCallOutput(String, ResponsesOutputStatus, Bool?)
+  NonToolItem(String)
 } derive(Eq, Debug)
 
 ///|
@@ -54,6 +55,16 @@ pub fn responses_function_call_output(
   observed_outcome : Bool?,
 ) -> ResponsesItem {
   FunctionCallOutput(call_id, status, observed_outcome)
+}
+
+///|
+/// Mark a known non-tool item in a Responses output sequence.
+///
+/// The adapter currently skips message and reasoning items while retaining
+/// the source position for any later mapping issue. Other item types remain
+/// unsupported until their behavior is modeled explicitly.
+pub fn responses_non_tool_item(item_type : String) -> ResponsesItem {
+  NonToolItem(item_type)
 }
 
 ///|
@@ -150,6 +161,13 @@ pub fn adapt_responses_items(
                 ),
               )
           }
+        }
+      NonToolItem(item_type) =>
+        if item_type != "message" && item_type != "reasoning" {
+          issues.push({
+            item_index: index,
+            message: "unsupported Responses item type: " + item_type,
+          })
         }
     }
   }
