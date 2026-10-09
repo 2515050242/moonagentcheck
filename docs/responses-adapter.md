@@ -63,4 +63,13 @@ let archive = responses_evaluation_report_json(items, context)
 
 ## 可复现 fixture
 
-`examples/python_openai_responses_fixture.py` 用 Python 标准库构造相同的公开字段形状，验证混合输出、call/result 关联、未知项目索引和“不能由孤立 output 猜工具名”的边界。它是离线 fixture，不是产品的第二套规则实现。
+`examples/fixtures/responses-ticket-traces.json` 是人工构造的合成遥测样例，不来自真实用户或线上会话。它保留了 Responses 工具调用的公开字段形状，并显式标注 `operation_id` 与 `outcome` 为应用侧遥测信封，用来表示核心事件模型需要的业务操作和执行器判断；这两个字段不声称是 Responses API 原生字段。
+
+| 样例 | 预期结果 |
+| --- | --- |
+| `synthetic-ticket-update-success` | call 与成功 output 配对，违规列表为空 |
+| `synthetic-ticket-update-unknown-outcome` | `completed` 缺少执行器 outcome，产生 `unknown-result` |
+| `synthetic-output-without-call` | 拒绝没有前置 call 的 output，并报告映射错误 |
+| `synthetic-unsupported-output-item` | 不静默忽略未支持类型，保留输入位置并报告映射错误 |
+
+`examples/python_openai_responses_fixture.py` 使用标准库读取这份 JSON fixture，再调用离线参考 adapter 和行为规则逐项比对预期。GitHub Actions 将它作为单独步骤运行；MoonBit 的字段映射、未知结果及归档报告行为由 `src/responses_adapter_test.mbt` 覆盖。该 Python 脚本只充当测试夹具，不是产品的第二套规则实现，也不发起 API 请求。

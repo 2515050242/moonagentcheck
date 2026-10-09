@@ -98,3 +98,9 @@
 - 本轮针对 Responses `completed` 仅表示输出项结束、不能证明业务执行成功这一边界，补上未知结果本身的失败关闭规则 `unknown-result`（`AGC018`）。
 - MoonBit 核心与 Responses 适配器回归验证 `ok: null` 会产生违规，归档报告为 `passed: false`；诊断摘要也将其列为错误。
 - 本次规则目标由开发者确定，AI 辅助实现、测试与文档整理，开发者复核结果并承担提交责任。
+
+## Responses 轨迹提供可复现输入
+
+- 为适配器补充四条人工构造的 JSON 遥测样例：明确成功、未知 outcome、没有前置调用的 output、未支持的输出类型；字段和预期结果都可直接检查。
+- `operation_id` 与 `outcome` 明确标为应用侧遥测字段，不冒充 Responses API 原生字段，也不把样例描述为真实用户日志。Python fixture 读取 JSON 并逐条核对预期，GitHub Actions 单独展示该步骤。
+- 本次问题与验收目标由开发者确定；AI 辅助样例、校验代码和说明整理，开发者负责最终复核和申报判断。

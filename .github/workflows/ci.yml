@@ -46,11 +46,12 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Run deterministic Python fixtures
+      - name: Run core deterministic Python fixtures
         run: |
           python examples/python_data_agent.py
           python examples/python_repository_agent.py
           python examples/python_ticket_agent.py
           python examples/python_adapter.py
-          python examples/python_openai_responses_fixture.py
+      - name: Run synthetic Responses trace fixture
+        run: python examples/python_openai_responses_fixture.py
 
