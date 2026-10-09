@@ -10,6 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install MoonBit
+        env:
+          MOONBIT_INSTALL_VERSION: "0.10.14+7d59c7ec9"
         shell: bash
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
