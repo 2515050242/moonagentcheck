@@ -83,7 +83,7 @@ Agent / LLM / MCP / Workflow
 - 提供轨迹查询、逐步回放、检查点恢复和期望/实际字段级差分；
 - 提供工具/业务操作指标、策略预设、权限审计、场景目录、套件运行器和质量门禁；
 - 提供覆盖数据处理、仓库助手、工单重试的三类离线场景，以及通用 Python 记录 adapter 和 Responses function-call 适配 fixture；
-- 提供 87 个 MoonBit 回归测试；
+- 当前十月开发线包含 89 个 MoonBit 回归测试；
 - 提供不访问模型、网络和真实文件系统的 5 个 Python 对照 fixture；
 - 提供 GitHub Actions，自动执行格式检查、`moon check`、`moon test`、MoonBit 演示和 5 个 Python fixture；
 - 提供中文 SVG 架构图、事件流程图和仓库结构图，降低项目审核成本。
@@ -137,5 +137,5 @@ Agent / LLM / MCP / Workflow
 
 ## 项目推进状态
 
-Mooncakes 与 GitHub 仓库的当前公开版本为 `0.2.0`；已完成核心规则、三类离线业务场景、结构化报告、Trace 工具、查询回放、输入预检、规则聚合、差分指标、策略门禁、Python/Responses adapter 和验收证据。十月新增内容将与该基线区分，并对应实际代码、测试和运行结果。
+Mooncakes 当前公开 latest 为 `0.2.0`；十月 `october-review` 开发分支声明未发布的 `0.3.0`。已有功能与新增开发内容分别对照各自版本，不把分支上的未发布实现描述成 Mooncakes 包功能。完整版本核对见[对齐说明](release-alignment.md)。
 

@@ -17,6 +17,7 @@
 - 工具化开发线：提供轨迹查询、逐步回放、字段级差分、工具/操作指标、策略审计、场景目录、套件运行器和质量门禁。
 - 规模补强：`src/` 中 MoonBit 非测试源码约 4,600 行，测试源码约 1,500 行；新增工具边界均由回归测试支撑，行数仅作规模记录。
 - 完成结项补强：仓库提供完整 Apache-2.0 文本；CI 显式执行 `moon build`；Mooncakes `0.2.0` 已发布并经独立消费方 smoke 验证。
+- 发布版本与十月开发线已分开记录：Mooncakes latest `0.2.0`；`october-review` 的 `0.3.0` 尚未发布，见[版本核对说明](release-alignment.md)。
 - Responses 混合输出：显式跳过 `message` 和 `reasoning`，未支持的项目类型保留输入索引并报告映射问题；MoonBit 与 Python 离线用例覆盖混合序列。
 - 未知结果关闭通过状态：`ok: null` 产生 `unknown-result`（`AGC018`）；Responses `completed` 但缺少执行器 outcome 时归档报告明确失败，并由 MoonBit 回归覆盖。
 

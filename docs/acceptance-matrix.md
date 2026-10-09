@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | MoonBit 为主要实现语言 | `src/*.mbt`、`moon.mod` | `moon check` | 保持核心规则在 MoonBit 中实现 |
 | 最低工具链 | 比赛要求 `moonc >= 0.10.14`；CI 显式比较版本 | `moonc -v` 与 GitHub Actions `Enforce minimum MoonBit compiler version` | 版本门禁已加入 |
-| Mooncakes 发布 | `2515050242/moonagentcheck@0.2.0` 已发布，registry 构建成功 | 隔离消费方执行 `moon add`、import `src`、调用 `Event::new` 与 `evaluate` 并运行；核对 [包页](https://mooncakes.io/docs/2515050242/moonagentcheck) | 继续让 registry README、版本和许可证与仓库保持同步 |
+| Mooncakes 发布与开发版本区分 | 已发布 latest 为 `0.2.0`；`october-review` 源码 `moon.mod` 为未发布开发线 `0.3.0` | 核对 [Mooncakes 包页](https://mooncakes.io/docs/2515050242/moonagentcheck)、`moon.mod`、`CHANGELOG.md`；见[版本核对说明](release-alignment.md) | 发布新包前更新 changelog、元数据和包页，不把分支验证称为 registry 发布 |
 | 调用与结果配对 | `src/contract.mbt` 的 `result-call-mismatch` / `AGC011` 与首个调用身份固定 | 工具名、`operation_id`、重复 `call_id` 改写身份与完全匹配的 MoonBit/Python 回归 | 增加乱序结果边界 |
 | 可配置工具策略 | `EvaluationPolicy`、`PolicyContext`、`evaluate_with_context`、`evaluation_report_json`、`tool-not-allowed` / `AGC012`、`missing-policy-source` / `AGC017` | allowlist 允许、拒绝、空列表、来源缺失、策略报告与旧 API 兼容的 MoonBit 回归 | 为具体框架补充字段映射 fixture |
 | 重试次数限制 | `attempts` 状态表 | `enforces retry limit` | 增加 0、1、最大值边界 |
