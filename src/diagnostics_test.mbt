@@ -36,6 +36,35 @@ test "diagnostic summaries separate error warning and info" {
 }
 
 ///|
+test "unknown result is an error that prevents a passing summary" {
+  let diagnostics = @src.diagnose(
+    [
+      @src.Event::new(
+        "call",
+        "update_ticket",
+        "call-unknown",
+        Some("ticket-1"),
+        None,
+      ),
+      @src.Event::new(
+        "result",
+        "update_ticket",
+        "call-unknown",
+        Some("ticket-1"),
+        None,
+      ),
+    ],
+    1,
+  )
+  let summary = @src.summarize_diagnostics(diagnostics)
+  assert_true(diagnostics.length() == 1)
+  assert_true(diagnostics[0].code == "AGC018")
+  assert_true(diagnostics[0].severity_name() == "error")
+  assert_true(summary.errors == 1)
+  assert_true(!summary.passed())
+}
+
+///|
 test "diagnostics preserve codes and render machine readable JSON" {
   let diagnostics = @src.diagnose(
     [@src.Event::new("call", "read", "c1", None, None)],

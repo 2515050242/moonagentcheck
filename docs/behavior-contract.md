@@ -2,7 +2,7 @@
 
 moonagentcheck 只判断适配器实际提交给它的事件。事件不完整或无法建立关联时，报告应返回 `inconclusive` 或明确的输入错误，而不是默认为通过。
 
-当前版本的十四条契约：
+当前版本的十五条契约：
 
 1. 每个工具结果必须对应一个已经出现的调用 ID。
 2. 同一个逻辑操作的调用次数不能超过配置的重试上限。
@@ -18,6 +18,7 @@ moonagentcheck 只判断适配器实际提交给它的事件。事件不完整�
 12. 配置了工具 allowlist 时，每个 call 的工具名必须在其中；不在列表中为 `tool-not-allowed`（`AGC012`），但不会跳过同一事件流的其他规则检查。未配置 allowlist 不限制工具；显式空列表拒绝所有工具。
 13. `write-complete` 与同一 `call_id` 的 call 必须具有相同工具名和 `operation_id`；任一字段不一致均为 `write-call-mismatch`（`AGC016`），防止另一工具或逻辑操作借用成功结果。
 14. 使用 `PolicyContext` 的评估必须标注非空配置来源；空来源为 `missing-policy-source`（`AGC017`），且来源不得从待验证事件取得。
+15. 已观察到的 result 若 `ok` 未知（`null`），必须报告 `unknown-result`（`AGC018`）；未知状态本身不能被视为通过，也不能等同于没有 result 的 `missing-result`。
 
 ## 输入与回归接口
 

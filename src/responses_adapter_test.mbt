@@ -238,6 +238,33 @@ test "Responses archive report retains mapping and policy evidence" {
 }
 
 ///|
+test "Responses completed output with unknown outcome fails the archive report" {
+  let output = @src.responses_evaluation_report_json(
+    [
+      @src.responses_function_call(
+        "resp-unknown",
+        Some("ticket-unknown"),
+        "call-unknown",
+        "update_ticket",
+      ),
+      @src.responses_function_call_output(
+        "call-unknown",
+        @src.responses_completed(),
+        None,
+      ),
+    ],
+    @src.PolicyContext::new(
+      "ci/ticketing-policy",
+      @src.EvaluationPolicy::new(1, None),
+    ),
+  )
+  assert_true(output.contains("\"passed\":false"))
+  assert_true(output.contains("\"code\":\"AGC018\""))
+  assert_true(output.contains("\"rule\":\"unknown-result\""))
+  assert_true(@json.valid(output))
+}
+
+///|
 test "Responses archive report JSON-escapes mapping issue evidence" {
   let output = @src.responses_evaluation_report_json(
     [

@@ -16,6 +16,7 @@
 | 结果唯一性 | `duplicate-result` 规则 | `detects duplicate results` | 增加乱序结果和失败结果场景 |
 | 写入关联完整性 | `missing-operation-id`、`write-call-mismatch` / `AGC016` | 写入必须保留业务操作 ID，并与成功调用的工具名、操作 ID 一致 | 接入 adapter 时保留业务操作 ID |
 | 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
+| 未知结果关闭通过状态 | `unknown-result` / `AGC018` | `ok: null` 单独产生违规；Responses `completed` 但无执行器 outcome 的归档报告为 `passed: false` | 接入真实执行器结果字段时保留未知与失败的区别 |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
 | MoonBit 可运行演示 | `main/main.mbt` | `moon run main`，断言重复写入返回 `AGC004` 并输出 JSON | 持续扩展真实适配示例 |
 | 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios`、`suite_summary_json` | `suite_test.mbt` 与 `analysis_test.mbt` 检查隔离、顺序和汇总 | 增加违规阈值门禁 |
