@@ -1,10 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 - Unreleased
 
-- Responses 适配器支持显式跳过 `message` 与 `reasoning` 项，并为未支持的输出项保留输入索引和映射问题；
-- 增加混合输出的 MoonBit 回归用例与 Python 离线示例。
-- 当前 MoonBit 回归测试数为 87 项。
+- 已知的 Responses 非工具项继续跳过，未支持类型保留输入索引并报告映射问题；
+- `ok: null` 产生 `unknown-result`（`AGC018`），诊断和归档报告会阻止轨迹判为通过；
+- 增加合成 Responses JSON 轨迹 fixture，并由离线 Python fixture 和独立 CI 步骤核对预期；
+- 生态定位说明按 2026-10-09 核对的 Mooncakes 页面补充来源与职责边界；
+- 当前开发线包含 89 项 MoonBit 回归测试；本节对应未发布开发内容，尚未创建 Mooncakes 发布。
 
 ## 0.2.0 - 2026-09-29
 
