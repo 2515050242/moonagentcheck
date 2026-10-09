@@ -32,6 +32,8 @@ MoonAgentCheck 用 MoonBit 实现确定性行为评估器：接入方将 Agent �
 
 项目把 Agent 的跨事件行为约束转成可重复的离线回归，补充 runtime、workflow 和 telemetry 各自的职责；它不运行 Agent、不连接模型或工具，也不替代权限沙箱。MoonAgentCheck 为原创项目，使用 Apache-2.0，不是对现有框架的移植。
 
+生态定位于 **2026-10-09** 核对：[workflow 0.10.0](https://mooncakes.io/docs/moonbitlang/workflow%400.10.0)负责多 Agent 工作流编排与 journal 恢复；[agent-sdk 0.2.1](https://mooncakes.io/docs/totto2727/agent-sdk%400.2.1)提供 Codex/OpenCode CLI session 抽象；[OpenTelemetry 0.1.7](https://mooncakes.io/docs/moonbit-community/opentelemetry)提供 traces、metrics、logs 与导出。各者与本项目存在邻接或局部重叠；MoonAgentCheck 聚焦对已映射事件做确定性行为契约检查。仓库当前没有集成这些项目，不宣称生态中不存在类似工具。来源与职责对照见[生态定位核对](ecosystem-positioning.md)。
+
 十月沿用 Responses 适配器，交付混合输出映射、未知或不匹配结果的失败关闭检查，以及可离线运行的场景 fixture。接入方将记录映射为 `Event`，MoonBit 核心按 `call_id` 和 `operation_id` 检查，再输出带规则码、事件位置和映射诊断的报告。
 
 ## 十月新增目标
