@@ -102,6 +102,8 @@ pub fn advice_for_rule(rule : String) -> String {
       "写入事件必须带业务 operation_id，避免无法判断重试。"
     "failed-result" =>
       "失败结果不能继续驱动写入或下游副作用。"
+    "unknown-result" =>
+      "结果状态未知，先补齐可验证的执行结果，再将轨迹判为通过。"
     "write-without-successful-result" =>
       "写入前必须看到同一调用的 ok=true result。"
     "result-call-mismatch" =>
@@ -127,6 +129,7 @@ pub fn severity_for_rule(rule : String) -> DiagnosticSeverity {
     "missing-policy-source" => Error
     "write-without-call" => Error
     "write-without-successful-result" => Error
+    "unknown-result" => Error
     "duplicate-side-effect" => Error
     "result-call-mismatch" => Error
     "orphan-result" => Warning

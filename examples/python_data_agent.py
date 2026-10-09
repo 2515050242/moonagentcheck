@@ -72,6 +72,8 @@ def evaluate_with_policy(
                     violations.append(f"failed-result:{event.call_id}")
                 elif event.ok is True:
                     successful.add(event.call_id)
+                else:
+                    violations.append(f"unknown-result:{event.call_id}")
         elif event.kind == "write-complete":
             call = calls.get(event.call_id)
             if call is None:

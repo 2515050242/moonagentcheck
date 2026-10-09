@@ -110,6 +110,15 @@ pub fn evaluate_with_policy(
                 event_index: index,
                 message: event.call_id,
               })
+            } else if state == Unknown {
+              // An observed result with no trustworthy outcome is not
+              // equivalent to a successful result. Fail closed so reports
+              // cannot mark an incomplete trace as passed.
+              violations.push({
+                rule: "unknown-result",
+                event_index: index,
+                message: event.call_id,
+              })
             }
           }
       }

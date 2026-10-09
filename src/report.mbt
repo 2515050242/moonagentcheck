@@ -28,6 +28,7 @@ pub fn rule_code(rule : String) -> String {
     "invalid-policy" => "AGC015"
     "write-call-mismatch" => "AGC016"
     "missing-policy-source" => "AGC017"
+    "unknown-result" => "AGC018"
     _ => "unknown"
   }
 }

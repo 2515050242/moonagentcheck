@@ -98,6 +98,22 @@ def main() -> None:
     ]
     assert evaluate(mixed_events) == []
 
+    unknown_events = adapt_response_items([
+        {
+            "type": "function_call",
+            "response_id": "resp_unknown",
+            "operation_id": "ticket-unknown",
+            "call_id": "call_unknown",
+            "name": "update_ticket",
+        },
+        {
+            "type": "function_call_output",
+            "call_id": "call_unknown",
+            "status": "completed",
+        },
+    ])
+    assert evaluate(unknown_events) == ["unknown-result:call_unknown"]
+
     duplicate_events = adapt_response_items([
         {
             "type": "function_call",

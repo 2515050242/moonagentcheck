@@ -115,7 +115,10 @@ test "Responses completed status alone remains an unknown result" {
   ])
   assert_true(adaptation.issues.length() == 0)
   assert_true(adaptation.events[1].ok == None)
-  assert_true(@src.evaluate(adaptation.events, 2).length() == 0)
+  let violations = @src.evaluate(adaptation.events, 2)
+  assert_true(violations.length() == 1)
+  assert_true(violations[0].rule == "unknown-result")
+  assert_true(@src.violation_code(violations[0]) == "AGC018")
 }
 
 ///|

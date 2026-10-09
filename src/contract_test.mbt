@@ -373,8 +373,9 @@ test "does not accept a write while the call result is unknown" {
     ),
   ]
   let report = @src.evaluate(events, 2)
-  assert_true(report.length() == 1)
-  assert_true(report[0].rule == "write-without-successful-result")
+  assert_true(report.length() == 2)
+  assert_true(report[0].rule == "unknown-result")
+  assert_true(report[1].rule == "write-without-successful-result")
 }
 
 ///|
