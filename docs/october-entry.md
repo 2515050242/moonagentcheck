@@ -1,6 +1,8 @@
 # MoonAgentCheck：面向 Agent 应用的行为契约与可重复测试工具
 
-**参赛者：**韦昌斌　　**方向：**MoonBit Agent 工程基础设施　　**许可证：**Apache-2.0
+**参赛者：**韦昌斌　　**GitHub ID：**`2515050242`　　**许可证：**Apache-2.0
+
+**申报类别：**章程第四点 4.2「季度优秀社区项目评选方向」——维护已有社区项目；技术方向为 MoonBit Agent 工程基础设施与行为测试。项目沿用九月通过初审的 MoonAgentCheck，不作为新项目重复申报。参赛类别以[比赛章程](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)为准。
 
 **公开仓库：**[2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)　　**Mooncakes：**`2515050242/moonagentcheck`
 
