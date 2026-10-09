@@ -6,6 +6,10 @@
 
 **公开仓库：**[2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)　　**Mooncakes：**`2515050242/moonagentcheck`
 
+## 参赛账号与公开记录
+
+参赛者使用的 GitHub ID 与公开仓库所有者均为 `2515050242`。十月参赛分支的公开提交记录中，作者和提交者均关联到该账号，可在[分支提交记录](https://github.com/2515050242/moonagentcheck/commits/october-review)核对。报名资料、仓库链接和提交记录应保持这一账号信息一致。
+
 ## 要解决的问题
 
 Agent 的工具调用可能出现结果缺失、失败后继续写入、重试过多或重复执行副作用。模型回复和普通日志难以直接表达这些跨事件约束，也不容易稳定地放进 CI 回归。
