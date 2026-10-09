@@ -4,6 +4,9 @@ This is a fixture-side adapter only. The product contract remains implemented
 and tested in MoonBit under src/responses_adapter.mbt.
 """
 
+import json
+from pathlib import Path
+
 from python_data_agent import Event, evaluate
 
 
@@ -97,6 +100,23 @@ def main() -> None:
         Event("result", "read_record", "call_mixed", "record-42", True),
     ]
     assert evaluate(mixed_events) == []
+
+    fixture_path = Path(__file__).parent / "fixtures" / "responses-ticket-traces.json"
+    fixtures = json.loads(fixture_path.read_text(encoding="utf-8"))
+    assert len(fixtures) == 4
+    for fixture in fixtures:
+        expected_error = fixture.get("expected_mapping_error")
+        if expected_error is not None:
+            try:
+                adapt_response_items(fixture["items"])
+            except ValueError as error:
+                assert str(error) == expected_error, fixture["name"]
+            else:
+                raise AssertionError(f"{fixture['name']}: expected mapping error")
+            continue
+
+        fixture_events = adapt_response_items(fixture["items"])
+        assert evaluate(fixture_events) == fixture["expected_violations"], fixture["name"]
 
     unknown_events = adapt_response_items([
         {
