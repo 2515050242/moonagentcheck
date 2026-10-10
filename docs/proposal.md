@@ -4,8 +4,8 @@
 
 - **项目名称：** MoonAgentCheck：面向 Agent 应用的行为契约与可重复测试工具
 - **参赛者：** 韦昌斌
-- **联系方式：** 19877252036
-- **GitHub 仓库链接：** [https://github.com/2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)
+- **联系方式：** 按比赛官方报名表要求填写（不在公开仓库中保存）
+- **GitHub 仓库链接：** [十月参赛分支](https://github.com/2515050242/moonagentcheck/tree/october-review)
 - **Mooncakes 模块：** `2515050242/moonagentcheck`
 - **项目方向：** MoonBit Agent 工程基础设施 / 行为测试与安全回归
 - **是否为移植项目：** 否，原创项目
@@ -34,7 +34,7 @@ MoonAgentCheck 将 Agent 的工具调用记录规范化为事件流，再通过�
 
 十月验收以本期新增的实现、回归用例和可复现示例为准；九月已有的评估规则、测试和发布记录只作为项目基础。项目不接入模型或网络，也不扩大为完整 SDK、MCP transport 或通用 JSON 解析器。
 
-开发者负责项目目标、事件语义、功能边界和验收结论；AI 工具用于辅助实现、测试用例整理和文档校对，最终代码与行为由开发者复核并负责。
+参赛者负责项目目标、事件语义、功能边界和验收标准；AI 工具辅助编码、测试用例整理和文档校对。提交前由参赛者复核申报内容、实现和验证记录，并对最终成果负责。
 
 ## 项目价值与生态定位
 
@@ -97,7 +97,7 @@ Agent / LLM / MCP / Workflow
 
 ## 预期验收产物
 
-- GitHub 公开仓库：[2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)；
+- GitHub 公开仓库：[十月参赛分支](https://github.com/2515050242/moonagentcheck/tree/october-review)；
 - Mooncakes 包：`2515050242/moonagentcheck`；
 - 可被其他 MoonBit 项目通过 `moon add 2515050242/moonagentcheck` 引入的核心库；
 - 一套独立于 Agent runtime 的事件模型和行为评估器；
@@ -134,6 +134,8 @@ Agent / LLM / MCP / Workflow
 - 不承诺对所有第三方 Agent 框架自动接入。
 
 这些内容可以在后续通过 adapter、插件或独立项目扩展，但不纳入本次首版验收，以保证核心库、测试和文档能够按期完成。
+
+申报书文件：[十月申报书（Markdown）](october-proposal.md) · [十月申报书（PDF）](../output/pdf/october-proposal.pdf)。
 
 ## 项目推进状态
 

@@ -4,7 +4,7 @@
 
 **申报类别：**章程第四点 4.2「季度优秀社区项目评选方向」——维护已有社区项目；技术方向为 MoonBit Agent 工程基础设施与行为测试。项目沿用九月通过初审的 MoonAgentCheck，不作为新项目重复申报。参赛类别以[比赛章程](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)为准。
 
-**公开仓库：**[2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)　　**Mooncakes：**`2515050242/moonagentcheck`
+**公开仓库：**[查看十月参赛分支](https://github.com/2515050242/moonagentcheck/tree/october-review)　　**Mooncakes：**`2515050242/moonagentcheck`　　**申报书：**[Markdown 版本](october-proposal.md) · [PDF 版本](../output/pdf/october-proposal.pdf)
 
 ## 参赛账号与公开记录
 
@@ -42,4 +42,4 @@ Responses 输出序列可能同时包含消息、推理内容和函数调用。�
 
 ## 验收方式
 
-验收检查三个场景的预期通过/违规结果，并以 MoonBit 回归、Python 离线 fixture 和 GitHub Actions 复核混合输出、调用关联、未知结果与未支持类型。示例使用公开字段形状，不含真实用户数据，也不依赖模型密钥或网络。开发者确定目标、规则边界和验收结论；AI 辅助实现、测试整理与文档校对，开发者复核并对结果负责。
+验收检查三个场景的预期通过/违规结果，并以 MoonBit 回归、Python 离线 fixture 和 GitHub Actions 复核混合输出、调用关联、未知结果与未支持类型。示例使用公开字段形状，不含真实用户数据，也不依赖模型密钥或网络。参赛者确定目标、规则边界和验收标准；AI 辅助编码、测试整理与文档校对。提交前由参赛者复核申报内容、实现和验证记录，并对最终成果负责。
