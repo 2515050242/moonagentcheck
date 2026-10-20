@@ -24,6 +24,14 @@ moon add 2515050242/moonagentcheck@0.2.0
 
 需要验证 GitHub 开发线时，克隆本仓库并运行 `moon run main`，或按下方命令执行完整回归。
 
+仓库的 MoonBit 示例入口还可以接收一段 JSON 字符串并输出结构化报告：
+
+```sh
+moon run main '[{"type":"function_call","response_id":"resp-1","operation_id":"ticket-1","call_id":"call-1","name":"read_ticket"},{"type":"function_call_output","call_id":"call-1","status":"completed","outcome":true}]'
+```
+
+这条命令走 MoonBit Responses 适配器和核心评估器。没有参数时运行内置重复写入演示；输入无法解析或含有未支持的输出类型时，报告会标记失败。`moon run main` 是仓库开发线的示例入口，尚未包含在 Mooncakes `0.2.0` 发布包中。
+
 ## 先跑起来
 
 ```powershell
@@ -66,7 +74,7 @@ let results = evaluate_scenarios_with_policy(scenarios, policy)
 // 每个 write_file call 都会保留 AGC012 违规证据。
 ```
 
-报告使用 MoonBit 标准库 JSON 编码器，因此引号、反斜线、换行、控制字符和中文字符串都会被正确表示；API 不读写文件，也不引入 CLI。
+报告使用 MoonBit 标准库 JSON 编码器，因此引号、反斜线、换行、控制字符和中文字符串都会被正确表示。核心库 API 不读写文件；仓库中的 `main` 示例入口接收 JSON 字符串参数并将报告写到标准输出，不提供文件读写或网络功能。
 
 `suite_summary_json(summarize_scenarios(results))` 输出场景通过数、失败数、违规总数和按规则聚合的稳定编码，适合作为 CI 门禁的单条汇总结果。
 
@@ -89,7 +97,7 @@ let report = evaluation_report_json(events, context)
 
 - 检查是确定性的，不访问网络、真实服务或真实文件系统；
 - `call_id` 标识一次工具调用，`operation_id` 标识一次可能重试的逻辑操作；
-- 当前结果提供结构化数组、稳定规则代码和稳定 JSON 报告；不提供 CLI；
+- 当前结果提供结构化数组、稳定规则代码和稳定 JSON 报告；仓库另有用于离线演示的 MoonBit JSON 示例入口；
 - 事件格式和规则会先跟着真实场景长出来，再考虑更大的适配层。
 
 ## 仓库里的几条线

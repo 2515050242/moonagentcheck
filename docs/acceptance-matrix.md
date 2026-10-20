@@ -18,7 +18,7 @@
 | 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
 | 未知结果关闭通过状态 | `unknown-result` / `AGC018` | `ok: null` 单独产生违规；Responses `completed` 但无执行器 outcome 的归档报告为 `passed: false` | 接入真实执行器结果字段时保留未知与失败的区别 |
 | 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
-| MoonBit 可运行演示 | `main/main.mbt` | `moon run main`，断言重复写入返回 `AGC004` 并输出 JSON | 持续扩展真实适配示例 |
+| MoonBit 可运行演示与 JSON 入口 | `main/main.mbt`、`main/responses_json_test.mbt` | 无参数运行 `moon run main`；传入 Responses JSON 时验证真实适配和评估结果；混合消息/推理项、未知结果、未支持类型、非法 JSON 和字段类型均有回归 | 保持示例与核心实现分层，新增输入类型先定义映射行为 |
 | 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios`、`suite_summary_json` | `suite_test.mbt` 与 `analysis_test.mbt` 检查隔离、顺序和汇总 | 增加违规阈值门禁 |
 | 轨迹构造与统计 | `Trace` builder、`TraceStats`、`trace_stats` | `trace_test.mbt` 检查 call/result/write 和状态计数 | 提供框架 adapter 的字段映射 |
 | 输入预检 | `validate_events` / `AGC013`–`AGC015` | 空字段、未知事件、负重试策略测试 | 增加错误定位和 adapter 诊断 |

@@ -36,3 +36,31 @@ test "event JSON CLI uses the MoonBit contract evaluator and policy" {
   assert_true(report.contains("\"code\":\"AGC012\""))
   assert_true(@json.valid(report))
 }
+
+///|
+test "Responses JSON CLI keeps message and reasoning outside the event trace" {
+  let report = @main.responses_json_report(
+    "[{\"type\":\"message\",\"id\":\"msg-1\"},{\"type\":\"function_call\",\"response_id\":\"resp-1\",\"operation_id\":\"lookup-1\",\"call_id\":\"call-1\",\"name\":\"read_ticket\"},{\"type\":\"reasoning\",\"id\":\"rs-1\"},{\"type\":\"function_call_output\",\"call_id\":\"call-1\",\"status\":\"completed\",\"outcome\":true}]",
+  )
+  assert_true(report.contains("\"passed\":true"))
+  assert_true(report.contains("\"mapped_event_count\":2"))
+  assert_true(@json.valid(report))
+}
+
+///|
+test "JSON CLI rejects malformed JSON instead of returning a pass" {
+  let report = @main.responses_json_report("{not-json")
+  assert_true(report.contains("\"passed\":false"))
+  assert_true(report.contains("invalid JSON input"))
+  assert_true(@json.valid(report))
+}
+
+///|
+test "event JSON CLI rejects values with the wrong field type" {
+  let report = @main.responses_json_report(
+    "{\"events\":[{\"kind\":\"result\",\"tool\":\"read_file\",\"call_id\":\"call-1\",\"ok\":\"true\"}]}",
+  )
+  assert_true(report.contains("\"passed\":false"))
+  assert_true(report.contains("ok must be a boolean or null"))
+  assert_true(@json.valid(report))
+}
