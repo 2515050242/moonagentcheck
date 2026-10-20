@@ -46,7 +46,7 @@
         "outcome": true
       }
     ],
-    "expected_mapping_error": "item 0: output has no preceding call: call_demo_003"
+    "expected_mapping_error": "function call output has no preceding function call: call_demo_003"
   },
   {
     "name": "synthetic-unsupported-output-item",
@@ -56,6 +56,6 @@
         "id": "search_demo_004"
       }
     ],
-    "expected_mapping_error": "item 0: unsupported Responses item type"
+    "expected_mapping_error": "unsupported Responses item type: web_search_call"
   }
 ]

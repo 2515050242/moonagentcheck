@@ -1,63 +1,26 @@
-"""Offline fixture for mixed OpenAI Responses output items.
-
-This is a fixture-side adapter only. The product contract remains implemented
-and tested in MoonBit under src/responses_adapter.mbt.
-"""
+"""Responses fixture checked by MoonBit's adapter and contract evaluator."""
 
 import json
 from pathlib import Path
 
-from python_data_agent import Event, evaluate
+from moonbit_cli import evaluate_responses_items
 
 
-def adapt_response_items(items: list[dict[str, object]]) -> list[Event]:
-    """Map ordered Responses items, preserving call identity and tool names."""
-    calls: dict[str, Event] = {}
-    events: list[Event] = []
-    for index, item in enumerate(items):
-        item_type = item.get("type")
-        if item_type == "function_call":
-            response_id = item.get("response_id")
-            operation_id = item.get("operation_id")
-            call_id = item.get("call_id")
-            name = item.get("name")
-            if not all(isinstance(value, str) and value for value in (response_id, call_id, name)):
-                raise ValueError(f"item {index}: function_call needs response_id, call_id, and name")
-            if operation_id is not None and not isinstance(operation_id, str):
-                raise ValueError(f"item {index}: operation_id must be a string")
-            event = Event("call", name, call_id, operation_id)
-            # Preserve the first observed identity just as the MoonBit
-            # evaluator does. The repeated call remains in `events`, where the
-            # contract reports it, but a later output cannot be rebound to it.
-            calls.setdefault(call_id, event)
-            events.append(event)
-        elif item_type == "function_call_output":
-            call_id = item.get("call_id")
-            status = item.get("status")
-            outcome = item.get("outcome")
-            if not isinstance(call_id, str) or not call_id:
-                raise ValueError(f"item {index}: function_call_output needs call_id")
-            if status not in {"in_progress", "completed", "incomplete"}:
-                raise ValueError(f"item {index}: unsupported output status")
-            if outcome is not None and not isinstance(outcome, bool):
-                raise ValueError(f"item {index}: outcome must be boolean")
-            call = calls.get(call_id)
-            if call is None:
-                raise ValueError(f"item {index}: output has no preceding call: {call_id}")
-            ok = False if status == "incomplete" else outcome if status == "completed" else None
-            events.append(Event("result", call.tool, call_id, call.operation_id, ok))
-        elif item_type in {"message", "reasoning"}:
-            # These items may appear beside tool calls in a Responses output
-            # array. They are not tool behavior events, but their positions
-            # remain visible to diagnostics for later items.
-            continue
-        else:
-            raise ValueError(f"item {index}: unsupported Responses item type")
-    return events
+def violations(report: dict[str, object]) -> list[str]:
+    raw_violations = report["violations"]
+    assert isinstance(raw_violations, list)
+    result: list[str] = []
+    for violation in raw_violations:
+        assert isinstance(violation, dict)
+        rule = violation["rule"]
+        message = violation["message"]
+        assert isinstance(rule, str) and isinstance(message, str)
+        result.append(f"{rule}:{message}")
+    return result
 
 
 def main() -> None:
-    events = adapt_response_items([
+    successful_items = [
         {
             "type": "function_call",
             "response_id": "resp_42",
@@ -71,13 +34,12 @@ def main() -> None:
             "status": "completed",
             "outcome": True,
         },
-    ])
-    assert events == [
-        Event("call", "update_ticket", "call_42", "ticket-42"),
-        Event("result", "update_ticket", "call_42", "ticket-42", True),
     ]
-    assert evaluate(events) == []
-    mixed_events = adapt_response_items([
+    successful_report = evaluate_responses_items(successful_items)
+    assert successful_report["passed"] is True
+    assert violations(successful_report) == []
+
+    mixed_report = evaluate_responses_items([
         {"type": "message", "role": "assistant", "content": []},
         {
             "type": "function_call",
@@ -95,30 +57,27 @@ def main() -> None:
         },
         {"type": "message", "role": "assistant", "content": []},
     ])
-    assert mixed_events == [
-        Event("call", "read_record", "call_mixed", "record-42"),
-        Event("result", "read_record", "call_mixed", "record-42", True),
-    ]
-    assert evaluate(mixed_events) == []
+    assert mixed_report["passed"] is True
+    assert mixed_report["mapped_event_count"] == 2
 
     fixture_path = Path(__file__).parent / "fixtures" / "responses-ticket-traces.json"
     fixtures = json.loads(fixture_path.read_text(encoding="utf-8"))
     assert len(fixtures) == 4
     for fixture in fixtures:
+        report = evaluate_responses_items(fixture["items"])
         expected_error = fixture.get("expected_mapping_error")
         if expected_error is not None:
-            try:
-                adapt_response_items(fixture["items"])
-            except ValueError as error:
-                assert str(error) == expected_error, fixture["name"]
-            else:
-                raise AssertionError(f"{fixture['name']}: expected mapping error")
+            issues = report["mapping_issues"]
+            assert isinstance(issues, list) and issues, fixture["name"]
+            assert issues[0]["message"] == expected_error, fixture["name"]
+            assert report["passed"] is False, fixture["name"]
             continue
 
-        fixture_events = adapt_response_items(fixture["items"])
-        assert evaluate(fixture_events) == fixture["expected_violations"], fixture["name"]
+        expected = fixture["expected_violations"]
+        assert violations(report) == expected, fixture["name"]
+        assert report["passed"] is (len(expected) == 0), fixture["name"]
 
-    unknown_events = adapt_response_items([
+    unknown_report = evaluate_responses_items([
         {
             "type": "function_call",
             "response_id": "resp_unknown",
@@ -132,9 +91,10 @@ def main() -> None:
             "status": "completed",
         },
     ])
-    assert evaluate(unknown_events) == ["unknown-result:call_unknown"]
+    assert unknown_report["passed"] is False
+    assert violations(unknown_report) == ["unknown-result:call_unknown"]
 
-    duplicate_events = adapt_response_items([
+    duplicate_report = evaluate_responses_items([
         {
             "type": "function_call",
             "response_id": "resp_47",
@@ -156,29 +116,17 @@ def main() -> None:
             "outcome": True,
         },
     ])
-    assert duplicate_events[2] == Event(
-        "result", "write_file", "call_47", "export-47", True
-    )
-    assert evaluate(duplicate_events) == ["duplicate-call-id:call_47"]
-    try:
-        adapt_response_items([
-            {"type": "function_call_output", "call_id": "unknown", "status": "completed"},
-        ])
-    except ValueError as error:
-        assert "no preceding call" in str(error)
-    else:
-        raise AssertionError("output cannot invent a tool name")
-    try:
-        adapt_response_items([
-            {"type": "message", "role": "assistant", "content": []},
-            {"type": "web_search_call"},
-        ])
-    except ValueError as error:
-        assert "item 1" in str(error)
-        assert "unsupported Responses item type" in str(error)
-        print("OpenAI Responses fixture passed")
-    else:
-        raise AssertionError("unsupported tool items must not be ignored")
+    assert duplicate_report["passed"] is False
+    assert violations(duplicate_report) == ["duplicate-call-id:call_47"]
+
+    unsupported_report = evaluate_responses_items([
+        {"type": "message", "role": "assistant", "content": []},
+        {"type": "web_search_call"},
+    ])
+    assert unsupported_report["passed"] is False
+    issues = unsupported_report["mapping_issues"]
+    assert isinstance(issues, list) and issues[0]["item_index"] == 1
+    print("MoonBit Responses fixture passed")
 
 
 if __name__ == "__main__":

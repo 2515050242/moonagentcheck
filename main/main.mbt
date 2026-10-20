@@ -114,6 +114,135 @@ fn responses_item_from_json(value : Json) -> @src.ResponsesItem {
 }
 
 ///|
+fn event_from_json(value : Json) -> Result[@src.Event, String] {
+  match value {
+    Json::Object(item) => {
+      let kind = json_string_field(item, "kind")
+      let tool = json_string_field(item, "tool")
+      let call_id = json_string_field(item, "call_id")
+      let operation_id = match item.get("operation_id") {
+        None | Some(Json::Null) => Ok(None)
+        Some(Json::String(value)) => Ok(Some(value))
+        Some(_) => Err("operation_id must be a string or null")
+      }
+      let ok = match item.get("ok") {
+        None | Some(Json::Null) => Ok(None)
+        Some(Json::True) => Ok(Some(true))
+        Some(Json::False) => Ok(Some(false))
+        Some(_) => Err("ok must be a boolean or null")
+      }
+      match (kind, tool, call_id, operation_id, ok) {
+        (Some(kind), Some(tool), Some(call_id), Ok(operation_id), Ok(ok)) =>
+          if kind == "call" || kind == "result" || kind == "write-complete" {
+            if tool == "" || call_id == "" {
+              Err("tool and call_id must be non-empty strings")
+            } else {
+              Ok(@src.Event::new(kind, tool, call_id, operation_id, ok))
+            }
+          } else {
+            Err("unsupported event kind")
+          }
+        (_, _, _, Err(message), _) => Err(message)
+        (_, _, _, _, Err(message)) => Err(message)
+        _ => Err("event needs string kind, tool, and call_id fields")
+      }
+    }
+    _ => Err("event must be a JSON object")
+  }
+}
+
+///|
+fn event_array_from_json(
+  values : Array[Json],
+) -> Result[Array[@src.Event], String] {
+  let events : Array[@src.Event] = []
+  let issues : Array[String] = []
+  for index, value in values {
+    match event_from_json(value) {
+      Ok(event) => events.push(event)
+      Err(message) => issues.push("event " + index.to_string() + ": " + message)
+    }
+  }
+  if issues.length() == 0 {
+    Ok(events)
+  } else {
+    Err(issues[0])
+  }
+}
+
+///|
+fn request_max_retries(object : Map[String, Json]) -> Result[Int32, String] {
+  match object.get("max_retries") {
+    None => Ok(2)
+    Some(value) =>
+      try {
+        let retries : Int32 = @json.from_json(value)
+        if retries < 0 {
+          Err("max_retries must not be negative")
+        } else {
+          Ok(retries)
+        }
+      } catch {
+        _ => Err("max_retries must be an integer")
+      }
+  }
+}
+
+///|
+fn request_tool_allowlist(
+  object : Map[String, Json],
+) -> Result[Array[String]?, String] {
+  match object.get("tool_allowlist") {
+    None | Some(Json::Null) => Ok(None)
+    Some(Json::Array(values)) => {
+      let tools : Array[String] = []
+      let issues : Array[String] = []
+      for value in values {
+        match value {
+          Json::String(tool) => tools.push(tool)
+          _ => issues.push("tool_allowlist entries must be strings")
+        }
+      }
+      if issues.length() == 0 {
+        Ok(Some(tools))
+      } else {
+        Err(issues[0])
+      }
+    }
+    Some(_) => Err("tool_allowlist must be an array or null")
+  }
+}
+
+///|
+fn event_json_report(value : Json) -> String {
+  match value {
+    Json::Object(object) =>
+      match object.get("events") {
+        Some(Json::Array(values)) =>
+          match event_array_from_json(values) {
+            Ok(events) =>
+              match
+                (request_max_retries(object), request_tool_allowlist(object)) {
+                (Ok(max_retries), Ok(tool_allowlist)) =>
+                  @src.evaluation_report_json(
+                    events,
+                    @src.PolicyContext::new(
+                      "cli/events-json",
+                      @src.EvaluationPolicy::new(max_retries, tool_allowlist),
+                    ),
+                  )
+                (Err(message), _) | (_, Err(message)) =>
+                  input_error_report(message)
+              }
+            Err(message) => input_error_report(message)
+          }
+        _ => input_error_report("expected an events array")
+      }
+    _ => input_error_report("expected an event request object")
+  }
+}
+
+///|
 fn input_error_report(message : String) -> String {
   Json::object({
     "adapter": Json::string("openai-responses-function-call"),
@@ -135,7 +264,11 @@ pub fn responses_json_report(input : String) -> String {
             @src.EvaluationPolicy::new(1, None),
           ),
         )
-      _ => input_error_report("expected a JSON array of Responses items")
+      Json::Object(_) => event_json_report(parsed)
+      _ =>
+        input_error_report(
+          "expected a Responses item array or an event request object",
+        )
     }
   } catch {
     _ => input_error_report("invalid JSON input")

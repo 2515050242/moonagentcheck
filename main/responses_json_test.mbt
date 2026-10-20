@@ -26,3 +26,13 @@ test "Responses JSON CLI rejects unsupported output items" {
   )
   assert_true(@json.valid(report))
 }
+
+///|
+test "event JSON CLI uses the MoonBit contract evaluator and policy" {
+  let report = @main.responses_json_report(
+    "{\"max_retries\":2,\"tool_allowlist\":[\"read_file\"],\"events\":[{\"kind\":\"call\",\"tool\":\"write_file\",\"call_id\":\"call-1\",\"operation_id\":\"write-1\"}]}",
+  )
+  assert_true(report.contains("\"passed\":false"))
+  assert_true(report.contains("\"code\":\"AGC012\""))
+  assert_true(@json.valid(report))
+}
