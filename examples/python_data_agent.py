@@ -52,6 +52,11 @@ def main() -> None:
     ]
     violations = evaluate(events)
     assert "failed-result:c1" in violations
+    assert "duplicate-side-effect:reply-42" in violations
+    assert evaluate([
+        Event("call", "lookup", "unknown-1", "lookup-record"),
+        Event("result", "lookup", "unknown-1", "lookup-record", ok=None),
+    ]) == ["unknown-result:unknown-1"]
     assert evaluate([
         Event("call", "read_csv", "match-1", "inspect-columns"),
         Event("result", "write_csv", "match-1", "inspect-columns", ok=True),
