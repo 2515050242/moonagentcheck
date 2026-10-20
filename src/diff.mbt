@@ -39,7 +39,7 @@ pub fn event_field_name(field : EventField) -> String {
 
 ///|
 pub struct EventDiff {
-  index : Int
+  index : Int32
   kind : EventDiffKind
   expected : Event?
   actual : Event?
@@ -107,7 +107,7 @@ fn event_changed_fields(expected : Event, actual : Event) -> Array[EventField] {
 pub fn diff_event_at(
   expected : Array[Event],
   actual : Array[Event],
-  index : Int,
+  index : Int32,
 ) -> EventDiff {
   let has_expected = index >= 0 && index < expected.length()
   let has_actual = index >= 0 && index < actual.length()
@@ -185,7 +185,10 @@ pub fn removed_diffs(diffs : Array[EventDiff]) -> Array[EventDiff] {
 }
 
 ///|
-pub fn field_change_count(diffs : Array[EventDiff], field : EventField) -> Int {
+pub fn field_change_count(
+  diffs : Array[EventDiff],
+  field : EventField,
+) -> Int32 {
   let mut count = 0
   for diff in diffs {
     if diff.changed_fields.contains(field) {
@@ -197,12 +200,12 @@ pub fn field_change_count(diffs : Array[EventDiff], field : EventField) -> Int {
 
 ///|
 pub struct DiffSummary {
-  total_positions : Int
-  matched_positions : Int
-  changed_positions : Int
-  added_positions : Int
-  removed_positions : Int
-  changed_fields : Int
+  total_positions : Int32
+  matched_positions : Int32
+  changed_positions : Int32
+  added_positions : Int32
+  removed_positions : Int32
+  changed_fields : Int32
 }
 
 ///|
@@ -239,7 +242,7 @@ pub fn DiffSummary::equal(summary : DiffSummary) -> Bool {
 }
 
 ///|
-pub fn DiffSummary::distance(summary : DiffSummary) -> Int {
+pub fn DiffSummary::distance(summary : DiffSummary) -> Int32 {
   summary.changed_positions +
   summary.added_positions +
   summary.removed_positions
@@ -299,7 +302,7 @@ pub fn first_changed_diff(diffs : Array[EventDiff]) -> EventDiff? {
 }
 
 ///|
-pub fn first_changed_index(diffs : Array[EventDiff]) -> Int? {
+pub fn first_changed_index(diffs : Array[EventDiff]) -> Int32? {
   match first_changed_diff(diffs) {
     Some(diff) => Some(diff.index)
     None => None
@@ -310,7 +313,7 @@ pub fn first_changed_index(diffs : Array[EventDiff]) -> Int? {
 pub fn traces_share_prefix(
   expected : Array[Event],
   actual : Array[Event],
-  length : Int,
+  length : Int32,
 ) -> Bool {
   if length < 0 || length > expected.length() || length > actual.length() {
     false

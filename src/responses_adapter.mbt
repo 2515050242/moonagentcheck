@@ -71,7 +71,7 @@ pub fn responses_non_tool_item(item_type : String) -> ResponsesItem {
 /// A mapping issue is kept separate from contract violations because it means
 /// the adapter could not produce a trustworthy Event at all.
 pub struct ResponsesMappingIssue {
-  item_index : Int
+  item_index : Int32
   message : String
 } derive(Eq, Debug)
 

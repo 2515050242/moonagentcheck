@@ -2,12 +2,12 @@
 /// Per-tool counters provide a small, dependency-free observability layer.
 pub struct ToolMetric {
   tool : String
-  calls : Int
-  results : Int
-  successes : Int
-  failures : Int
-  unknowns : Int
-  writes : Int
+  calls : Int32
+  results : Int32
+  successes : Int32
+  failures : Int32
+  unknowns : Int32
+  writes : Int32
 }
 
 ///|
@@ -24,12 +24,12 @@ pub fn ToolMetric::new(tool : String) -> ToolMetric {
 }
 
 ///|
-pub fn ToolMetric::total_outcomes(metric : ToolMetric) -> Int {
+pub fn ToolMetric::total_outcomes(metric : ToolMetric) -> Int32 {
   metric.successes + metric.failures + metric.unknowns
 }
 
 ///|
-pub fn ToolMetric::success_rate(metric : ToolMetric) -> Int {
+pub fn ToolMetric::success_rate(metric : ToolMetric) -> Int32 {
   if metric.results == 0 {
     0
   } else {
@@ -58,12 +58,12 @@ pub fn ToolMetric::render(metric : ToolMetric) -> String {
 ///|
 pub struct OperationMetric {
   operation_id : String
-  attempts : Int
-  failed_attempts : Int
-  successful_attempts : Int
-  unknown_attempts : Int
-  writes : Int
-  duplicate_writes : Int
+  attempts : Int32
+  failed_attempts : Int32
+  successful_attempts : Int32
+  unknown_attempts : Int32
+  writes : Int32
+  duplicate_writes : Int32
 }
 
 ///|
@@ -106,19 +106,19 @@ pub fn OperationMetric::render(metric : OperationMetric) -> String {
 
 ///|
 pub struct TraceMetrics {
-  event_count : Int
-  call_count : Int
-  result_count : Int
-  write_count : Int
-  successful_results : Int
-  failed_results : Int
-  unknown_results : Int
+  event_count : Int32
+  call_count : Int32
+  result_count : Int32
+  write_count : Int32
+  successful_results : Int32
+  failed_results : Int32
+  unknown_results : Int32
   tools : Array[ToolMetric]
   operations : Array[OperationMetric]
 }
 
 ///|
-fn metric_tool_index(metrics : Array[ToolMetric], tool : String) -> Int? {
+fn metric_tool_index(metrics : Array[ToolMetric], tool : String) -> Int32? {
   for index, metric in metrics {
     if metric.tool == tool {
       return Some(index)
@@ -131,7 +131,7 @@ fn metric_tool_index(metrics : Array[ToolMetric], tool : String) -> Int? {
 fn metric_operation_index(
   metrics : Array[OperationMetric],
   operation_id : String,
-) -> Int? {
+) -> Int32? {
   for index, metric in metrics {
     if metric.operation_id == operation_id {
       return Some(index)
@@ -141,7 +141,7 @@ fn metric_operation_index(
 }
 
 ///|
-fn ensure_tool_metric(metrics : Array[ToolMetric], tool : String) -> Int {
+fn ensure_tool_metric(metrics : Array[ToolMetric], tool : String) -> Int32 {
   match metric_tool_index(metrics, tool) {
     Some(index) => index
     None => {
@@ -155,7 +155,7 @@ fn ensure_tool_metric(metrics : Array[ToolMetric], tool : String) -> Int {
 fn ensure_operation_metric(
   metrics : Array[OperationMetric],
   operation_id : String,
-) -> Int {
+) -> Int32 {
   match metric_operation_index(metrics, operation_id) {
     Some(index) => index
     None => {
@@ -169,8 +169,8 @@ fn ensure_operation_metric(
 pub fn collect_metrics(events : Array[Event]) -> TraceMetrics {
   let tools : Array[ToolMetric] = []
   let operations : Array[OperationMetric] = []
-  let calls : Map[String, Int] = Map([])
-  let completed_operations : Map[String, Int] = Map([])
+  let calls : Map[String, Int32] = Map([])
+  let completed_operations : Map[String, Int32] = Map([])
   let mut call_count = 0
   let mut result_count = 0
   let mut write_count = 0
@@ -275,7 +275,7 @@ pub fn collect_metrics(events : Array[Event]) -> TraceMetrics {
 }
 
 ///|
-pub fn TraceMetrics::success_rate(metrics : TraceMetrics) -> Int {
+pub fn TraceMetrics::success_rate(metrics : TraceMetrics) -> Int32 {
   if metrics.result_count == 0 {
     0
   } else {
@@ -284,7 +284,7 @@ pub fn TraceMetrics::success_rate(metrics : TraceMetrics) -> Int {
 }
 
 ///|
-pub fn TraceMetrics::failure_rate(metrics : TraceMetrics) -> Int {
+pub fn TraceMetrics::failure_rate(metrics : TraceMetrics) -> Int32 {
   if metrics.result_count == 0 {
     0
   } else {

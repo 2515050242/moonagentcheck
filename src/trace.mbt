@@ -53,7 +53,7 @@ pub fn Trace::write_complete(
 }
 
 ///|
-pub fn Trace::len(trace : Trace) -> Int {
+pub fn Trace::len(trace : Trace) -> Int32 {
   trace.events.length()
 }
 
@@ -69,13 +69,13 @@ pub fn Trace::events(trace : Trace) -> Array[Event] {
 
 ///|
 pub struct TraceStats {
-  event_count : Int
-  call_count : Int
-  result_count : Int
-  write_count : Int
-  successful_result_count : Int
-  failed_result_count : Int
-  unknown_result_count : Int
+  event_count : Int32
+  call_count : Int32
+  result_count : Int32
+  write_count : Int32
+  successful_result_count : Int32
+  failed_result_count : Int32
+  unknown_result_count : Int32
 }
 
 ///|

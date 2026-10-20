@@ -16,7 +16,7 @@ pub fn diagnostic_severity_name(severity : DiagnosticSeverity) -> String {
 }
 
 ///|
-pub fn diagnostic_severity_rank(severity : DiagnosticSeverity) -> Int {
+pub fn diagnostic_severity_rank(severity : DiagnosticSeverity) -> Int32 {
   match severity {
     Info => 1
     Warning => 2
@@ -29,7 +29,7 @@ pub struct Diagnostic {
   code : String
   rule : String
   severity : DiagnosticSeverity
-  event_index : Int
+  event_index : Int32
   message : String
   advice : String
 }
@@ -39,7 +39,7 @@ pub fn Diagnostic::new(
   code : String,
   rule : String,
   severity : DiagnosticSeverity,
-  event_index : Int,
+  event_index : Int32,
   message : String,
   advice : String,
 ) -> Diagnostic {
@@ -157,7 +157,10 @@ pub fn diagnostic_from_violation(violation : Violation) -> Diagnostic {
 }
 
 ///|
-pub fn diagnose(events : Array[Event], max_retries : Int) -> Array[Diagnostic] {
+pub fn diagnose(
+  events : Array[Event],
+  max_retries : Int32,
+) -> Array[Diagnostic] {
   evaluate(events, max_retries).map(diagnostic_from_violation)
 }
 
@@ -186,22 +189,22 @@ pub fn diagnostics_for_code(
 }
 
 ///|
-pub fn diagnostic_count(diagnostics : Array[Diagnostic]) -> Int {
+pub fn diagnostic_count(diagnostics : Array[Diagnostic]) -> Int32 {
   diagnostics.length()
 }
 
 ///|
-pub fn error_count(diagnostics : Array[Diagnostic]) -> Int {
+pub fn error_count(diagnostics : Array[Diagnostic]) -> Int32 {
   diagnostics.filter(diagnostic => diagnostic.is_error()).length()
 }
 
 ///|
-pub fn warning_count(diagnostics : Array[Diagnostic]) -> Int {
+pub fn warning_count(diagnostics : Array[Diagnostic]) -> Int32 {
   diagnostics.filter(diagnostic => diagnostic.is_warning()).length()
 }
 
 ///|
-pub fn info_count(diagnostics : Array[Diagnostic]) -> Int {
+pub fn info_count(diagnostics : Array[Diagnostic]) -> Int32 {
   diagnostics.filter(diagnostic => diagnostic.is_info()).length()
 }
 
@@ -259,10 +262,10 @@ pub fn render_diagnostics(diagnostics : Array[Diagnostic]) -> String {
 
 ///|
 pub struct DiagnosticSummary {
-  total : Int
-  errors : Int
-  warnings : Int
-  infos : Int
+  total : Int32
+  errors : Int32
+  warnings : Int32
+  infos : Int32
   highest : DiagnosticSeverity
 }
 
@@ -301,7 +304,7 @@ pub fn DiagnosticSummary::render(summary : DiagnosticSummary) -> String {
 ///|
 pub fn diagnose_scenario(
   scenario : Scenario,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[Diagnostic] {
   diagnose(scenario.events, max_retries)
 }
@@ -316,7 +319,7 @@ pub struct ScenarioDiagnostics {
 ///|
 pub fn diagnose_scenarios(
   scenarios : Array[Scenario],
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[ScenarioDiagnostics] {
   let results : Array[ScenarioDiagnostics] = []
   for scenario in scenarios {
@@ -389,7 +392,9 @@ pub fn diagnostic_rules(diagnostics : Array[Diagnostic]) -> Array[String] {
 }
 
 ///|
-pub fn diagnostic_event_indices(diagnostics : Array[Diagnostic]) -> Array[Int] {
+pub fn diagnostic_event_indices(
+  diagnostics : Array[Diagnostic],
+) -> Array[Int32] {
   diagnostics.map(diagnostic => diagnostic.event_index)
 }
 

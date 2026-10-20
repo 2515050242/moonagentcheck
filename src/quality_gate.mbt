@@ -4,9 +4,9 @@
 /// underlying violations or pretends to be a security sandbox.
 pub struct QualityGate {
   name : String
-  max_errors : Int
-  max_warnings : Int
-  max_violations : Int
+  max_errors : Int32
+  max_warnings : Int32
+  max_violations : Int32
   required_scenarios : Array[String]
   require_successful_scenarios : Bool
 }
@@ -40,7 +40,7 @@ pub fn QualityGate::for_regression() -> QualityGate {
 ///|
 pub fn QualityGate::with_error_budget(
   gate : QualityGate,
-  budget : Int,
+  budget : Int32,
 ) -> QualityGate {
   { ..gate, max_errors: if budget < 0 { 0 } else { budget }, }
 }
@@ -48,7 +48,7 @@ pub fn QualityGate::with_error_budget(
 ///|
 pub fn QualityGate::with_warning_budget(
   gate : QualityGate,
-  budget : Int,
+  budget : Int32,
 ) -> QualityGate {
   { ..gate, max_warnings: if budget < 0 { 0 } else { budget }, }
 }
@@ -56,7 +56,7 @@ pub fn QualityGate::with_warning_budget(
 ///|
 pub fn QualityGate::with_violation_budget(
   gate : QualityGate,
-  budget : Int,
+  budget : Int32,
 ) -> QualityGate {
   { ..gate, max_violations: if budget < 0 { 0 } else { budget }, }
 }
@@ -91,7 +91,7 @@ pub fn GateReason::render(reason : GateReason) -> String {
 pub struct GateDecision {
   gate_name : String
   passed : Bool
-  score : Int
+  score : Int32
   reasons : Array[GateReason]
   diagnostics : Array[Diagnostic]
 }
@@ -124,7 +124,7 @@ fn gate_reason(code : String, passed : Bool, message : String) -> GateReason {
 }
 
 ///|
-fn gate_score(reasons : Array[GateReason]) -> Int {
+fn gate_score(reasons : Array[GateReason]) -> Int32 {
   if reasons.length() == 0 {
     return 100
   }
@@ -284,7 +284,7 @@ pub fn QualityGate::check_scenarios(
 pub fn QualityGate::check_catalog(
   gate : QualityGate,
   catalog : ScenarioCatalog,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> GateDecision {
   gate.check_catalog_with_policy(
     catalog,

@@ -4,14 +4,15 @@ on:
   push:
   pull_request:
 
+env:
+  MOONBIT_INSTALL_VERSION: "0.10.16+b1a0e846e"
+
 jobs:
   moonbit:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - name: Install MoonBit
-        env:
-          MOONBIT_INSTALL_VERSION: "0.10.14+7d59c7ec9"
         shell: bash
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
@@ -19,16 +20,15 @@ jobs:
       - name: Show MoonBit version
         shell: bash
         run: moon version --all
-      - name: Enforce minimum MoonBit compiler version
+      - name: Verify pinned MoonBit compiler version
         shell: bash
         run: |
-          required_version="0.10.14"
-          compiler_version="$(moonc -v | sed -nE 's/^v([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')"
-          if [[ -z "$compiler_version" ]] || [[ "$(printf '%s\n%s\n' "$required_version" "$compiler_version" | sort -V | head -n1)" != "$required_version" ]]; then
-            echo "moonc >= $required_version is required; found '${compiler_version:-unknown}'"
+          compiler_version="$(moonc -v | awk '{print $1}')"
+          if [[ "$compiler_version" != "v$MOONBIT_INSTALL_VERSION" ]]; then
+            echo "Expected moonc v$MOONBIT_INSTALL_VERSION; found '${compiler_version:-unknown}'"
             exit 1
           fi
-          echo "moonc $compiler_version satisfies the minimum $required_version"
+          echo "Verified moonc $compiler_version"
       - name: Verify MoonBit formatting
         run: moon fmt --check src main
       - name: Build MoonBit packages
@@ -45,8 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install MoonBit
-        env:
-          MOONBIT_INSTALL_VERSION: "0.10.14+7d59c7ec9"
         shell: bash
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
@@ -72,12 +70,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install MoonBit
-        env:
-          MOONBIT_INSTALL_VERSION: "0.10.14+7d59c7ec9"
         shell: bash
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Show MoonBit version
+        run: moon version --all
       - name: Prepare isolated Mooncakes consumer
         shell: bash
         run: |

@@ -19,7 +19,7 @@ pub fn TraceQuery::from_trace(trace : Trace) -> TraceQuery {
 }
 
 ///|
-pub fn TraceQuery::len(query : TraceQuery) -> Int {
+pub fn TraceQuery::len(query : TraceQuery) -> Int32 {
   query.events.length()
 }
 
@@ -34,7 +34,7 @@ pub fn TraceQuery::events(query : TraceQuery) -> Array[Event] {
 }
 
 ///|
-pub fn TraceQuery::at(query : TraceQuery, index : Int) -> Event? {
+pub fn TraceQuery::at(query : TraceQuery, index : Int32) -> Event? {
   if index < 0 || index >= query.events.length() {
     None
   } else {
@@ -53,7 +53,7 @@ pub fn TraceQuery::last(query : TraceQuery) -> Event? {
 }
 
 ///|
-pub fn TraceQuery::kind_at(query : TraceQuery, index : Int) -> String? {
+pub fn TraceQuery::kind_at(query : TraceQuery, index : Int32) -> String? {
   match query.at(index) {
     Some(event) => Some(event.kind)
     None => None
@@ -64,8 +64,8 @@ pub fn TraceQuery::kind_at(query : TraceQuery, index : Int) -> String? {
 pub fn TraceQuery::event_indices_for_kind(
   query : TraceQuery,
   kind : String,
-) -> Array[Int] {
-  let indices : Array[Int] = []
+) -> Array[Int32] {
+  let indices : Array[Int32] = []
   for index, event in query.events {
     if event.kind == kind {
       indices.push(index)
@@ -107,12 +107,12 @@ pub fn TraceQuery::events_for_call(
 }
 
 ///|
-pub fn TraceQuery::count_kind(query : TraceQuery, kind : String) -> Int {
+pub fn TraceQuery::count_kind(query : TraceQuery, kind : String) -> Int32 {
   query.events_for_kind(kind).length()
 }
 
 ///|
-pub fn TraceQuery::count_tool(query : TraceQuery, tool : String) -> Int {
+pub fn TraceQuery::count_tool(query : TraceQuery, tool : String) -> Int32 {
   query.events_for_tool(tool).length()
 }
 
@@ -207,8 +207,8 @@ pub fn TraceQuery::unresolved_call_ids(query : TraceQuery) -> Array[String] {
 pub struct CallPair {
   call : Event
   result : Event?
-  call_index : Int
-  result_index : Int?
+  call_index : Int32
+  result_index : Int32?
 }
 
 ///|
@@ -217,7 +217,7 @@ pub fn call_pairs(query : TraceQuery) -> Array[CallPair] {
   for call_index, call in query.events {
     if call.kind == "call" {
       let mut result : Event? = None
-      let mut result_index : Int? = None
+      let mut result_index : Int32? = None
       for index, candidate in query.events {
         if index > call_index &&
           candidate.kind == "result" &&
@@ -258,7 +258,7 @@ pub fn first_result(query : TraceQuery, call_id : String) -> Event? {
 }
 
 ///|
-pub fn first_index_of(query : TraceQuery, call_id : String) -> Int? {
+pub fn first_index_of(query : TraceQuery, call_id : String) -> Int32? {
   for index, event in query.events {
     if event.call_id == call_id {
       return Some(index)
@@ -269,13 +269,17 @@ pub fn first_index_of(query : TraceQuery, call_id : String) -> Int? {
 
 ///|
 pub struct TraceWindow {
-  start : Int
-  end : Int
+  start : Int32
+  end : Int32
   events : Array[Event]
 }
 
 ///|
-pub fn trace_window(query : TraceQuery, start : Int, end : Int) -> TraceWindow {
+pub fn trace_window(
+  query : TraceQuery,
+  start : Int32,
+  end : Int32,
+) -> TraceWindow {
   let safe_start = if start < 0 { 0 } else { start }
   let safe_end = if end > query.len() { query.len() } else { end }
   let events : Array[Event] = []
@@ -288,7 +292,7 @@ pub fn trace_window(query : TraceQuery, start : Int, end : Int) -> TraceWindow {
 }
 
 ///|
-pub fn TraceWindow::length(window : TraceWindow) -> Int {
+pub fn TraceWindow::length(window : TraceWindow) -> Int32 {
   window.events.length()
 }
 
@@ -378,7 +382,7 @@ pub fn trace_has_adjacent_kinds(
 }
 
 ///|
-pub fn trace_event_distance(left : Array[Event], right : Array[Event]) -> Int {
+pub fn trace_event_distance(left : Array[Event], right : Array[Event]) -> Int32 {
   let distance = if left.length() > right.length() {
     left.length()
   } else {
@@ -407,7 +411,7 @@ pub fn trace_events_equal(left : Array[Event], right : Array[Event]) -> Bool {
 pub fn trace_first_difference(
   left : Array[Event],
   right : Array[Event],
-) -> Int? {
+) -> Int32? {
   let shared = if left.length() < right.length() {
     left.length()
   } else {

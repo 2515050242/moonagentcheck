@@ -8,7 +8,7 @@ priv enum ResultState {
 
 ///|
 /// Evaluate a deterministic event sequence against basic tool-call contracts.
-pub fn evaluate(events : Array[Event], max_retries : Int) -> Array[Violation] {
+pub fn evaluate(events : Array[Event], max_retries : Int32) -> Array[Violation] {
   evaluate_with_policy(events, EvaluationPolicy::new(max_retries, None))
 }
 
@@ -24,7 +24,7 @@ pub fn evaluate_with_policy(
   )
   let pending : Array[String] = []
   let calls : Map[String, Event] = Map([])
-  let attempts : Map[String, Int] = Map([])
+  let attempts : Map[String, Int32] = Map([])
   let completed : Map[String, Bool] = Map([])
   let resolved : Map[String, ResultState] = Map([])
   for index, event in events {

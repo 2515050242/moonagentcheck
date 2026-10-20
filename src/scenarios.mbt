@@ -458,7 +458,7 @@ pub fn scenario_events(kind : ScenarioKind) -> Array[Event] {
 }
 
 ///|
-pub fn evaluate_builtin_scenarios(max_retries : Int) -> Array[ScenarioResult] {
+pub fn evaluate_builtin_scenarios(max_retries : Int32) -> Array[ScenarioResult] {
   evaluate_scenarios(builtin_scenarios(), max_retries)
 }
 

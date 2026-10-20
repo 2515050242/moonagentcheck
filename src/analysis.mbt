@@ -1,6 +1,6 @@
 ///|
 /// Count violations for one rule without changing their original order.
-pub fn count_rule(violations : Array[Violation], rule : String) -> Int {
+pub fn count_rule(violations : Array[Violation], rule : String) -> Int32 {
   let mut count = 0
   for violation in violations {
     if violation.rule == rule {
@@ -22,7 +22,7 @@ pub fn violations_for(
 pub struct RuleSummary {
   rule : String
   code : String
-  count : Int
+  count : Int32
 }
 
 ///|
@@ -56,10 +56,10 @@ pub fn summarize_violations(
 
 ///|
 pub struct SuiteSummary {
-  scenario_count : Int
-  passed_count : Int
-  failed_count : Int
-  violation_count : Int
+  scenario_count : Int32
+  passed_count : Int32
+  failed_count : Int32
+  violation_count : Int32
   rules : Array[RuleSummary]
 }
 

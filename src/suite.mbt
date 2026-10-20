@@ -22,7 +22,7 @@ pub struct ScenarioResult {
 /// Evaluate each named trace independently, preserving input order and labels.
 pub fn evaluate_scenarios(
   scenarios : Array[Scenario],
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[ScenarioResult] {
   evaluate_scenarios_with_policy(
     scenarios,

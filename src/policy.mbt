@@ -130,15 +130,18 @@ pub fn policy_is_valid(policy : EvaluationPolicy) -> Bool {
 }
 
 ///|
-pub fn policy_retry_allowed(policy : EvaluationPolicy, attempts : Int) -> Bool {
+pub fn policy_retry_allowed(
+  policy : EvaluationPolicy,
+  attempts : Int32,
+) -> Bool {
   policy_is_valid(policy) && attempts <= policy.max_retries
 }
 
 ///|
 pub fn policy_remaining_retries(
   policy : EvaluationPolicy,
-  attempts : Int,
-) -> Int {
+  attempts : Int32,
+) -> Int32 {
   let remaining = policy.max_retries - attempts
   if remaining < 0 {
     0
@@ -169,7 +172,7 @@ pub fn policy_tools(policy : EvaluationPolicy) -> Array[String] {
 ///|
 pub fn policy_with_max_retries(
   policy : EvaluationPolicy,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> EvaluationPolicy {
   EvaluationPolicy::new(max_retries, policy.tool_allowlist)
 }
@@ -243,8 +246,8 @@ pub struct PolicyDecision {
   reason : String
   tool : String
   operation_id : String?
-  attempt : Int
-  remaining_retries : Int
+  attempt : Int32
+  remaining_retries : Int32
 }
 
 ///|
@@ -274,7 +277,7 @@ pub fn decide_tool(
   policy : EvaluationPolicy,
   tool : String,
   operation_id : String?,
-  attempt : Int,
+  attempt : Int32,
 ) -> PolicyDecision {
   if !policy_is_valid(policy) {
     {
@@ -319,7 +322,7 @@ pub fn decide_tool(
 pub fn decide_event(
   policy : EvaluationPolicy,
   event : Event,
-  attempts : Int,
+  attempts : Int32,
 ) -> PolicyDecision {
   decide_tool(policy, event.tool, event.operation_id, attempts)
 }
@@ -330,7 +333,7 @@ pub fn policy_decisions(
   policy : EvaluationPolicy,
 ) -> Array[PolicyDecision] {
   let decisions : Array[PolicyDecision] = []
-  let attempts : Map[String, Int] = Map([])
+  let attempts : Map[String, Int32] = Map([])
   for event in events {
     if event.kind == "call" {
       let attempt = match event.operation_id {
@@ -366,12 +369,12 @@ pub fn denied_decisions(
 
 ///|
 pub struct PolicyAudit {
-  total_calls : Int
-  allowed_calls : Int
-  denied_calls : Int
-  invalid_calls : Int
-  retry_denials : Int
-  tool_denials : Int
+  total_calls : Int32
+  allowed_calls : Int32
+  denied_calls : Int32
+  invalid_calls : Int32
+  retry_denials : Int32
+  tool_denials : Int32
 }
 
 ///|

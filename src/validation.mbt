@@ -3,7 +3,7 @@
 /// This is deliberately separate from semantic rules such as retry limits.
 pub fn validate_events(
   events : Array[Event],
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[Violation] {
   let violations : Array[Violation] = []
   if max_retries < 0 {

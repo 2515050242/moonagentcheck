@@ -29,7 +29,7 @@ pub fn ScenarioEntry::has_tag(entry : ScenarioEntry, tag : String) -> Bool {
 }
 
 ///|
-pub fn ScenarioEntry::event_count(entry : ScenarioEntry) -> Int {
+pub fn ScenarioEntry::event_count(entry : ScenarioEntry) -> Int32 {
   entry.scenario.events.length()
 }
 
@@ -51,7 +51,7 @@ pub fn ScenarioCatalog::from_entries(
 }
 
 ///|
-pub fn ScenarioCatalog::len(catalog : ScenarioCatalog) -> Int {
+pub fn ScenarioCatalog::len(catalog : ScenarioCatalog) -> Int32 {
   catalog.entries.length()
 }
 
@@ -157,7 +157,7 @@ pub fn ScenarioCatalog::scenarios_with_tag(
 ///|
 pub fn ScenarioCatalog::evaluate(
   catalog : ScenarioCatalog,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[ScenarioResult] {
   catalog.evaluate_with_policy(EvaluationPolicy::new(max_retries, None))
 }
@@ -175,7 +175,7 @@ pub fn ScenarioCatalog::evaluate_with_policy(
 pub fn ScenarioCatalog::evaluate_tag(
   catalog : ScenarioCatalog,
   tag : String,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[ScenarioResult] {
   catalog.evaluate_tag_with_policy(
     tag,
@@ -205,7 +205,7 @@ pub struct CatalogResult {
 ///|
 pub fn evaluate_catalog(
   catalog : ScenarioCatalog,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> Array[CatalogResult] {
   evaluate_catalog_with_policy(
     catalog,
@@ -285,7 +285,7 @@ pub fn catalog_owner_names(catalog : ScenarioCatalog) -> Array[String] {
 }
 
 ///|
-pub fn catalog_event_count(catalog : ScenarioCatalog) -> Int {
+pub fn catalog_event_count(catalog : ScenarioCatalog) -> Int32 {
   let mut count = 0
   for entry in catalog.entries {
     count = count + entry.event_count()

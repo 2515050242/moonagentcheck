@@ -22,7 +22,7 @@ pub fn replay_status_name(status : ReplayStatus) -> String {
 /// inspect one event at a time while keeping the original trace immutable.
 pub struct Replay {
   events : Array[Event]
-  cursor_state : Array[Int]
+  cursor_state : Array[Int32]
   halted_state : Array[Bool]
   halted_reason_state : Array[String?]
 }
@@ -43,12 +43,12 @@ pub fn Replay::from_trace(trace : Trace) -> Replay {
 }
 
 ///|
-pub fn Replay::len(replay : Replay) -> Int {
+pub fn Replay::len(replay : Replay) -> Int32 {
   replay.events.length()
 }
 
 ///|
-pub fn Replay::position(replay : Replay) -> Int {
+pub fn Replay::position(replay : Replay) -> Int32 {
   replay.cursor_state[0]
 }
 
@@ -76,7 +76,7 @@ pub fn Replay::done(replay : Replay) -> Bool {
 }
 
 ///|
-pub fn Replay::remaining(replay : Replay) -> Int {
+pub fn Replay::remaining(replay : Replay) -> Int32 {
   let remaining = replay.events.length() - replay.position()
   if remaining < 0 {
     0
@@ -86,7 +86,7 @@ pub fn Replay::remaining(replay : Replay) -> Int {
 }
 
 ///|
-pub fn Replay::progress(replay : Replay) -> Int {
+pub fn Replay::progress(replay : Replay) -> Int32 {
   if replay.events.length() == 0 {
     100
   } else {
@@ -119,9 +119,9 @@ pub fn Replay::peek(replay : Replay) -> Event? {
 
 ///|
 pub struct ReplayObservation {
-  index : Int
+  index : Int32
   event : Event
-  remaining : Int
+  remaining : Int32
   status : ReplayStatus
 }
 
@@ -165,7 +165,7 @@ pub fn Replay::reset(replay : Replay) -> Unit {
 }
 
 ///|
-pub fn Replay::seek(replay : Replay, position : Int) -> Bool {
+pub fn Replay::seek(replay : Replay, position : Int32) -> Bool {
   if position < 0 || position > replay.events.length() {
     false
   } else {
@@ -177,7 +177,7 @@ pub fn Replay::seek(replay : Replay, position : Int) -> Bool {
 }
 
 ///|
-pub fn Replay::skip(replay : Replay, count : Int) -> Int {
+pub fn Replay::skip(replay : Replay, count : Int32) -> Int32 {
   let safe_count = if count < 0 { 0 } else { count }
   let target = replay.position() + safe_count
   let final_position = if target > replay.events.length() {
@@ -245,7 +245,7 @@ pub fn replay_until_call(
 
 ///|
 pub struct ReplayCheckpoint {
-  position : Int
+  position : Int32
   status : ReplayStatus
   halted_reason : String?
 }
@@ -281,19 +281,22 @@ pub fn replay_prefix(replay : Replay) -> Array[Event] {
 }
 
 ///|
-pub fn replay_validate(replay : Replay, max_retries : Int) -> Array[Violation] {
+pub fn replay_validate(
+  replay : Replay,
+  max_retries : Int32,
+) -> Array[Violation] {
   evaluate(replay_prefix(replay), max_retries)
 }
 
 ///|
 pub struct ReplayStats {
-  total : Int
-  consumed : Int
-  remaining : Int
-  call_events : Int
-  result_events : Int
-  write_events : Int
-  progress : Int
+  total : Int32
+  consumed : Int32
+  remaining : Int32
+  call_events : Int32
+  result_events : Int32
+  write_events : Int32
+  progress : Int32
   status : ReplayStatus
 }
 
@@ -332,7 +335,10 @@ pub fn replay_digest(replay : Replay) -> String {
 }
 
 ///|
-pub fn replay_positions_for_kind(replay : Replay, kind : String) -> Array[Int] {
+pub fn replay_positions_for_kind(
+  replay : Replay,
+  kind : String,
+) -> Array[Int32] {
   TraceQuery::new(replay.events).event_indices_for_kind(kind)
 }
 

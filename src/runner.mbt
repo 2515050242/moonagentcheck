@@ -21,7 +21,7 @@ pub fn run_mode_name(mode : RunMode) -> String {
 pub struct RunConfig {
   name : String
   mode : RunMode
-  max_retries : Int
+  max_retries : Int32
   policy : EvaluationPolicy
   names : Array[String]
   tag : String?
@@ -69,7 +69,7 @@ pub fn RunConfig::tagged(
 ///|
 pub fn RunConfig::with_retry_limit(
   config : RunConfig,
-  max_retries : Int,
+  max_retries : Int32,
 ) -> RunConfig {
   {
     ..config,
@@ -184,12 +184,12 @@ pub fn RunOutcome::json(outcome : RunOutcome) -> String {
 
 ///|
 pub struct RunRecord {
-  sequence : Int
+  sequence : Int32
   run_name : String
   mode : RunMode
   passed : Bool
-  violation_count : Int
-  diagnostic_count : Int
+  violation_count : Int32
+  diagnostic_count : Int32
 }
 
 ///|
@@ -209,7 +209,7 @@ pub fn RunRecord::render(record : RunRecord) -> String {
 pub struct SuiteRunner {
   catalog : ScenarioCatalog
   history : Array[RunRecord]
-  next_sequence_state : Array[Int]
+  next_sequence_state : Array[Int32]
 }
 
 ///|
@@ -228,7 +228,7 @@ pub fn SuiteRunner::history(runner : SuiteRunner) -> Array[RunRecord] {
 }
 
 ///|
-pub fn SuiteRunner::history_len(runner : SuiteRunner) -> Int {
+pub fn SuiteRunner::history_len(runner : SuiteRunner) -> Int32 {
   runner.history.length()
 }
 
@@ -270,7 +270,7 @@ fn outcome_diagnostics(results : Array[ScenarioResult]) -> Array[Diagnostic] {
 }
 
 ///|
-fn record_for_outcome(sequence : Int, outcome : RunOutcome) -> RunRecord {
+fn record_for_outcome(sequence : Int32, outcome : RunOutcome) -> RunRecord {
   {
     sequence,
     run_name: outcome.run_name,
