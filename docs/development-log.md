@@ -122,7 +122,7 @@
 - 修正 README 和架构说明中“没有 CLI”的过期描述，明确仓库 JSON 入口接入 Responses 适配器与 MoonBit 评估器，核心库本身不读写文件。
 - 为 JSON 入口增加混合 message/reasoning、非法 JSON、错误字段类型的回归；正常场景、unknown-result 和不支持输出已有独立检查。
 - 新增隔离的 MoonBit 消费方 fixture，固定从 Mooncakes 获取 `0.2.0`，通过公开 API 评估事件；CI 将其复制到仓库目录之外再构建和测试。
-- 本地验证：MoonBit 测试 96 项通过；`moon build`、`moon check`、`moon run main` 和 5 个 Python→MoonBit fixture 通过。当前本地格式工具为 0.10.15，而 CI 固定 0.10.14；格式门禁由固定版本的 CI 负责，不据本机差异改写全库。
-- 当前包页仍标记 `0.2.0` 为 latest；消费方检查只验证该已发布版本，不将 `0.3.0` 开发线描述成已发布。新增 CI 结果须等本提交推送后查看。
-- 首次 CI 运行表明，干净 runner 的 Mooncakes 索引不会自动刷新，导致固定版本解析失败；消费方 job 已加入 `moon update`，本地隔离目录刷新索引后重新构建和测试通过。后续提交的 CI 结果仍需单独核验。
+- MoonBit 96 项回归、格式检查、构建、静态检查、验收演示、5 个 Python→MoonBit fixture 和 Mooncakes 消费方测试均通过 GitHub Actions。
+- 当前包页仍标记 `0.2.0` 为 latest；消费方检查只验证该已发布版本，不将 `0.3.0` 开发线描述成已发布。
+- 首次消费方 CI 因注册表索引未刷新而无法解析固定版本；在 job 中加入 `moon update` 后，后续完整 CI 通过。结果见[GitHub Actions](https://github.com/2515050242/moonagentcheck/actions/runs/39393485493)。
 - 本次目标与验收范围由参赛者提出；AI 辅助实现回归用例、消费方 fixture 和文档整理，结果以公开 CI 和可复现命令为准。
