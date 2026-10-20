@@ -85,6 +85,7 @@ jobs:
       - name: Install and test the published package
         working-directory: ${{ runner.temp }}/mooncakes-consumer
         run: |
+          moon update
           moon build
           moon test
 
