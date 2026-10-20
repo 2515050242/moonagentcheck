@@ -4,6 +4,10 @@
 
 MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用没有结果”“结果找不到调用”“重试太多次”“失败或未确认的调用之后仍然写入”“同一个写操作完成了两遍”这类问题。它不连接模型，也不替你做沙箱；它只检查已经观察到的事件。
 
+## 十月材料入口
+
+[项目申报书](docs/项目申报书.md) · [PDF 副本](output/pdf/october-proposal.pdf) · [验收指南](docs/acceptance-guide.md) · [验收矩阵](docs/acceptance-matrix.md)。申报正文说明范围；验收指南列出运行步骤、负例预期和当前发布状态。
+
 ## 环境与安装
 
 当前开发线使用 MoonBit 编译器 `0.10.16+b1a0e846e` 验证，CI 的三个 job 使用同一固定版本。可用 `moon version --all` 查看当前版本；安装和升级方式见 [MoonBit 官方工具链文档](https://docs.moonbitlang.com/en/latest/toolchain/moon/commands.html)。Python 3.12 用于运行接入 fixture，MoonBit 核心和无参演示不依赖 Python。
@@ -20,7 +24,7 @@ moon add 2515050242/moonagentcheck
 moon add 2515050242/moonagentcheck@0.2.0
 ```
 
-当前仓库 `october-review` 分支的 `moon.mod` 为 `0.3.0` 开发线，尚未发布到 Mooncakes。分支上的新增规则和样例不应当作 `0.2.0` 包已包含的功能；版本核对方法见[发布版本与开发线说明](docs/release-alignment.md)。
+当前仓库 `master` 与 `october-review` 的 `moon.mod` 为 `0.3.0` 开发线，尚未发布到 Mooncakes。分支上的新增规则和样例不应当作 `0.2.0` 包已包含的功能；版本核对方法见[发布版本与开发线说明](docs/release-alignment.md)。
 
 需要验证 GitHub 开发线时，克隆本仓库并运行 `moon run main`，或按下方命令执行完整回归。
 
@@ -37,19 +41,20 @@ moon run main '[{"type":"function_call","response_id":"resp-1","operation_id":"t
 ```powershell
 moon version --all
 moon fmt --check src main
+moon build
 moon check
 moon test
 moon run main
-python examples/python_data_agent.py
-python examples/python_repository_agent.py
-python examples/python_ticket_agent.py
-python examples/python_adapter.py
-python examples/python_openai_responses_fixture.py
+python -X utf8 examples/python_data_agent.py
+python -X utf8 examples/python_repository_agent.py
+python -X utf8 examples/python_ticket_agent.py
+python -X utf8 examples/python_adapter.py
+python -X utf8 examples/python_openai_responses_fixture.py
 ```
 
 `moon run main` 是可直接运行的 MoonBit 验收演示：它构造一个读取后写入的事件轨迹，故意重复完成同一写操作，并输出稳定的场景报告与工具指标。演示会断言重复副作用产生 `AGC004`，因此若核心行为回归，命令会以失败退出；GitHub Actions 也会运行此演示。
 
-`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组，并继续保持不限制工具的兼容行为。需要配置策略时，使用 `EvaluationPolicy::new(max_retries, tool_allowlist)` 和 `evaluate_with_policy(events, policy)`：`None` 表示不限制工具，`Some([])` 表示拒绝所有工具；allowlist 以外的调用报告 `tool-not-allowed`（`AGC012`），并继续检查其他规则。要在一次回归中检查多条独立轨迹，可用 `Scenario::new(name, events)` 和 `evaluate_scenarios(scenarios, max_retries)`；需要同时执行工具策略时改用 `evaluate_scenarios_with_policy(scenarios, policy)`。结果按输入顺序保留场景名称、通过状态和违规明细，每条轨迹单独评估。`ScenarioCatalog::evaluate_with_policy`、`evaluate_tag_with_policy`、`evaluate_catalog_with_policy`、`QualityGate::check_catalog_with_policy` 以及 `SuiteRunner` 也会传递完整策略，因此套件运行不会悄悄放宽 allowlist。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成也必须在工具名和 `operation_id` 上关联同一调用；错配会产生 `AGC016`，不能借用其他工具或业务操作的成功结果。写入完成必须关联到返回明确成功结果的调用；失败或状态未知会产生 `AGC010`。已观察到但 `ok` 未知的 result 还会单独产生 `unknown-result`（`AGC018`），因此该轨迹不能被报告为通过。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC018`），未知规则返回 `unknown`，方便适配器做筛选和聚合。Python 文件是离线对照 fixture，不是第二套核心实现。
+`Event::new(...)` 用来构造观察记录，`evaluate(events, max_retries)` 返回 `Violation` 数组，并继续保持不限制工具的兼容行为。需要配置策略时，使用 `EvaluationPolicy::new(max_retries, tool_allowlist)` 和 `evaluate_with_policy(events, policy)`：`None` 表示不限制工具，`Some([])` 表示拒绝所有工具；allowlist 以外的调用报告 `tool-not-allowed`（`AGC012`），并继续检查其他规则。要在一次回归中检查多条独立轨迹，可用 `Scenario::new(name, events)` 和 `evaluate_scenarios(scenarios, max_retries)`；需要同时执行工具策略时改用 `evaluate_scenarios_with_policy(scenarios, policy)`。结果按输入顺序保留场景名称、通过状态和违规明细，每条轨迹单独评估。`ScenarioCatalog::evaluate_with_policy`、`evaluate_tag_with_policy`、`evaluate_catalog_with_policy`、`QualityGate::check_catalog_with_policy` 以及 `SuiteRunner` 也会传递完整策略，因此套件运行不会悄悄放宽 allowlist。工具 result 必须与同一 `call_id` 的 call 在工具名和 `operation_id` 上一致；不一致会产生 `AGC011`，且不能使调用成为成功。写入完成也必须在工具名和 `operation_id` 上关联同一调用；错配会产生 `AGC016`，不能借用其他工具或业务操作的成功结果。写入完成必须关联到返回明确成功结果的调用；失败或状态未知会产生 `AGC010`。已观察到但 `ok` 未知的 result 还会单独产生 `unknown-result`（`AGC018`），因此该轨迹不能被报告为通过。`violation_code(violation)`（或按规则名调用 `rule_code(rule)`）将内置规则映射为稳定的机器代码（`AGC001` 到 `AGC018`），未知规则返回 `unknown`，方便适配器做筛选和聚合。5 个 Python fixture 都通过子进程调用 MoonBit CLI，解析并断言其报告；Python 不独立评估行为规则。
 重复 `call_id` 固定以首个 call 的工具和业务操作为准，后续记录不能改写该身份；因此 result 和写入仍需匹配已建立的原始调用。
 
 适配器也可以使用 `Trace::new()`、`trace.call(...)`、`trace.result(...)` 和 `trace.write_complete(...)` 逐步构造可回放事件流；`trace_stats(...)` 提供事件、调用、结果、写入以及成功/失败/未知结果的统计。`summarize_violations(...)` 和 `summarize_scenarios(...)` 可将逐事件证据聚合到规则与套件层。输入预检会报告空 `call_id`、空工具名、未知事件类型和负重试策略（`AGC013`–`AGC015`）。

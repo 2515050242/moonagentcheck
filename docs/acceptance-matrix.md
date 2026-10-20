@@ -1,50 +1,28 @@
 # MoonAgentCheck 验收矩阵
 
-这份矩阵把参赛要求转换为可检查的仓库证据。每一项都应能落到源码、测试、命令或文档，而不是只停留在描述中。
+核对日期：2026-10-20。矩阵对应当前源码的检查入口；历史发布快照见 [审计记录](audit.md)。完整命令及预期结果见 [验收指南](acceptance-guide.md)。
 
-| 验收项 | 当前证据 | 验证方式 | 比赛阶段补强 |
-| --- | --- | --- | --- |
-| MoonBit 为主要实现语言 | `src/*.mbt`、`moon.mod` | `moon check` | 保持核心规则在 MoonBit 中实现 |
-| 十月工具链验证 | 当前验收验证目标为 `moonc 0.10.16+b1a0e846e`；三个 CI job 共用固定版本，主 job 检查完整版本号 | `moonc -v` 与 GitHub Actions `Verify pinned MoonBit compiler version`；复现步骤与结果见[工具链验证记录](toolchain-verification.md) | 升级工具链后重新验证全部流程，旧版本通过记录不代替当前版本验证 |
-| Mooncakes 发布与开发版本区分 | 已发布 latest 为 `0.2.0`；`october-review` 源码 `moon.mod` 为未发布开发线 `0.3.0` | 核对 [Mooncakes 包页](https://mooncakes.io/docs/2515050242/moonagentcheck)、`moon.mod`、`CHANGELOG.md`；见[版本核对说明](release-alignment.md) | 发布新包前更新 changelog、元数据和包页，不把分支验证称为 registry 发布 |
-| 调用与结果配对 | `src/contract.mbt` 的 `result-call-mismatch` / `AGC011` 与首个调用身份固定 | 工具名、`operation_id`、重复 `call_id` 改写身份与完全匹配的 MoonBit/Python 回归 | 增加乱序结果边界 |
-| 可配置工具策略 | `EvaluationPolicy`、`PolicyContext`、`evaluate_with_context`、`evaluation_report_json`、`tool-not-allowed` / `AGC012`、`missing-policy-source` / `AGC017` | allowlist 允许、拒绝、空列表、来源缺失、策略报告与旧 API 兼容的 MoonBit 回归 | 为具体框架补充字段映射 fixture |
-| 重试次数限制 | `attempts` 状态表 | `enforces retry limit` | 增加 0、1、最大值边界 |
-| 副作用防重复 | `completed` 状态表 | `detects duplicate side effect` | 增加不同 operation_id 对照 |
-| 写入前置调用 | `write-without-call` 规则 | `requires a call before a write` | 增加授权字段 adapter |
-| 事件结束时完整性 | `missing-result` 规则 | `detects orphan and missing results` | 增加空事件流和多调用场景 |
-| 结果唯一性 | `duplicate-result` 规则 | `detects duplicate results` | 增加乱序结果和失败结果场景 |
-| 写入关联完整性 | `missing-operation-id`、`write-call-mismatch` / `AGC016` | 写入必须保留业务操作 ID，并与成功调用的工具名、操作 ID 一致 | 接入 adapter 时保留业务操作 ID |
-| 写入成功前置条件 | `write-without-successful-result` / `AGC010` | 失败、未知或 `AGC011` 关联不一致后的写入回归测试 | 增加授权字段 adapter |
-| 未知结果关闭通过状态 | `unknown-result` / `AGC018` | `ok: null` 单独产生违规；Responses `completed` 但无执行器 outcome 的归档报告为 `passed: false` | 接入真实执行器结果字段时保留未知与失败的区别 |
-| 可重复执行 | 无网络、无模型调用 | 连续运行 `moon test` | 固化 JSON fixture |
-| MoonBit 可运行演示与 JSON 入口 | `main/main.mbt`、`main/responses_json_test.mbt` | 无参数运行 `moon run main`；传入 Responses JSON 时验证真实适配和评估结果；混合消息/推理项、未知结果、未支持类型、非法 JSON 和字段类型均有回归 | 保持示例与核心实现分层，新增输入类型先定义映射行为 |
-| 多场景回归 | `Scenario`、`ScenarioResult`、`evaluate_scenarios`、`suite_summary_json` | `suite_test.mbt` 与 `analysis_test.mbt` 检查隔离、顺序和汇总 | 增加违规阈值门禁 |
-| 轨迹构造与统计 | `Trace` builder、`TraceStats`、`trace_stats` | `trace_test.mbt` 检查 call/result/write 和状态计数 | 提供框架 adapter 的字段映射 |
-| 输入预检 | `validate_events` / `AGC013`–`AGC015` | 空字段、未知事件、负重试策略测试 | 增加错误定位和 adapter 诊断 |
-| 违规聚合 | `RuleSummary`、`SuiteSummary` | `analysis_test.mbt` 检查规则计数和套件汇总 | 接入 CI 门禁与阈值 |
-| 轨迹检索与回放 | `TraceQuery`、`Replay`、检查点 | `trace_query_test.mbt`、`replay_test.mbt` | 接入真实日志查看器 |
-| 期望/实际差分 | `diff_events`、字段级 `EventDiff` | `diff_test.mbt` 检查新增、删除和元数据变化 | 增加跨版本 fixture |
-| 工具与操作指标 | `collect_metrics`、风险统计 | `metrics_test.mbt` 检查成功率和重复写入 | 输出长期趋势 |
-| 策略与 CI 门禁 | `PolicyProfile`、`QualityGate`、`SuiteRunner` | `policy_test.mbt`、`quality_gate_test.mbt`、`runner_test.mbt` | 增加报告归档 |
-| Python 接入参考 | 三类业务场景、`python_adapter.py`、`python_openai_responses_fixture.py`，共 5 个 fixture；Responses 样例覆盖 message/reasoning 混合输出 | 本地 Python 运行与 malformed-record smoke test | 为更多实际输入样例补充字段映射 |
-| Responses 混合输出 | `responses_non_tool_item` 只跳过 `message`、`reasoning`；不支持的类型保留 `item_index` 并产生映射问题 | `responses_adapter_test.mbt` 与 Python fixture 覆盖混合序列和不支持类型 | 新增受支持的非工具类型时，先补字段语义和回归用例 |
-| CI 自动验证 | `.github/workflows/ci.yml`：MoonBit 格式、显式构建、检查、测试、验收 demo 与 Python fixture | GitHub Actions | 增加报告归档 |
-| 已发布包独立消费 | `examples/mooncakes-consumer` 固定依赖 Mooncakes `0.2.0`，只通过公开 API 创建和评估事件 | CI 将 fixture 复制到仓库之外，运行 `moon install` 与 `moon test`，验证 registry 下载和消费方编译 | 发布新版本后更新消费测试所固定的版本，再核验对应包页 |
-| 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
-| 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |
+| 验收项 | 当前证据 | 验证方式与边界 |
+| --- | --- | --- |
+| MoonBit 为主要实现语言 | `src/*.mbt`、`main/main.mbt`、`moon.mod` | 核心评估与 Responses 适配在 MoonBit 内运行；Python 不作为评估真值来源 |
+| 工具链 | 三个 CI job 共用 `0.10.16+b1a0e846e` | 主 job 校验完整版本号；各 job 显示实际工具链 |
+| 构建、检查与回归 | 96 项 MoonBit 测试 | `moon fmt --check src main`、`moon build`、`moon check`、`moon test`；25 条既有弃用提示不等于错误 |
+| 调用与结果关联 | `src/contract.mbt`、`contract_test.mbt` | `AGC011` 检查工具名和操作 ID；重复 call ID 不能改写首个身份 |
+| 重试与重复副作用 | `attempts`、`completed` 状态及核心回归 | 重试超限与重复写入 `AGC004` 的正反例 |
+| 写入前置条件 | `AGC010`、`AGC016` | 写入必须关联同一工具和操作的成功调用，未知或失败结果不能授权写入 |
+| 未知结果失败关闭 | `AGC018` | `ok: null` 独立产生违规；Responses completed 无 outcome 时归档报告 `passed: false` |
+| 工具策略与来源 | `EvaluationPolicy`、`PolicyContext`、套件策略传递 | allowlist、空列表、来源缺失与多场景入口回归；不把来源字符串当授权凭据 |
+| 输入预检与稳定报告 | `AGC013`–`AGC015`、JSON 报告 | 空字段、未知事件、负重试策略与 JSON 字符编码回归 |
+| 场景工具层 | Trace、检索、回放、差分、指标、Catalog、SuiteRunner、QualityGate | 对应 `src/*_test.mbt`，检查隔离、顺序、统计与策略传递 |
+| 可运行 MoonBit 入口 | `main/main.mbt`、`main/responses_json_test.mbt` | 无参断言 AGC004；JSON 输入测试正常、未知结果、混合输出、未支持项和非法输入 |
+| Python 实际接入 | 5 个 fixture 与 `examples/moonbit_cli.py` | 子进程调用 MoonBit；解析报告后断言，失败不回退 Python 评估器 |
+| Responses 混合输出 | `src/responses_adapter.mbt` 及回归 | 只跳过 message/reasoning；未支持类型保留 item_index 并令报告失败 |
+| 自动验证 | `.github/workflows/ci.yml` | 当前 SHA 的 moonbit、smoke-fixtures、published-package-smoke 三个 job 均须成功 |
+| 已发布包消费 | `examples/mooncakes-consumer` 固定 `0.2.0` | CI 复制到仓库之外，`moon update`、`moon build`、`moon test`，1 项测试真实调用公开 API |
+| 新版本发布 | 已发布 latest `0.2.0`，源码 `0.3.0` 未发布 | 仍待发布及独立安装复验；源码 CI 不能作为 registry 发布证据 |
+| 开源与来源 | 完整 Apache-2.0、`moon.mod`、`docs/provenance.md` | 原创实现、公开接口参考与许可范围清楚 |
+| 申报可读性 | [申报 Markdown](项目申报书.md)、[PDF](../output/pdf/october-proposal.pdf)、README | 项目名、版本、测试数与真实接入行为一致，不宣称未完成的集成或性能 |
 
-## 当前命令
+## 判断原则
 
-```powershell
-moon version --all
-moon build
-moon check
-moon test
-moon run main
-```
-
-## 验收原则
-
-同一事件序列必须产生同样的规则名、事件索引和说明。评估器不应通过网络请求、模型调用或隐藏的时间条件改变结果。
-
+同一事件序列应产生相同规则码和事件位置。未知结果、映射失败和非法输入不得成为通过报告；负例测试通过，是指程序正确拒绝该负例。实际项目完成度与最终验收结论由组委会评定。

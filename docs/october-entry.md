@@ -1,10 +1,10 @@
-# MoonAgentCheck：面向 Agent 应用的行为契约与可重复测试工具
+# MoonAgentCheck：Agent 工具行为契约与离线回归测试
 
 **参赛者：**韦昌斌　　**GitHub ID：**`2515050242`　　**许可证：**Apache-2.0
 
 **申报类别：**章程第四点 4.2「季度优秀社区项目评选方向」——维护已有社区项目；技术方向为 MoonBit Agent 工程基础设施与行为测试。项目沿用九月通过初审的 MoonAgentCheck，不作为新项目重复申报。参赛类别以[比赛章程](https://bxup9uklfcb.feishu.cn/wiki/Dx4Bwd6D1i3GfHkajQCcF7SznEd)为准。
 
-**公开仓库：**[查看十月参赛分支](https://github.com/2515050242/moonagentcheck/tree/october-review)　　**Mooncakes：**`2515050242/moonagentcheck`　　**申报书：**[Markdown 版本](october-proposal.md) · [PDF 版本](../output/pdf/october-proposal.pdf)
+**公开仓库：**[仓库主页](https://github.com/2515050242/moonagentcheck)　　**Mooncakes：**`2515050242/moonagentcheck`　　**申报书：**[项目申报书（Markdown）](项目申报书.md) · [PDF 版本](../output/pdf/october-proposal.pdf) · [验收指南](acceptance-guide.md)
 
 ## 参赛账号与公开记录
 
@@ -36,10 +36,10 @@ Mooncakes 当前公开 latest 为 `0.2.0`，包含核心规则、稳定违规码
 
 十月沿用 Responses 适配器，交付混合输出映射、未知或不匹配结果的失败关闭检查，以及可离线运行的场景 fixture。接入方将记录映射为 `Event`，MoonBit 核心按 `call_id` 和 `operation_id` 检查，再输出带规则码、事件位置和映射诊断的报告。
 
-## 十月新增目标
+## 十月新增实现
 
-Responses 输出序列可能同时包含消息、推理内容和函数调用。本期扩展现有适配器：明确跳过 `message` 与 `reasoning`，保持工具调用和结果的原始顺序；对未支持的项目类型报告映射问题及其输入索引，不静默忽略。这样可避免把普通内容误判为工具行为，也避免不完整接入被报成通过。
+Responses 输出序列可能同时包含消息、推理内容和函数调用。本期已扩展现有适配器：明确跳过 `message` 与 `reasoning`，保持工具调用和结果的原始顺序；对未支持的项目类型报告映射问题及其输入索引，不静默忽略。这样可避免把普通内容误判为工具行为，也避免不完整接入被报成通过。
 
 ## 验收方式
 
-验收检查三个场景的预期通过/违规结果，并以 MoonBit 回归、Python 离线 fixture 和 GitHub Actions 复核混合输出、调用关联、未知结果与未支持类型。示例使用公开字段形状，不含真实用户数据，也不依赖模型密钥或网络。参赛者确定目标、规则边界和验收标准；AI 辅助编码、测试整理与文档校对。提交前由参赛者复核申报内容、实现和验证记录，并对最终成果负责。
+当前源码使用 MoonBit `0.10.16+b1a0e846e`，包含 96 项 MoonBit 测试。5 个 Python 离线 fixture 通过子进程调用 MoonBit CLI 并断言报告，GitHub Actions 验证混合输出、调用关联、未知结果与未支持类型。运行步骤和预期结果见[验收指南](acceptance-guide.md)。示例使用公开字段形状，不含真实用户数据，也不依赖模型密钥或网络。参赛者确定目标、规则边界和验收标准；AI 辅助编码、测试整理与文档校对。最终申报由参赛者确认并负责，自动验证结果以对应提交的公开 CI 为准。

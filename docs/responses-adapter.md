@@ -63,7 +63,7 @@ let archive = responses_evaluation_report_json(items, context)
 
 ## 可复现 fixture
 
-`examples/fixtures/responses-ticket-traces.json` 是人工构造的合成遥测样例，不来自真实用户或线上会话。它保留了 Responses 工具调用的公开字段形状，并显式标注 `operation_id` 与 `outcome` 为应用侧遥测信封，用来表示核心事件模型需要的业务操作和执行器判断；这两个字段不声称是 Responses API 原生字段。
+`examples/fixtures/responses-ticket-traces.json` 是合成遥测样例，不来自真实用户或线上会话。它保留了 Responses 工具调用的公开字段形状，并显式标注 `operation_id` 与 `outcome` 为应用侧遥测信封，用来表示核心事件模型需要的业务操作和执行器判断；这两个字段不声称是 Responses API 原生字段。
 
 | 样例 | 预期结果 |
 | --- | --- |
@@ -72,4 +72,8 @@ let archive = responses_evaluation_report_json(items, context)
 | `synthetic-output-without-call` | 拒绝没有前置 call 的 output，并报告映射错误 |
 | `synthetic-unsupported-output-item` | 不静默忽略未支持类型，保留输入位置并报告映射错误 |
 
-`examples/python_openai_responses_fixture.py` 使用标准库读取这份 JSON fixture，再调用离线参考 adapter 和行为规则逐项比对预期。GitHub Actions 将它作为单独步骤运行；MoonBit 的字段映射、未知结果及归档报告行为由 `src/responses_adapter_test.mbt` 覆盖。该 Python 脚本只充当测试夹具，不是产品的第二套规则实现，也不发起 API 请求。
+`examples/python_openai_responses_fixture.py` 使用标准库读取这份 JSON fixture，再经 `examples/moonbit_cli.py` 调用真实 MoonBit JSON 入口，在 MoonBit 内执行适配与行为评估并返回结构化报告，由 Python 逐项断言预期。GitHub Actions 将它作为单独步骤运行；MoonBit 的字段映射、未知结果及归档报告行为由 `src/responses_adapter_test.mbt` 覆盖。该 Python 脚本只充当测试夹具，不是产品的第二套规则实现，也不发起 API 请求。
+
+## 仓库 JSON 入口
+
+`main/main.mbt` 负责解析 JSON，再调用本页的类型化适配器和核心评估器。其边界与返回状态见[验收指南](acceptance-guide.md)；适配器自身不解析 JSON，不代表仓库没有 JSON 入口。

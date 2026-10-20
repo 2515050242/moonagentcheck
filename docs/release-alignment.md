@@ -5,7 +5,7 @@
 | 核对位置 | 核对结果 | 含义 |
 | --- | --- | --- |
 | [Mooncakes 包页](https://mooncakes.io/docs/2515050242/moonagentcheck) | `0.2.0` 标记为 latest | 这是目前可安装的公开版本；消费者固定版本可用 `moon add 2515050242/moonagentcheck@0.2.0`。 |
-| 本仓库 `october-review` 分支的 `moon.mod` | `0.3.0` | 这是后续开发线版本号，不代表该版本已经出现在 Mooncakes。 |
+| 本仓库 `master` / `october-review` 的 `moon.mod` | `0.3.0` | 这是后续开发线版本号，不代表该版本已经出现在 Mooncakes。 |
 | `CHANGELOG.md` | `0.3.0 - Unreleased` | 列出 0.3.0 开发内容；在新包发布前不能称为已发布功能。 |
 | GitHub Actions | 在本分支提交上运行 | 验证源代码与 fixture；CI 通过不等于创建 registry release。 |
 | 独立消费样例 | `examples/mooncakes-consumer` 固定依赖 `0.2.0` | CI 在仓库外构建并测试消费方，验证当前公开版本可下载、可导入、可调用核心 API；它不验证未发布的 `0.3.0` 开发线。 |

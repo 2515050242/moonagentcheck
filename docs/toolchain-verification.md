@@ -14,11 +14,11 @@ moon build
 moon check
 moon test
 moon run main
-python examples/python_data_agent.py
-python examples/python_repository_agent.py
-python examples/python_ticket_agent.py
-python examples/python_adapter.py
-python examples/python_openai_responses_fixture.py
+python -X utf8 examples/python_data_agent.py
+python -X utf8 examples/python_repository_agent.py
+python -X utf8 examples/python_ticket_agent.py
+python -X utf8 examples/python_adapter.py
+python -X utf8 examples/python_openai_responses_fixture.py
 ```
 
 运行 Python fixture 需要 Python 3.12 或兼容版本；无需网络或模型凭据。
@@ -33,7 +33,7 @@ python examples/python_openai_responses_fixture.py
 | 发布包消费与打包 | 同上 | 独立消费方通过 Mooncakes `0.2.0` 的构建及 1 项测试；`moon package --frozen` 通过。打包检查不等于发布新版本。 |
 | GitHub Actions | 三个 job 统一固定 `0.10.16+b1a0e846e` | 每次推送运行源码验证、Python 接入和已发布包消费验证；以对应提交的 Actions 结果为准。 |
 
-当前分支的运行记录：[GitHub Actions](https://github.com/2515050242/moonagentcheck/actions/workflows/ci.yml?query=branch%3Aoctober-review)。
+默认分支的运行记录：[GitHub Actions](https://github.com/2515050242/moonagentcheck/actions/workflows/ci.yml?query=branch%3Amaster)。
 
 ## 历史版本记录
 

@@ -41,7 +41,7 @@ Python fixtures → 三类业务场景、通用 adapter 和 Responses fixture �
 消费方 smoke → 安装 `2515050242/moonagentcheck@0.2.0`，import `src` 包并调用 `Event::new`、`evaluate`，`moon run cmd/main` 通过
 ```
 
-提交 `554bd08` 的 [GitHub Actions](https://github.com/2515050242/moonagentcheck/actions/runs/36593685126) 两个 job 均通过。MoonBit job 显式执行格式检查、最低版本门禁、`moon build`、`moon check`、`moon test` 和验收演示；另一个 job 执行 5 个 Python fixtures。后续改动推送后仍应核实最新 SHA 的两个 job，而不是沿用旧提交结果。
+提交 `554bd08` 的 [GitHub Actions](https://github.com/2515050242/moonagentcheck/actions/runs/36593685126) 两个 job 均通过。MoonBit job 显式执行格式检查、最低版本门禁、`moon build`、`moon check`、`moon test` 和验收演示；另一个 job 执行 5 个 Python fixtures。本段仅描述当时的两个 job；当前工作流已有三个 job，须按最新 SHA 核验，见[验收指南](acceptance-guide.md)。
 
 许可证文本与 [Apache 官方 2.0 文本](https://www.apache.org/licenses/LICENSE-2.0.txt)逐行一致；GitHub API 将其识别为 `Apache-2.0`。
 

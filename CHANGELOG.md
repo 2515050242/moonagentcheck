@@ -2,6 +2,9 @@
 
 ## 0.3.0 - Unreleased
 
+- 提供 MoonBit JSON 入口，Python fixture 通过实际 CLI 调用评估；非法输入和未支持输出返回失败报告；
+- 增加仓库外的已发布包消费 CI，统一申报 Markdown / PDF、当前测试数与验收复现指南；
+
 - 十月开发线与三个 CI job 统一使用 MoonBit `0.10.16+b1a0e846e`，版本门禁核对完整编译器版本；源码按该版本格式器规范化；
 - 已知的 Responses 非工具项继续跳过，未支持类型保留输入索引并报告映射问题；
 - `ok: null` 产生 `unknown-result`（`AGC018`），诊断和归档报告会阻止轨迹判为通过；
