@@ -171,12 +171,12 @@ fn event_array_from_json(
 }
 
 ///|
-fn request_max_retries(object : Map[String, Json]) -> Result[Int32, String] {
+fn request_max_retries(object : Map[String, Json]) -> Result[Int, String] {
   match object.get("max_retries") {
     None => Ok(2)
     Some(value) =>
       try {
-        let retries : Int32 = @json.from_json(value)
+        let retries : Int = @json.from_json(value)
         if retries < 0 {
           Err("max_retries must not be negative")
         } else {
