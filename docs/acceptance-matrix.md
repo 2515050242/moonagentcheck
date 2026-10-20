@@ -30,6 +30,7 @@
 | Python 接入参考 | 三类业务场景、`python_adapter.py`、`python_openai_responses_fixture.py`，共 5 个 fixture；Responses 样例覆盖 message/reasoning 混合输出 | 本地 Python 运行与 malformed-record smoke test | 为更多实际输入样例补充字段映射 |
 | Responses 混合输出 | `responses_non_tool_item` 只跳过 `message`、`reasoning`；不支持的类型保留 `item_index` 并产生映射问题 | `responses_adapter_test.mbt` 与 Python fixture 覆盖混合序列和不支持类型 | 新增受支持的非工具类型时，先补字段语义和回归用例 |
 | CI 自动验证 | `.github/workflows/ci.yml`：MoonBit 格式、显式构建、检查、测试、验收 demo 与 Python fixture | GitHub Actions | 增加报告归档 |
+| 已发布包独立消费 | `examples/mooncakes-consumer` 固定依赖 Mooncakes `0.2.0`，只通过公开 API 创建和评估事件 | CI 将 fixture 复制到仓库之外，运行 `moon install` 与 `moon test`，验证 registry 下载和消费方编译 | 发布新版本后更新消费测试所固定的版本，再核验对应包页 |
 | 审核可读性 | `docs/*.svg`、`README.md` | GitHub 直接查看 | 保持图文与代码同步 |
 | 开源合规 | `LICENSE`、`moon.mod` | 查看 Apache-2.0 声明 | 继续记录第三方参考来源 |
 

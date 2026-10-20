@@ -29,7 +29,7 @@ MoonAgentCheck 使用 MoonBit 实现确定性行为评估器。接入方把 Agen
 
 ## 项目基础、验证与价值
 
-项目已有 MoonBit 核心评估器、89 个 MoonBit 回归测试、5 个 Python 离线对照 fixture 和 GitHub Actions 自动验证。项目通过 Mooncakes 发布 `0.2.0`；十月分支上的新实现以未发布的 `0.3.0` 开发线记录，不混同于已发布包。
+项目已有 MoonBit 核心评估器、96 个 MoonBit 回归测试、5 个 Python 离线对照 fixture 和 GitHub Actions 自动验证。项目通过 Mooncakes 发布 `0.2.0`；十月分支上的新实现以未发布的 `0.3.0` 开发线记录，不混同于已发布包。
 
 项目补充 Agent runtime、workflow 与 telemetry 之后的行为验证环节，用可重复的规则检查工具调用顺序、失败处理和副作用约束。它不运行 Agent、不接管工具权限，也不替代权限沙箱。
 

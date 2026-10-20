@@ -116,3 +116,12 @@
 - Mooncakes 包页在 2026-10-09 标记 `0.2.0` 为 latest；十月分支 `moon.mod` 改为 `0.3.0`，并在 changelog 中标记为未发布。
 - README、申报材料、验收矩阵与路线图统一说明两者的区别。没有执行包发布或创建 GitHub release；未发布分支功能不归入公开 `0.2.0`。
 - 版本状态由开发者确认，AI 辅助来源核验和文字同步；开发者对提交材料负责。
+
+## 十月验收：JSON 入口与已发布包消费检查
+
+- 修正 README 和架构说明中“没有 CLI”的过期描述，明确仓库 JSON 入口接入 Responses 适配器与 MoonBit 评估器，核心库本身不读写文件。
+- 为 JSON 入口增加混合 message/reasoning、非法 JSON、错误字段类型的回归；正常场景、unknown-result 和不支持输出已有独立检查。
+- 新增隔离的 MoonBit 消费方 fixture，固定从 Mooncakes 获取 `0.2.0`，通过公开 API 评估事件；CI 将其复制到仓库目录之外再构建和测试。
+- 本地验证：MoonBit 测试 96 项通过；`moon build`、`moon check`、`moon run main` 和 5 个 Python→MoonBit fixture 通过。当前本地格式工具为 0.10.15，而 CI 固定 0.10.14；格式门禁由固定版本的 CI 负责，不据本机差异改写全库。
+- 当前包页仍标记 `0.2.0` 为 latest；消费方检查只验证该已发布版本，不将 `0.3.0` 开发线描述成已发布。新增 CI 结果须等本提交推送后查看。
+- 本次目标与验收范围由参赛者提出；AI 辅助实现回归用例、消费方 fixture 和文档整理，结果以公开 CI 和可复现命令为准。

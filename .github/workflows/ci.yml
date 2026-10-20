@@ -67,3 +67,24 @@ jobs:
       - name: Run synthetic Responses trace fixture
         run: python examples/python_openai_responses_fixture.py
 
+  published-package-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install MoonBit
+        env:
+          MOONBIT_INSTALL_VERSION: "0.10.14+7d59c7ec9"
+        shell: bash
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Prepare isolated Mooncakes consumer
+        shell: bash
+        run: |
+          cp -R examples/mooncakes-consumer "$RUNNER_TEMP/mooncakes-consumer"
+      - name: Install and test the published package
+        working-directory: ${{ runner.temp }}/mooncakes-consumer
+        run: |
+          moon build
+          moon test
+
