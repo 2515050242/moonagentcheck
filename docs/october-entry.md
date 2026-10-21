@@ -18,7 +18,7 @@ Agent 的工具调用可能出现结果缺失、失败后继续写入、重试�
 
 MoonAgentCheck 用 MoonBit 实现确定性行为评估器：接入方将 Agent 记录转换为事件，库按 `call_id` 关联单次调用、按 `operation_id` 识别同一业务操作，并返回带规则码和事件索引的违规结果。核心检查离线运行，不连接模型、网络或真实工具。
 
-Mooncakes 当前公开 latest 为 `0.2.0`，包含核心规则、稳定违规码、场景回归、策略门禁、结构化报告和轨迹工具。`october-review` 仓库分支的 `moon.mod` 已推进到未发布的 `0.3.0` 开发线；十月分支新增内容不冒充已包含在 `0.2.0` 包中。版本状态及复核步骤见[对齐说明](release-alignment.md)。
+Mooncakes 十月发布版本为 `0.3.0`，仓库 `master` 与 `october-review` 的 `moon.mod` 对齐该版本。九月 `0.2.0` 提供核心规则、场景与轨迹工具；十月新增 Responses 混合输出、未知结果拒绝，以及 Python 到 MoonBit CLI 的实际接入验证。版本状态及复核步骤见[对齐说明](release-alignment.md)。
 
 ## 三个可复现场景
 

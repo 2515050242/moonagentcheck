@@ -1,6 +1,6 @@
 # MoonAgentCheck 十月验收指南
 
-核对日期：2026-10-20。项目围绕已有社区项目继续开发；以下命令检查可运行成果，不代表组委会已完成最终验收。
+核对日期：2026-10-21。项目围绕已有社区项目继续开发；以下命令检查可运行成果，不代表组委会已完成最终验收。
 
 ## 材料入口与版本
 
@@ -9,13 +9,13 @@
 | [项目申报书](项目申报书.md) / [PDF](../output/pdf/october-proposal.pdf) | 同一份公开申报正文，说明范围与交付 |
 | [README](../README.md) | 安装、API 与示例入口 |
 | [验收矩阵](acceptance-matrix.md) | 要求对应的源码、测试和 CI 证据 |
-| [版本核对](release-alignment.md) | 已发布 `0.2.0` 与未发布源码 `0.3.0` 的区别 |
+| [版本核对](release-alignment.md) | `0.3.0` 发布、源码与消费版本对应关系 |
 | [工具链验证](toolchain-verification.md) | 固定编译器、复现方法与历史结果 |
 | [许可证](../LICENSE) / [来源说明](provenance.md) | Apache-2.0 与参考来源 |
 
 仓库主页链接为 [2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)，默认分支为 `master`；`october-review` 保留十月开发入口。评审时请核对所查看分支的最新 SHA 与 [CI](https://github.com/2515050242/moonagentcheck/actions/workflows/ci.yml)。不能用旧提交的绿色状态代替当前提交验证。
 
-Mooncakes 当前 latest 仍为 `0.2.0`，源码 `moon.mod` 声明的 `0.3.0` 尚未发布。本页中的十月新行为按仓库源码验证；**新版本发布与独立安装复验仍待完成**。
+十月发布版本为 [Mooncakes `0.3.0`](https://mooncakes.io/docs/2515050242/moonagentcheck@0.3.0)，源码 `moon.mod` 与独立消费方固定依赖均为 `0.3.0`。本期变化见[发布说明](releases/0.3.0.md)，安装验证见下方第三节。
 
 ## 1. 从默认分支运行 MoonBit
 
@@ -70,9 +70,11 @@ CLI 用 JSON 的 `passed` 表示契约是否成立；仅看 CLI 进程退出码�
 
 - `moonbit`：显示并校验固定编译器，运行格式检查、显式构建、静态检查、96 项测试和无参演示。
 - `smoke-fixtures`：准备相同 MoonBit 工具链及 Python，运行上面的 5 个真实接入 fixture。
-- `published-package-smoke`：将 `examples/mooncakes-consumer` 复制到仓库之外，`moon update` 后构建并运行 1 项测试，从 registry 消费固定的 `0.2.0`，不借用本仓库源码。
+- `published-package-smoke`：将 `examples/mooncakes-consumer` 复制到仓库之外，`moon update` 后构建并运行 2 项测试，从 registry 消费固定的 `0.3.0`，不借用本仓库源码。
 
-三个 job 均显示工具链版本。消费方测试验证已发布旧版的公开 API，不能代替未发布 `0.3.0` 的发布和安装检查。
+三个 job 均显示工具链版本。消费测试直接使用安装包的 Responses API 生成并解析 JSON，验证明确成功时 `passed: true` 且违规为空；未知 outcome 时 `passed: false` 且保留 `AGC018`、规则名与事件索引。源码 96 项与消费方 2 项分开计数。
+
+本地可将 `examples/mooncakes-consumer` 整个目录复制到仓库之外，在复制后的目录运行 `moon update`、`moon build`、`moon test`。不要添加指向本仓库的本地依赖或 `moon.work`；检查依赖确为 registry `0.3.0`。
 
 ## 4. 本期新增贡献
 
@@ -86,5 +88,7 @@ CLI 用 JSON 的 `passed` 表示契约是否成立；仅看 CLI 进程退出码�
 | `807fb69` | JSON 混合输出、非法输入与字段类型回归；澄清 CLI 边界 |
 | `fd8cd27` / `0b24c73` | 独立 registry 消费方及 CI；补齐索引刷新 |
 | `c676c13` | 三个 job 统一固定 `0.10.16+b1a0e846e`，在该版本重新验证 |
+| `7846ace` | 统一公开申报正文、PDF 和验收复现入口，修正旧测试数与接入表述 |
+| `0.3.0` 发布 | 固定消费版本并增加成功 / 未知结果两项 registry 回归，发布材料与包版本对齐 |
 
 其他十月实现与完整先后顺序见 [提交记录](https://github.com/2515050242/moonagentcheck/commits/master) 和 [开发记录](development-log.md)。AI 辅助实现、整理回归用例和文档；本页不把自动验证描述为参赛者已经逐行人工审核。

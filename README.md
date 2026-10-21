@@ -18,13 +18,13 @@ MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用
 moon add 2515050242/moonagentcheck
 ```
 
-当前包版本为 `0.2.0`，可通过 Mooncakes 安装：
+当前包版本为 `0.3.0`，可通过 Mooncakes 安装：
 
 ```sh
-moon add 2515050242/moonagentcheck@0.2.0
+moon add 2515050242/moonagentcheck@0.3.0
 ```
 
-当前仓库 `master` 与 `october-review` 的 `moon.mod` 为 `0.3.0` 开发线，尚未发布到 Mooncakes。分支上的新增规则和样例不应当作 `0.2.0` 包已包含的功能；版本核对方法见[发布版本与开发线说明](docs/release-alignment.md)。
+仓库 `master` 与 `october-review` 的 `moon.mod` 与 Mooncakes `0.3.0` 发布版本对齐。此版包含 `AGC018`、Responses 混合输出和真实 MoonBit JSON 入口；旧版 `0.2.0` 不包含全部十月新增行为。安装和版本核对见[发布说明](docs/releases/0.3.0.md)与[版本说明](docs/release-alignment.md)。
 
 需要验证 GitHub 开发线时，克隆本仓库并运行 `moon run main`，或按下方命令执行完整回归。
 
@@ -34,7 +34,7 @@ moon add 2515050242/moonagentcheck@0.2.0
 moon run main '[{"type":"function_call","response_id":"resp-1","operation_id":"ticket-1","call_id":"call-1","name":"read_ticket"},{"type":"function_call_output","call_id":"call-1","status":"completed","outcome":true}]'
 ```
 
-这条命令走 MoonBit Responses 适配器和核心评估器。没有参数时运行内置重复写入演示；输入无法解析或含有未支持的输出类型时，报告会标记失败。`moon run main` 是仓库开发线的示例入口，尚未包含在 Mooncakes `0.2.0` 发布包中。
+这条命令走 MoonBit Responses 适配器和核心评估器。没有参数时运行内置重复写入演示；输入无法解析或含有未支持的输出类型时，报告会标记失败。JSON 入口包含在 `0.3.0` 源码包中；上述命令在克隆后的仓库根目录运行。消费方使用 `moon add` 后通过 `@src` 的公开 API 接入，不会在消费项目中自动创建同名 `main` 目录。
 
 ## 先跑起来
 
@@ -113,7 +113,7 @@ let report = evaluation_report_json(events, context)
 
 当前开发线已经扩展为四层证据链：事件模型与规则评估、Trace/输入预检工具、场景与规则汇总、Python 记录适配器。策略上下文还会将实际 allowlist 与接入配置来源一并归档，避免离线报告失去权限判断的来处。Python 侧保留三类业务场景，并增加通用 adapter 与 Responses function-call fixture，共 5 个可运行 fixture；Responses 适配器可在消息、推理项和函数调用混合出现时维持调用与结果关联，对未支持项保留带索引的映射问题。MoonBit 测试覆盖核心规则和工具层。项目仍然不重新实现 Agent 框架；扩大的是可复用的验证边界，而不是堆叠与核心职责无关的组件。每个小步都应该有能运行的测试；如果实现和假设冲突，先修正假设。
 
-公开发布包为 `0.2.0`；当前仓库开发线为未发布的 `0.3.0`。截至 2026-10-20，当前开发线有 96 个 MoonBit 测试；数量随有效回归增加，以 CI 实际结果为准。规模数字本身不代表验收结论，仍需看功能是否真实可运行、边界是否清楚以及材料是否与仓库一致。
+公开发布包为 `0.3.0`。截至 2026-10-21，源码有 96 个 MoonBit 测试；独立消费方另有 2 项测试，验证发布包的正常结果与未知结果拒绝。数量随有效回归增加，以 CI 实际结果为准。规模数字本身不代表验收结论，仍需看功能是否真实可运行、边界是否清楚以及材料是否与仓库一致。
 
 ## 许可
 

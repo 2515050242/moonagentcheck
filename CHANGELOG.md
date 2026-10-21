@@ -1,16 +1,16 @@
 # Changelog
 
-## 0.3.0 - Unreleased
+## 0.3.0 - 2026-10-21
 
 - 提供 MoonBit JSON 入口，Python fixture 通过实际 CLI 调用评估；非法输入和未支持输出返回失败报告；
-- 增加仓库外的已发布包消费 CI，统一申报 Markdown / PDF、当前测试数与验收复现指南；
+- 独立消费方固定依赖 `0.3.0`，以 2 项测试验证 Responses 明确成功与未知结果 `AGC018`；统一申报 Markdown / PDF、当前测试数与验收复现指南；
 
 - 十月开发线与三个 CI job 统一使用 MoonBit `0.10.16+b1a0e846e`，版本门禁核对完整编译器版本；源码按该版本格式器规范化；
 - 已知的 Responses 非工具项继续跳过，未支持类型保留输入索引并报告映射问题；
 - `ok: null` 产生 `unknown-result`（`AGC018`），诊断和归档报告会阻止轨迹判为通过；
 - 增加合成 Responses JSON 轨迹 fixture，并由离线 Python fixture 和独立 CI 步骤核对预期；
 - 生态定位说明按 2026-10-09 核对的 Mooncakes 页面补充来源与职责边界；
-- 当前开发线包含 96 项 MoonBit 回归测试；本节对应未发布开发内容，尚未创建 Mooncakes 发布。
+- 本版包含 96 项 MoonBit 回归测试与 5 个实际调用 MoonBit 的 Python fixture；发布说明见 `docs/releases/0.3.0.md`。
 
 ## 0.2.0 - 2026-09-29
 

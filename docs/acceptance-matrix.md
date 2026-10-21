@@ -1,6 +1,6 @@
 # MoonAgentCheck 验收矩阵
 
-核对日期：2026-10-20。矩阵对应当前源码的检查入口；历史发布快照见 [审计记录](audit.md)。完整命令及预期结果见 [验收指南](acceptance-guide.md)。
+核对日期：2026-10-21。矩阵对应当前源码的检查入口；历史发布快照见 [审计记录](audit.md)。完整命令及预期结果见 [验收指南](acceptance-guide.md)。
 
 | 验收项 | 当前证据 | 验证方式与边界 |
 | --- | --- | --- |
@@ -18,8 +18,8 @@
 | Python 实际接入 | 5 个 fixture 与 `examples/moonbit_cli.py` | 子进程调用 MoonBit；解析报告后断言，失败不回退 Python 评估器 |
 | Responses 混合输出 | `src/responses_adapter.mbt` 及回归 | 只跳过 message/reasoning；未支持类型保留 item_index 并令报告失败 |
 | 自动验证 | `.github/workflows/ci.yml` | 当前 SHA 的 moonbit、smoke-fixtures、published-package-smoke 三个 job 均须成功 |
-| 已发布包消费 | `examples/mooncakes-consumer` 固定 `0.2.0` | CI 复制到仓库之外，`moon update`、`moon build`、`moon test`，1 项测试真实调用公开 API |
-| 新版本发布 | 已发布 latest `0.2.0`，源码 `0.3.0` 未发布 | 仍待发布及独立安装复验；源码 CI 不能作为 registry 发布证据 |
+| 已发布包消费 | `examples/mooncakes-consumer` 固定 `0.3.0` | CI 复制到仓库之外，`moon update`、`moon build`、`moon test`，2 项测试真实调用并解析公开 Responses 报告，验证成功通过与未知结果 AGC018 拒绝 |
+| 新版本发布 | Mooncakes、源码与消费依赖统一为 `0.3.0` | 包页版本与构建状态、registry 安装和消费测试分别核对；见[发布说明](releases/0.3.0.md) |
 | 开源与来源 | 完整 Apache-2.0、`moon.mod`、`docs/provenance.md` | 原创实现、公开接口参考与许可范围清楚 |
 | 申报可读性 | [申报 Markdown](项目申报书.md)、[PDF](../output/pdf/october-proposal.pdf)、README | 项目名、版本、测试数与真实接入行为一致，不宣称未完成的集成或性能 |
 

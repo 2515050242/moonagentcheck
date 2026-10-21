@@ -23,9 +23,13 @@ python -X utf8 examples/python_openai_responses_fixture.py
 
 运行 Python fixture 需要 Python 3.12 或兼容版本；无需网络或模型凭据。
 
-## 验证记录
+## 2026-10-21 发布复现
 
-记录日期：2026-10-20。
+`0.3.0` 保持相同工具链与 96 项源码测试。5 个 Python fixture 仍调用真实 MoonBit CLI；独立消费方改为固定 registry `0.3.0`，分别检查明确成功与未知 outcome 的 JSON 报告，共 2 项测试。发布打包使用 `moon package --frozen`，最终结果以对应提交的三个 CI job 为准。
+
+## 历史验证快照
+
+记录日期：2026-10-20，以下发布包消费结果只对应当时的 `0.2.0`。
 
 | 环境 | 工具链 | 检查结果 |
 | --- | --- | --- |
