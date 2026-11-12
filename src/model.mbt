@@ -1,5 +1,6 @@
 ///|
 /// An observation emitted by an agent adapter.
+#derive(Debug, Eq)
 pub struct Event {
   kind : String
   tool : String
@@ -7,7 +8,7 @@ pub struct Event {
   operation_id : String?
   /// Whether the tool reported success. A reported failure is a contract violation.
   ok : Bool?
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn Event::new(
@@ -22,11 +23,12 @@ pub fn Event::new(
 
 ///|
 /// A single contract failure. The first event that violates a rule is reported.
+#derive(Debug, Eq)
 pub struct Violation {
   rule : String
   event_index : Int32
   message : String
-} derive(Debug, Eq)
+}
 
 ///|
 /// Configuration for an evaluation run.

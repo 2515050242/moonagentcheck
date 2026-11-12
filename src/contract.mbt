@@ -1,10 +1,11 @@
 ///|
+#derive(Eq)
 priv enum ResultState {
   Pending
   Succeeded
   Failed
   Unknown
-} derive(Eq)
+}
 
 ///|
 /// Evaluate a deterministic event sequence against basic tool-call contracts.

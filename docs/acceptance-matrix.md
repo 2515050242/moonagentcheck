@@ -5,8 +5,8 @@
 | 验收项 | 当前证据 | 验证方式与边界 |
 | --- | --- | --- |
 | MoonBit 为主要实现语言 | `src/*.mbt`、`main/main.mbt`、`moon.mod` | 核心评估与 Responses 适配在 MoonBit 内运行；Python 不作为评估真值来源 |
-| 工具链 | 三个 CI job 共用 `0.10.16+b1a0e846e` | 主 job 校验完整版本号；各 job 显示实际工具链 |
-| 构建、检查与回归 | 96 项 MoonBit 测试 | `moon fmt --check src main`、`moon build`、`moon check`、`moon test`；25 条既有弃用提示不等于错误 |
+| 工具链 | 本地验证 `0.10.20+65efd5b93`、默认 `wasm-gc` 后端 | 三个 CI job 安装官方最新工具链并记录 `moon version --all` |
+| 构建、检查与回归 | 96 项 MoonBit 测试 | `moon fmt --check src main`、`moon build`、`moon check`、`moon test` |
 | 调用与结果关联 | `src/contract.mbt`、`contract_test.mbt` | `AGC011` 检查工具名和操作 ID；重复 call ID 不能改写首个身份 |
 | 重试与重复副作用 | `attempts`、`completed` 状态及核心回归 | 重试超限与重复写入 `AGC004` 的正反例 |
 | 写入前置条件 | `AGC010`、`AGC016` | 写入必须关联同一工具和操作的成功调用，未知或失败结果不能授权写入 |
@@ -14,7 +14,7 @@
 | 工具策略与来源 | `EvaluationPolicy`、`PolicyContext`、套件策略传递 | allowlist、空列表、来源缺失与多场景入口回归；不把来源字符串当授权凭据 |
 | 输入预检与稳定报告 | `AGC013`–`AGC015`、JSON 报告 | 空字段、未知事件、负重试策略与 JSON 字符编码回归 |
 | 场景工具层 | Trace、检索、回放、差分、指标、Catalog、SuiteRunner、QualityGate | 对应 `src/*_test.mbt`，检查隔离、顺序、统计与策略传递 |
-| 可运行 MoonBit 入口 | `main/main.mbt`、`main/responses_json_test.mbt` | 无参断言 AGC004；JSON 输入测试正常、未知结果、混合输出、未支持项和非法输入 |
+| 可运行 MoonBit 入口 | `main/main.mbt`、`main/responses_json_wbtest.mbt` | 无参断言 AGC004；JSON 输入测试正常、未知结果、混合输出、未支持项和非法输入 |
 | Python 实际接入 | 5 个 fixture 与 `examples/moonbit_cli.py` | 子进程调用 MoonBit；解析报告后断言，失败不回退 Python 评估器 |
 | Responses 混合输出 | `src/responses_adapter.mbt` 及回归 | 只跳过 message/reasoning；未支持类型保留 item_index 并令报告失败 |
 | 自动验证 | `.github/workflows/ci.yml` | 当前 SHA 的 moonbit、smoke-fixtures、published-package-smoke 三个 job 均须成功 |

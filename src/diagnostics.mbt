@@ -1,10 +1,11 @@
 ///|
 /// Severity assigned to an observed contract diagnostic.
+#derive(Eq, Debug)
 pub enum DiagnosticSeverity {
   Info
   Warning
   Error
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn diagnostic_severity_name(severity : DiagnosticSeverity) -> String {

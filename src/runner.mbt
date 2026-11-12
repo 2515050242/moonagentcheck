@@ -1,11 +1,12 @@
 ///|
 /// Selects how a suite runner obtains its scenarios.
+#derive(Eq, Debug)
 pub enum RunMode {
   AllScenarios
   NamedScenarios
   TaggedScenarios
   SingleTrace
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn run_mode_name(mode : RunMode) -> String {

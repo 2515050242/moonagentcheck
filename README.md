@@ -10,7 +10,7 @@ MoonBit 核心库接收一串工具事件，按确定性的规则找出“调用
 
 ## 环境与安装
 
-当前开发线使用 MoonBit 编译器 `0.10.16+b1a0e846e` 验证，CI 的三个 job 使用同一固定版本。可用 `moon version --all` 查看当前版本；安装和升级方式见 [MoonBit 官方工具链文档](https://docs.moonbitlang.com/en/latest/toolchain/moon/commands.html)。Python 3.12 用于运行接入 fixture，MoonBit 核心和无参演示不依赖 Python。
+当前开发线在 MoonBit 编译器 `0.10.20+65efd5b93` 的默认后端 `wasm-gc` 上验证。CI 的三个 job 安装官方最新工具链，并记录 `moon version --all`。安装和升级方式见 [MoonBit 官方下载页](https://www.moonbitlang.com/download/)；复现命令见[工具链验证记录](docs/toolchain-verification.md)。Python 3.12 用于运行接入 fixture，MoonBit 核心和无参演示不依赖 Python。
 
 在其他 MoonBit 项目中添加已发布的 Mooncakes 包：
 

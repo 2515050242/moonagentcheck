@@ -1,11 +1,12 @@
 ///|
 /// Cursor status for deterministic trace replay.
+#derive(Eq, Debug)
 pub enum ReplayStatus {
   BeforeStart
   Running
   Finished
   Halted
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn replay_status_name(status : ReplayStatus) -> String {

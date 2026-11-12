@@ -1,6 +1,6 @@
 ///|
 test "Responses JSON CLI reports a successful function call" {
-  let report = @main.responses_json_report(
+  let report = responses_json_report(
     "[{\"type\":\"function_call\",\"response_id\":\"resp-1\",\"operation_id\":\"ticket-1\",\"call_id\":\"call-1\",\"name\":\"read_ticket\"},{\"type\":\"function_call_output\",\"call_id\":\"call-1\",\"status\":\"completed\",\"outcome\":true}]",
   )
   assert_true(report.contains("\"passed\":true"))
@@ -9,7 +9,7 @@ test "Responses JSON CLI reports a successful function call" {
 
 ///|
 test "Responses JSON CLI rejects completed output with unknown outcome" {
-  let report = @main.responses_json_report(
+  let report = responses_json_report(
     "[{\"type\":\"function_call\",\"response_id\":\"resp-unknown\",\"operation_id\":\"ticket-unknown\",\"call_id\":\"call-unknown\",\"name\":\"update_ticket\"},{\"type\":\"function_call_output\",\"call_id\":\"call-unknown\",\"status\":\"completed\"}]",
   )
   assert_true(report.contains("\"passed\":false"))
@@ -19,7 +19,7 @@ test "Responses JSON CLI rejects completed output with unknown outcome" {
 
 ///|
 test "Responses JSON CLI rejects unsupported output items" {
-  let report = @main.responses_json_report("[{\"type\":\"web_search_call\"}]")
+  let report = responses_json_report("[{\"type\":\"web_search_call\"}]")
   assert_true(report.contains("\"passed\":false"))
   assert_true(
     report.contains("unsupported Responses item type: web_search_call"),
@@ -29,7 +29,7 @@ test "Responses JSON CLI rejects unsupported output items" {
 
 ///|
 test "event JSON CLI uses the MoonBit contract evaluator and policy" {
-  let report = @main.responses_json_report(
+  let report = responses_json_report(
     "{\"max_retries\":2,\"tool_allowlist\":[\"read_file\"],\"events\":[{\"kind\":\"call\",\"tool\":\"write_file\",\"call_id\":\"call-1\",\"operation_id\":\"write-1\"}]}",
   )
   assert_true(report.contains("\"passed\":false"))
@@ -39,7 +39,7 @@ test "event JSON CLI uses the MoonBit contract evaluator and policy" {
 
 ///|
 test "Responses JSON CLI keeps message and reasoning outside the event trace" {
-  let report = @main.responses_json_report(
+  let report = responses_json_report(
     "[{\"type\":\"message\",\"id\":\"msg-1\"},{\"type\":\"function_call\",\"response_id\":\"resp-1\",\"operation_id\":\"lookup-1\",\"call_id\":\"call-1\",\"name\":\"read_ticket\"},{\"type\":\"reasoning\",\"id\":\"rs-1\"},{\"type\":\"function_call_output\",\"call_id\":\"call-1\",\"status\":\"completed\",\"outcome\":true}]",
   )
   assert_true(report.contains("\"passed\":true"))
@@ -49,7 +49,7 @@ test "Responses JSON CLI keeps message and reasoning outside the event trace" {
 
 ///|
 test "JSON CLI rejects malformed JSON instead of returning a pass" {
-  let report = @main.responses_json_report("{not-json")
+  let report = responses_json_report("{not-json")
   assert_true(report.contains("\"passed\":false"))
   assert_true(report.contains("invalid JSON input"))
   assert_true(@json.valid(report))
@@ -57,7 +57,7 @@ test "JSON CLI rejects malformed JSON instead of returning a pass" {
 
 ///|
 test "event JSON CLI rejects values with the wrong field type" {
-  let report = @main.responses_json_report(
+  let report = responses_json_report(
     "{\"events\":[{\"kind\":\"result\",\"tool\":\"read_file\",\"call_id\":\"call-1\",\"ok\":\"true\"}]}",
   )
   assert_true(report.contains("\"passed\":false"))

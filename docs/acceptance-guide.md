@@ -10,7 +10,7 @@
 | [README](../README.md) | 安装、API 与示例入口 |
 | [验收矩阵](acceptance-matrix.md) | 要求对应的源码、测试和 CI 证据 |
 | [版本核对](release-alignment.md) | `0.3.0` 发布、源码与消费版本对应关系 |
-| [工具链验证](toolchain-verification.md) | 固定编译器、复现方法与历史结果 |
+| [工具链验证](toolchain-verification.md) | 实测工具链、复现方法与历史结果 |
 | [许可证](../LICENSE) / [来源说明](provenance.md) | Apache-2.0 与参考来源 |
 
 仓库主页链接为 [2515050242/moonagentcheck](https://github.com/2515050242/moonagentcheck)，默认分支为 `master`；`october-review` 保留十月开发入口。评审时请核对所查看分支的最新 SHA 与 [CI](https://github.com/2515050242/moonagentcheck/actions/workflows/ci.yml)。不能用旧提交的绿色状态代替当前提交验证。
@@ -19,7 +19,7 @@
 
 ## 1. 从默认分支运行 MoonBit
 
-准备 MoonBit 编译器 `0.10.16+b1a0e846e`、配套核心库和 Python 3.12。该编译器是本项目的验证基线，赛事版本要求以组委会正式通知为准。首次安装工具链需要网络，fixture 本身不调用网络或模型。克隆时保留 LF 换行，避免 Windows Git 自动转为 CRLF 后干扰格式检查。
+准备 MoonBit 官方工具链和 Python 3.12。2026-11-12 的本地复核使用编译器 `0.10.20+65efd5b93` 和默认 `wasm-gc` 后端。首次安装工具链需要网络，fixture 本身不调用网络或模型。
 
 ```sh
 git -c core.autocrlf=false clone https://github.com/2515050242/moonagentcheck.git
@@ -33,13 +33,13 @@ moon test
 moon run main
 ```
 
-预期：完整编译器版本为 `v0.10.16+b1a0e846e`，格式、构建、静态检查成功，96 项 MoonBit 测试通过。静态检查存在 25 条既有弃用提示，不应描述为零警告。
+预期格式、构建、静态检查成功，96 项 MoonBit 测试通过。实测版本与剩余警告见[工具链验证记录](toolchain-verification.md)。
 
 无参演示故意重复完成同一写操作，报告包含 `AGC004`。命令正常退出说明演示断言成立，**不表示这条违规轨迹通过契约检查**。
 
 ## 2. 验证 Python 实际接入 MoonBit
 
-在仓库根目录运行，确保 `moon` 在 PATH 中。Python 加 `-X utf8`，避免 Windows 默认编码影响子进程日志解码：
+在仓库根目录运行，确保 `moon` 在 PATH 中。适配器以 UTF-8 解码 MoonBit 子进程输出。
 
 ```sh
 python -X utf8 examples/python_data_agent.py

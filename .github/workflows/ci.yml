@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  MOONBIT_INSTALL_VERSION: "0.10.16+b1a0e846e"
+  MOONBIT_INSTALL_VERSION: latest
 
 jobs:
   moonbit:
@@ -20,15 +20,6 @@ jobs:
       - name: Show MoonBit version
         shell: bash
         run: moon version --all
-      - name: Verify pinned MoonBit compiler version
-        shell: bash
-        run: |
-          compiler_version="$(moonc -v | awk '{print $1}')"
-          if [[ "$compiler_version" != "v$MOONBIT_INSTALL_VERSION" ]]; then
-            echo "Expected moonc v$MOONBIT_INSTALL_VERSION; found '${compiler_version:-unknown}'"
-            exit 1
-          fi
-          echo "Verified moonc $compiler_version"
       - name: Verify MoonBit formatting
         run: moon fmt --check src main
       - name: Build MoonBit packages

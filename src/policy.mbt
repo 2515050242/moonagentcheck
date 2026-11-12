@@ -1,13 +1,14 @@
 ///|
 /// Named policy presets keep application adapters from scattering magic
 /// retry and permission values through their integration code.
+#derive(Eq, Debug)
 pub enum PolicyProfile {
   Permissive
   ReadOnly
   Ticketing
   DataPipeline
   Strict
-} derive(Eq, Debug)
+}
 
 ///|
 /// A policy plus the configuration location that supplied it.

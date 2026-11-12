@@ -14,7 +14,7 @@ def _run_moonbit(request: dict[str, Any] | list[dict[str, Any]]) -> dict[str, An
         ["moon", "run", "--quiet", "main", "--", json.dumps(request)],
         cwd=REPOSITORY_ROOT,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
         check=False,
     )
     if result.returncode != 0:

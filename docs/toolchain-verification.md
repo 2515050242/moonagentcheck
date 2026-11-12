@@ -1,10 +1,19 @@
 # MoonBit 工具链复现与验证记录
 
-## 要求与固定版本
+## 2026-11-12 维护复核
 
-本仓库十月开发线使用 MoonBit 编译器 `0.10.16+b1a0e846e` 作为验收验证基线。CI 的三个 job 共用 `MOONBIT_INSTALL_VERSION`，主 job 比较 `moonc -v` 输出的完整版本号，避免安装结果与声明的版本不一致。
+Windows x64 本地复核使用默认 `wasm-gc` 后端和 Python 3.12.14。CI 的三个 job 使用官方安装器的 `latest` 通道并记录实际版本。
 
-工具链来自 [MoonBit 官方下载页](https://www.moonbitlang.com/download)，发布日期为 2026-10-16；下载归档已按官方 SHA-256 校验。该版本是项目实际验证目标，赛事强制要求以组委会正式通知为准。仓库根目录可按以下顺序复现检查：
+`moon version --all` 输出的版本如下。实测 `moonc` 的 SHA-256 与[官方下载页](https://www.moonbitlang.com/download/)所列 Windows 最新版校验清单一致。
+
+```text
+moon 0.1.20261104 (940aa18 2026-11-04)
+moonc v0.10.20+65efd5b93 (2026-11-05)
+moonrun 0.1.20261104 (940aa18 2026-11-04)
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+```
+
+在仓库根目录运行：
 
 ```sh
 moon version --all
@@ -14,18 +23,22 @@ moon build
 moon check
 moon test
 moon run main
-python -X utf8 examples/python_data_agent.py
-python -X utf8 examples/python_repository_agent.py
-python -X utf8 examples/python_ticket_agent.py
-python -X utf8 examples/python_adapter.py
-python -X utf8 examples/python_openai_responses_fixture.py
+python examples/python_data_agent.py
+python examples/python_repository_agent.py
+python examples/python_ticket_agent.py
+python examples/python_adapter.py
+python examples/python_openai_responses_fixture.py
 ```
 
 运行 Python fixture 需要 Python 3.12 或兼容版本；无需网络或模型凭据。
 
+本地结果：格式、构建和静态检查通过，96 项源码测试与 5 个 Python fixture 全部通过。无参演示报告预期的 `AGC004`，README 的 JSON 参数示例返回 `passed: true`。独立消费方完成 `moon update` 后构建通过，Mooncakes `0.3.0` 的 2 项消费测试全部通过。
+
+静态检查仍报告 24 条 `implicit_impl_as_method` 弃用警告，公开库生成的接口与维护前一致。远端基线提交 [`98a374f` 的 CI](https://github.com/2515050242/moonagentcheck/actions/runs/39521586672) 已通过；本次维护改动的 Ubuntu CI 尚未运行。
+
 ## 2026-10-21 发布复现
 
-`0.3.0` 保持相同工具链与 96 项源码测试。5 个 Python fixture 仍调用真实 MoonBit CLI；独立消费方改为固定 registry `0.3.0`，分别检查明确成功与未知 outcome 的 JSON 报告，共 2 项测试。发布打包使用 `moon package --frozen`，最终结果以对应提交的三个 CI job 为准。
+`0.3.0` 发布时使用 `0.10.16+b1a0e846e`，有 96 项源码测试。5 个 Python fixture 调用真实 MoonBit CLI；独立消费方固定 registry `0.3.0`，分别检查明确成功与未知 outcome 的 JSON 报告，共 2 项测试。发布打包使用 `moon package --frozen`，结果以对应提交的三个 CI job 为准。
 
 ## 历史验证快照
 

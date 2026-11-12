@@ -4,11 +4,12 @@
 /// `Completed` says that the API item finished, not that the application tool
 /// succeeded. Adapters must preserve a separately observed outcome when one is
 /// available.
+#derive(Eq, Debug)
 pub enum ResponsesOutputStatus {
   InProgress
   Completed
   Incomplete
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn responses_in_progress() -> ResponsesOutputStatus {
@@ -32,11 +33,12 @@ pub fn responses_incomplete() -> ResponsesOutputStatus {
 /// operation are recovered from the preceding function-call record. The
 /// operation ID is supplied by the application telemetry envelope because the
 /// Responses item schema does not define a business-operation identifier.
+#derive(Eq, Debug)
 pub enum ResponsesItem {
   FunctionCall(String, String?, String, String)
   FunctionCallOutput(String, ResponsesOutputStatus, Bool?)
   NonToolItem(String)
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn responses_function_call(
@@ -70,10 +72,11 @@ pub fn responses_non_tool_item(item_type : String) -> ResponsesItem {
 ///|
 /// A mapping issue is kept separate from contract violations because it means
 /// the adapter could not produce a trustworthy Event at all.
+#derive(Eq, Debug)
 pub struct ResponsesMappingIssue {
   item_index : Int32
   message : String
-} derive(Eq, Debug)
+}
 
 ///|
 /// Events and non-fatal mapping issues emitted while adapting a Responses

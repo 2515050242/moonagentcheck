@@ -1,6 +1,7 @@
 ///|
 /// Built-in scenario families provide repeatable examples for applications
 /// that do not yet have a framework-specific adapter.
+#derive(Eq, Debug)
 pub enum ScenarioKind {
   DataRead
   DataWrite
@@ -12,7 +13,7 @@ pub enum ScenarioKind {
   MissingResult
   OrphanResult
   PolicyDenied
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn scenario_kind_name(kind : ScenarioKind) -> String {

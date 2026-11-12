@@ -1,11 +1,12 @@
 ///|
 /// Classification used when comparing an expected trace with an observed one.
+#derive(Eq, Debug)
 pub enum EventDiffKind {
   Match
   Added
   Removed
   Changed
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn event_diff_kind_name(kind : EventDiffKind) -> String {
@@ -18,13 +19,14 @@ pub fn event_diff_kind_name(kind : EventDiffKind) -> String {
 }
 
 ///|
+#derive(Eq, Debug)
 pub enum EventField {
   KindField
   ToolField
   CallIdField
   OperationIdField
   StatusField
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn event_field_name(field : EventField) -> String {
