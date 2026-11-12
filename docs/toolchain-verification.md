@@ -34,7 +34,7 @@ python examples/python_openai_responses_fixture.py
 
 本地结果：格式、构建和静态检查通过，96 项源码测试与 5 个 Python fixture 全部通过。无参演示报告预期的 `AGC004`，README 的 JSON 参数示例返回 `passed: true`。独立消费方完成 `moon update` 后构建通过，Mooncakes `0.3.0` 的 2 项消费测试全部通过。
 
-静态检查仍报告 24 条 `implicit_impl_as_method` 弃用警告，公开库生成的接口与维护前一致。远端基线提交 [`98a374f` 的 CI](https://github.com/2515050242/moonagentcheck/actions/runs/39521586672) 已通过；本次维护改动的 Ubuntu CI 尚未运行。
+静态检查仍报告 24 条 `implicit_impl_as_method` 弃用警告，公开库生成的接口与维护前一致。维护提交 [`a2b65c4` 的 Ubuntu CI](https://github.com/2515050242/moonagentcheck/actions/runs/43152810125) 三项检查均已通过。默认分支后续运行见 [master CI](https://github.com/2515050242/moonagentcheck/actions/workflows/ci.yml?query=branch%3Amaster)。
 
 ## 2026-10-21 发布复现
 
